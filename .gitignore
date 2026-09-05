@@ -1,0 +1,34 @@
+# Secrets -- the JSearch API key lives here
+.env
+*.env
+!.env.example
+
+# Cached raw API payloads. Regenerable, ~1MB and growing per collection run,
+# and they duplicate posting text that already lives in the CSVs.
+test/raw_responses/
+
+# Virtualenv. This project's is deliberately outside the repo, at
+# ~/.venvs/skillgap -- torch is ~2.5GB and this folder is OneDrive-synced.
+# These patterns catch one created in-tree by mistake.
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Local scratch from triage and migration passes
+*.bak
+*.csv.tmp
+*.pre-triage.bak
+*.pre-release.bak
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/

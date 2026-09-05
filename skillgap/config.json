@@ -1,0 +1,35 @@
+{
+  "model": "intfloat/multilingual-e5-base",
+  "validated_on": "2026-09-05",
+  "taxonomy_skills": 19,
+  "synonym_probes_passed": "5/5",
+  "postings": {
+    "match_method": "chunk_top1",
+    "match_threshold": 0.8193,
+    "match_margin": 0.03,
+    "validated": true,
+    "best_f1": 0.9,
+    "precision": 1.0,
+    "recall": 0.8182,
+    "threshold_plateau": [
+      0.7487,
+      0.89
+    ],
+    "threshold_plateau_width": 0.1412,
+    "labeled_texts": 3,
+    "labeled_skill_mentions": 11
+  },
+  "courses": {
+    "match_method": "chunk_top1",
+    "match_threshold": 0.8193,
+    "match_margin": 0.03,
+    "validated": false,
+    "inherited_from": "postings",
+    "note": "parameters copied from 'postings'; never measured on this domain's text. Label its CSV and re-run.",
+    "best_f1": null,
+    "precision": null,
+    "recall": null,
+    "labeled_texts": 0,
+    "labeled_skill_mentions": 0
+  }
+}

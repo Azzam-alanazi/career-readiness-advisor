@@ -1,0 +1,13 @@
+sentence-transformers>=3.0.0
+numpy>=1.24
+torch>=2.0
+
+# Pinned, not a preference. scipy 1.18.x ships scipy/linalg/_batched_linalg,
+# a native DLL that Windows Application Control (Smart App Control) blocks:
+#   ImportError: DLL load failed while importing _batched_linalg:
+#   An Application Control policy has blocked this file.
+# scipy is pulled in transitively by scikit-learn -> sentence-transformers, so
+# the block takes down the whole embedding stack, not just scipy. 1.16.3
+# predates that file and imports cleanly. Revisit if the policy changes or a
+# signed 1.18+ build ships.
+scipy==1.16.3

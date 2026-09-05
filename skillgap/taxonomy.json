@@ -1,0 +1,23 @@
+{
+  "skills": [
+    {"id": "sql", "en": "SQL and relational database querying", "ar": "قواعد البيانات SQL", "category": "technical"},
+    {"id": "python", "en": "Python programming", "ar": "برمجة بايثون", "category": "technical"},
+    {"id": "java", "en": "Java programming", "ar": "برمجة جافا", "category": "technical"},
+    {"id": "excel", "en": "Microsoft Excel and spreadsheets", "ar": "مايكروسوفت اكسل وجداول البيانات", "category": "technical"},
+    {"id": "powerbi", "en": "Power BI and data visualization dashboards", "ar": "باور بي آي ولوحات المعلومات", "category": "technical"},
+    {"id": "erp", "en": "ERP systems such as SAP or Oracle", "ar": "أنظمة تخطيط موارد المؤسسات", "category": "technical"},
+    {"id": "networking", "en": "Computer networking and TCP IP", "ar": "شبكات الحاسب", "category": "technical"},
+    {"id": "cybersecurity", "en": "Information security and cybersecurity", "ar": "أمن المعلومات والأمن السيبراني", "category": "technical"},
+    {"id": "requirements", "en": "Requirements gathering and business analysis", "ar": "تحليل الأعمال وجمع المتطلبات", "category": "technical"},
+    {"id": "process_modeling", "en": "Business process modeling and BPMN", "ar": "نمذجة العمليات", "category": "technical"},
+    {"id": "project_mgmt", "en": "Project management and planning", "ar": "إدارة المشاريع والتخطيط", "category": "technical"},
+    {"id": "accounting", "en": "Accounting and bookkeeping", "ar": "المحاسبة ومسك الدفاتر", "category": "technical"},
+    {"id": "financial_reporting", "en": "Financial statement preparation", "ar": "إعداد القوائم المالية", "category": "technical"},
+    {"id": "digital_marketing", "en": "Digital marketing and social media campaigns", "ar": "التسويق الرقمي ووسائل التواصل", "category": "technical"},
+    {"id": "hr_ops", "en": "Human resources operations and recruitment", "ar": "الموارد البشرية والتوظيف", "category": "technical"},
+    {"id": "communication", "en": "Communication and presentation skills", "ar": "مهارات التواصل والعرض", "category": "soft"},
+    {"id": "teamwork", "en": "Teamwork and collaboration", "ar": "العمل الجماعي", "category": "soft"},
+    {"id": "problem_solving", "en": "Analytical thinking and problem solving", "ar": "التفكير التحليلي وحل المشكلات", "category": "soft"},
+    {"id": "english", "en": "English language proficiency", "ar": "إتقان اللغة الإنجليزية", "category": "soft"}
+  ]
+}

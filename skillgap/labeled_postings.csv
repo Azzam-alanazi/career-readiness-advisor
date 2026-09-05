@@ -1,0 +1,36 @@
+﻿id,career,lang,posting_text,skill_ids
+1,Business Analyst,en,"Business Analyst position in Riyadh.
+Gather and document business requirements from stakeholders.
+Write SQL queries to pull data from our databases.
+Build Power BI dashboards for the leadership team.
+Excellent communication and presentation abilities required.
+Strong analytical thinking and problem solving.",requirements;sql;powerbi;communication;problem_solving
+2,Business Analyst,en,"Business Analyst. Document business processes and produce BPMN models.
+Query relational databases to extract reporting data.
+Present findings clearly to non-technical stakeholders.",process_modeling;sql;communication
+3,Business Analyst,ar,"محلل أعمال - جدة
+جمع وتحليل متطلبات العمل من أصحاب المصلحة.
+خبرة في قواعد البيانات والاستعلامات.
+مهارات تواصل وعرض ممتازة.",requirements;sql;communication
+4,Business Analyst,,,
+5,Business Analyst,,,
+6,Data Analyst,,,
+7,Data Analyst,,,
+8,Data Analyst,,,
+9,Data Analyst,,,
+10,Data Analyst,,,
+11,ERP Consultant,,,
+12,ERP Consultant,,,
+13,ERP Consultant,,,
+14,ERP Consultant,,,
+15,ERP Consultant,,,
+16,IT Support Specialist,,,
+17,IT Support Specialist,,,
+18,IT Support Specialist,,,
+19,IT Support Specialist,,,
+20,IT Support Specialist,,,
+21,Software Developer,,,
+22,Software Developer,,,
+23,Software Developer,,,
+24,Software Developer,,,
+25,Software Developer,,,
