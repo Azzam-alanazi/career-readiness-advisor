@@ -32,7 +32,44 @@ CONFIG_PATH = "config.json"
 DOMAINS = ("postings", "courses")
 
 
-def load_match_params(domain: str = "postings", path: str = CONFIG_PATH) -> dict:
+class StaleConfigError(RuntimeError):
+    """config.json was measured against a different taxonomy than the one loaded."""
+
+
+def _check_taxonomy_matches(cfg: dict, config_path: str, taxonomy_path: str) -> None:
+    """
+    Refuse parameters that were never measured against the taxonomy in use.
+
+    A threshold and margin are only meaningful relative to the label set they
+    were swept over. Swapping a 19-entry taxonomy for a 90-entry one changes how
+    close competing skills sit: the median gap between a chunk's top-1 and top-2
+    skill halved, so a margin of 0.03 went from discarding a quarter of chunks to
+    discarding ninety percent of them. Nothing raised an error -- the engine ran,
+    every posting matched almost nothing, and readiness came out 0%.
+
+    A wrong answer that looks like an answer is worse than a crash, so this is a
+    hard error rather than a warning.
+    """
+    recorded = cfg.get("taxonomy_skills")
+    if recorded is None:
+        return          # written before the field existed; nothing to compare
+    try:
+        with open(taxonomy_path, encoding="utf-8") as f:
+            actual = len(json.load(f)["skills"])
+    except FileNotFoundError:
+        return          # Taxonomy() will fail on its own, with a better message
+
+    if actual != recorded:
+        raise StaleConfigError(
+            f"{config_path} was validated against a {recorded}-skill taxonomy, "
+            f"but {taxonomy_path} now has {actual}.\n"
+            f"The recorded threshold and margin were swept over the old label "
+            f"set and do not carry over -- re-run validate.py against the "
+            f"current taxonomy before using them.")
+
+
+def load_match_params(domain: str = "postings", path: str = CONFIG_PATH,
+                      taxonomy_path: str = "taxonomy.json") -> dict:
     """
     Read the validated matching configuration for one text domain.
 
@@ -43,7 +80,8 @@ def load_match_params(domain: str = "postings", path: str = CONFIG_PATH) -> dict
 
     There is deliberately no fallback default. The old hardcoded 0.80 scored
     precision 0.20 on the labeled set, so a caller that cannot state validated
-    parameters should fail rather than quietly produce noise.
+    parameters should fail rather than quietly produce noise. For the same
+    reason, parameters swept against a different taxonomy are refused outright.
     """
     if domain not in DOMAINS:
         raise ValueError(f"unknown domain {domain!r}; expected one of {DOMAINS}")
@@ -55,6 +93,8 @@ def load_match_params(domain: str = "postings", path: str = CONFIG_PATH) -> dict
             f"{path} not found. Run validate.py first -- it sweeps the matching "
             "parameters against the labeled sets and writes the winners here."
         ) from None
+
+    _check_taxonomy_matches(cfg, path, taxonomy_path)
 
     section = cfg.get(domain)
     if section is None:

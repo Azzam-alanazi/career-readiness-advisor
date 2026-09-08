@@ -3,9 +3,13 @@
 *.env
 !.env.example
 
-# Cached raw API payloads. Regenerable, ~1MB and growing per collection run,
-# and they duplicate posting text that already lives in the CSVs.
-test/raw_responses/
+# test/raw_responses/ is deliberately NOT ignored. The cached payloads are the
+# only evidence for the English-only sampling finding published in
+# CAREER_PROJECT_SPEC.md, and for the job_country/job_location filter numbers in
+# CHANGELOG.md. Regenerating them costs API quota and would not reproduce the
+# same result set, so they are committed as evidence rather than as build
+# output. Verified free of credentials before committing: the API key travels in
+# a request header and does not appear in any response body.
 
 # Virtualenv. This project's is deliberately outside the repo, at
 # ~/.venvs/skillgap -- torch is ~2.5GB and this folder is OneDrive-synced.

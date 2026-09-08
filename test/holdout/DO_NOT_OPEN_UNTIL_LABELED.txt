@@ -1,0 +1,8 @@
+ai_labels_manual_validation.csv holds the AI-generated labels for the five
+postings in ../manual_validation.csv.
+
+Reading it before you finish labelling destroys the only independent check
+on those labels -- anchoring is not something you can decide not to do.
+
+Drawn with seed 20260905 from the 15 postings that carry AI
+labels and are still in the collected set.

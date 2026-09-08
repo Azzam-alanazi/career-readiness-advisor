@@ -5,6 +5,138 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-08 — Repo recovery: provenance, guards, lost data
+
+Follows an audit of the repo. No parameters changed, nothing relabelled, and
+`validate.py` was deliberately **not** re-run — `config.json` still holds the
+figures swept on 2026-09-05.
+
+### Recovered — posting id 2, which had vanished without a record
+
+Original id 2 (Client of MENA Consultant, Naukrigulf, 1090 chars) was in
+neither `labeled_postings.csv` nor `labeled_postings_excluded.csv`, and its URL
+appeared nowhere in the repo.
+
+It was released from the excluded file when the floor moved 1200 → 1000, on the
+assumption collection would re-fetch it. Collection never did: Business Analyst
+was already at target, so the top-up skipped that career entirely. The row fell
+between the two steps and left no exclusion record — the one failure mode the
+excluded file exists to prevent.
+
+Rebuilt from `raw_responses/business_analyst_p0.json` rather than from a CSV
+copy, so it carries what the API actually returned, including the `job_title`
+(*"Business Analyst (SAP Engagement)"*) that the original row predated. Verified
+against `screen()` before restoring: it passes the current 900-char rule. Given
+a fresh id (**39**), never a recycled one.
+
+All 25 original postings are now in one file or the other. Business Analyst sits
+at 6, as does ERP Consultant.
+
+### Added — provenance for the taxonomy and the validation baseline
+
+Both lived only in `~/Downloads` and could not be rebuilt from the repo:
+
+| file | what it is |
+|---|---|
+| `skillgap/real_skill_taxonomy_90.csv` | source `taxonomy.json` was generated from |
+| `test/labeled_postings_esco_taxonomy.csv` | AI-generated labels; the baseline the 5 manual labels get compared against |
+
+Verified the committed source still regenerates the live taxonomy: same 90 ids,
+same English labels.
+
+### Added — `test/raw_responses/` is now committed, not ignored
+
+18 cached payloads, 888 KB. They are the sole evidence for claims published in
+`CAREER_PROJECT_SPEC.md` and this file: the 47 re-admitted postings, the 85-of-158
+null `job_country` count, and *"across all 98 cached listings, not one Arabic
+character"* — which is what makes the English-only finding a property of the
+market rather than of the filter. Ignoring them left those claims unverifiable
+by anyone cloning the repo, and re-running collection would neither reproduce the
+same result set nor be free.
+
+Scanned before committing: the API key travels in a request header and appears
+in no response body. The only matches for credential-ish words are job text
+("authorization roles", "token expiry"). The echoed `parameters` block carries
+the query and country, no key.
+
+Worth noting from those payloads: the request parameters record
+`"language": "ar"`. The endpoint was asked for Arabic and returned English
+anyway — further support for the English-only finding.
+
+### Added — ids for the 9 excluded rows that had none
+
+Collection-time rejects were written with an empty `id`, so they could not be
+referenced or joined. Now **40–48**, continuing past every id either file has
+used. No existing id was touched and no collisions exist.
+
+### Added — `StaleConfigError`, the guard for the audit's worst finding
+
+`load_match_params()` now refuses parameters swept against a different taxonomy
+than the one loaded, comparing `config.json`'s `taxonomy_skills` against
+`taxonomy.json`.
+
+The failure it prevents had already happened. With `config.json` holding
+parameters from the 19-entry taxonomy and `taxonomy.json` swapped to 90 entries,
+`demo.py` ran to completion and reported **0% readiness with two skills
+detected**. No crash, no warning. Measured cause, over 301 real chunks:
+
+| taxonomy | clear threshold | also clear `margin=0.03` | median top1−top2 gap | gaps < 0.03 |
+|---|---|---|---|---|
+| 19-entry | 218 | 66 | 0.0145 | 77% |
+| 90-entry | 234 | **30** | 0.0075 | **90%** |
+
+A denser taxonomy packs near-synonyms closer — `SK01 Requirements analysis`
+against `SK02 Requirements elicitation` — so a margin measured on 19 skills
+discards ~87% of qualifying chunks on 90. A threshold and a margin are only
+meaningful relative to the label set they were swept over.
+
+`demo.py` now raises instead of printing a plausible zero.
+
+### Changed — the two `labeled_postings.csv` files no longer collide
+
+`skillgap/labeled_postings.csv` (the 19-taxonomy starter scaffold, 3 labelled
+rows using ids that no longer exist) is now
+`skillgap/archive/labeled_postings_starter19.csv`, with an `archive/README.md`
+explaining why it is kept: **every F1 in this changelog was measured on those
+three rows**, so the evaluation chapter is not reproducible without them. It also
+holds the only Arabic posting collected anywhere in the project.
+
+`validate.py`'s `POSTINGS_CSV` now points at `../test/labeled_postings.csv`, the
+real corpus. **The 5 postings being hand-labelled are in
+`../test/manual_validation.csv`**, so those labels need merging into the corpus —
+or that one constant repointing — before a sweep will see them.
+
+### Changed — `requirements.txt` completed and pinned
+
+`requests` and `python-dotenv` were imported by `collect_postings.py` and
+declared nowhere. `transformers` was unlisted despite the stack depending on its
+major version. Everything is now pinned to the versions the recorded results were
+produced with: sentence-transformers 6.0.1, transformers 5.16.1, torch 2.13.0,
+numpy 2.5.2, scipy 1.16.3, requests 2.34.2, python-dotenv 1.2.3.
+
+### Rewritten — `README.md`
+
+It described a system that no longer exists: "Starter taxonomy has 19 skills",
+Known Limitations discussing `accounting`, `powerbi`, `problem_solving` and
+other ids absent from the current taxonomy, and an F1 table presented as current.
+
+The rewrite leads with the fact that the engine will not run and why, states that
+every recorded F1 rests on 3 postings and 11 labels, and adds the two constants
+nobody has justified: `split_chunks(min_len=15)`, which decides what becomes a
+chunk at all and appears in no session note, and `analyze_gap(min_demand=0.15)`,
+flagged as a magic number in session 2 and never swept.
+
+### Still open
+
+- **No labels anywhere.** 27 postings and 16 courses collected, zero labelled.
+  Phase 0's gate was measured on 3 postings, against the spec's 20–30.
+- `config.json` is stale by design until a sweep runs against the 90-entry
+  taxonomy. The guard makes that loud instead of silent.
+- Business Analyst and ERP Consultant hold 6 postings, the others 5.
+- Whether the archived starter set should be remapped onto SK-codes or retired.
+
+---
+
 ## 2026-09-05 — Phase 0 collection closed: truncation check
 
 ### Added — `looks_truncated()`, independent of length

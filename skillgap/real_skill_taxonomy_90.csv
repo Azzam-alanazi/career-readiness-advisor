@@ -1,0 +1,91 @@
+skill_id,taxonomy_skill
+SK01,Requirements analysis
+SK02,Requirements elicitation
+SK03,Business process analysis
+SK04,Business process modelling
+SK05,Functional specifications
+SK06,Stakeholder management
+SK07,Workshop facilitation
+SK08,Documentation management
+SK09,Project coordination
+SK10,Agile/Scrum
+SK11,User acceptance testing
+SK12,Software testing
+SK13,Data analysis
+SK14,Data visualization
+SK15,Data modelling
+SK16,Database management
+SK17,SQL
+SK18,ETL / data integration
+SK19,Data quality management
+SK20,Data migration
+SK21,Business intelligence
+SK22,Machine learning
+SK23,Artificial intelligence
+SK24,Programming
+SK25,Python programming
+SK26,C/C++ programming
+SK27,PHP programming
+SK28,JavaScript programming
+SK29,TypeScript programming
+SK30,Web application development
+SK31,Web development
+SK32,API development
+SK33,REST APIs
+SK34,Frontend development
+SK35,Backend development
+SK36,Mobile application development
+SK37,Responsive web design
+SK38,Accessibility
+SK39,Internationalization / localization
+SK40,Software architecture
+SK41,Cloud computing
+SK42,DevOps
+SK43,Continuous integration / continuous delivery
+SK44,Version control
+SK45,Build automation
+SK46,Linux administration
+SK47,Windows administration
+SK48,Network administration
+SK49,Network troubleshooting
+SK50,Active Directory
+SK51,IT infrastructure deployment
+SK52,Technical support
+SK53,Help desk / service desk
+SK54,Incident management
+SK55,Problem management
+SK56,Root cause analysis
+SK57,Application support
+SK58,IT service management (ITIL)
+SK59,Service-level management
+SK60,Remote support
+SK61,Hardware maintenance
+SK62,IT asset management
+SK63,Patch management
+SK64,Backup and recovery
+SK65,IT security
+SK66,Identity and access management
+SK67,Security monitoring
+SK68,Data protection
+SK69,Change management
+SK70,ERP systems
+SK71,SAP configuration
+SK72,Oracle ERP
+SK73,ERP implementation
+SK74,ERP integration
+SK75,ERP process optimization
+SK76,ERP user training
+SK77,Financial management processes
+SK78,Procurement processes
+SK79,Supply chain management
+SK80,Human resources management
+SK81,Enterprise application integration
+SK82,Middleware
+SK83,Reporting
+SK84,Technical problem solving
+SK85,Communication
+SK86,Customer service
+SK87,Teamwork
+SK88,Mentoring
+SK89,Quality assurance
+SK90,Security testing

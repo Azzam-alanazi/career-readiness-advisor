@@ -1,6 +1,12 @@
-sentence-transformers>=3.0.0
-numpy>=1.24
-torch>=2.0
+# Pinned to the versions the recorded results were produced with. The numbers in
+# CHANGELOG.md and config.json come from this exact stack; an unpinned install
+# resolves to whatever is current and may not reproduce them.
+
+# --- engine (skillgap/) ---------------------------------------------------
+sentence-transformers==6.0.1
+transformers==5.16.1
+torch==2.13.0
+numpy==2.5.2
 
 # Pinned, not a preference. scipy 1.18.x ships scipy/linalg/_batched_linalg,
 # a native DLL that Windows Application Control (Smart App Control) blocks:
@@ -11,3 +17,9 @@ torch>=2.0
 # predates that file and imports cleanly. Revisit if the policy changes or a
 # signed 1.18+ build ships.
 scipy==1.16.3
+
+# --- collection (test/collect_postings.py) --------------------------------
+# Only needed to gather new postings. The engine and validate.py do not import
+# these, but collect_postings.py fails at import without them.
+requests==2.34.2
+python-dotenv==1.2.3

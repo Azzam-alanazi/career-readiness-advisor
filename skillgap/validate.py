@@ -32,13 +32,26 @@ import numpy as np
 from skillgap import Embedder, Taxonomy, split_chunks, save_config
 
 MODEL = "intfloat/multilingual-e5-base"
-POSTINGS_CSV = "labeled_postings.csv"
+# The collected corpus lives under test/, where collect_postings.py writes it.
+# It used to be a same-named file in this directory, which made two different
+# datasets share one filename -- the 19-taxonomy starter scaffold and the real
+# corpus. The scaffold is now archive/labeled_postings_starter19.csv and is not
+# read by anything.
+POSTINGS_CSV = "../test/labeled_postings.csv"
 COURSES_CSV = "labeled_courses.csv"
 SKILL_SEP = ";"
 
 # Column holding the text to match. Both CSVs share a structure; only this
 # column is named for its domain.
 TEXT_COLUMNS = ("posting_text", "course_text", "text")
+
+# Column holding the labels. `skill_ids` is the original name; files produced
+# against the 90-entry taxonomy carry `taxonomy_skill_ids` instead and leave
+# `skill_ids` empty. Whichever column actually has values wins, so a stale
+# empty column cannot silently zero out the labeled set -- an empty labels
+# column reads as "nothing labeled yet", which is exactly the failure that
+# looks like a model problem rather than a wiring problem.
+LABEL_COLUMNS = ("skill_ids", "taxonomy_skill_ids", "labels")
 
 # The gate from the project spec. Below this, stop and fix the model or taxonomy.
 MIN_F1 = 0.60
@@ -59,12 +72,17 @@ MIN_PLATEAU = 0.01
 
 # Phrases that avoid the taxonomy's exact wording. If these miss, the model
 # is doing keyword matching in disguise, not semantics.
+# Retargeted to the 90-entry taxonomy's ids. The old spreadsheet/Excel probe was
+# dropped rather than repointed: that taxonomy has no spreadsheet entry at all,
+# so there is nothing for it to rank first, and pointing it at "Data analysis"
+# would turn a real coverage gap into a passing test.
 SYNONYM_PROBES = [
-    ("Experience writing queries against relational databases", "sql"),
-    ("Must be proficient with spreadsheets and pivot tables", "excel"),
-    ("Protect systems against network intrusion and threats", "cybersecurity"),
-    ("Strong verbal and written skills for client presentations", "communication"),
-    ("Preparing balance sheets and year-end financial statements", "financial_reporting"),
+    ("Experience writing queries against relational databases", "SK17"),
+    ("Protect systems against network intrusion and threats", "SK65"),
+    ("Strong verbal and written skills for client presentations", "SK85"),
+    ("Preparing balance sheets and year-end financial statements", "SK77"),
+    ("Diagnosing why a user's laptop will not connect to the domain", "SK49"),
+    ("Configuring purchase orders and vendor master data in SAP", "SK71"),
 ]
 
 
@@ -76,7 +94,7 @@ def load_labeled(path: str, valid_ids: set[str]) -> tuple[list, int]:
     """
     Read a hand-labeled set. Returns (rows, pending_count).
 
-    A row with text but no skill_ids is treated as not yet labeled and skipped,
+    A row with text but no labels is treated as not yet labeled and skipped,
     not as an error -- that is what an unfilled template row looks like, and
     the count is reported so a forgotten row cannot hide.
 
@@ -91,29 +109,42 @@ def load_labeled(path: str, valid_ids: set[str]) -> tuple[list, int]:
     rows, bad, pending = [], [], 0
     # utf-8-sig so the file round-trips through Excel without mangling Arabic.
     with f.open(encoding="utf-8-sig", newline="") as fh:
-        reader = csv.DictReader(fh)
-        cols = reader.fieldnames or []
-        text_col = next((c for c in TEXT_COLUMNS if c in cols), None)
-        if text_col is None:
-            sys.exit(f"{path}: no text column. Expected one of {TEXT_COLUMNS}, "
-                     f"found {cols}.")
+        all_rows = list(csv.DictReader(fh))
+        cols = list(all_rows[0].keys()) if all_rows else []
 
-        for lineno, row in enumerate(reader, start=2):
-            text = (row.get(text_col) or "").strip()
-            raw = (row.get("skill_ids") or "").strip()
-            if not text and not raw:
-                continue  # blank scaffold row
-            if text and not raw:
-                pending += 1
-                continue  # written, not yet labeled
-            ids = {s.strip() for s in raw.split(SKILL_SEP) if s.strip()}
-            unknown = ids - valid_ids
-            if unknown:
-                bad.append(f"  line {lineno}: unknown skill_id(s) {sorted(unknown)}")
-            elif not text:
-                bad.append(f"  line {lineno}: has skill_ids but no {text_col}")
-            else:
-                rows.append((text, ids))
+    text_col = next((c for c in TEXT_COLUMNS if c in cols), None)
+    if text_col is None:
+        sys.exit(f"{path}: no text column. Expected one of {TEXT_COLUMNS}, "
+                 f"found {cols}.")
+
+    present = [c for c in LABEL_COLUMNS if c in cols]
+    populated = [c for c in present if any((r.get(c) or "").strip() for r in all_rows)]
+    label_col = populated[0] if populated else (present[0] if present else None)
+    if label_col is None:
+        sys.exit(f"{path}: no labels column. Expected one of {LABEL_COLUMNS}, "
+                 f"found {cols}.")
+    if len(populated) > 1:
+        print(f"  NOTE: {path} has labels in {populated}; using {label_col!r}")
+    elif populated and present != populated:
+        print(f"  using labels from {label_col!r} "
+              f"(empty: {[c for c in present if c not in populated]})")
+
+    for lineno, row in enumerate(all_rows, start=2):
+        text = (row.get(text_col) or "").strip()
+        raw = (row.get(label_col) or "").strip()
+        if not text and not raw:
+            continue  # blank scaffold row
+        if text and not raw:
+            pending += 1
+            continue  # written, not yet labeled
+        ids = {s.strip() for s in raw.split(SKILL_SEP) if s.strip()}
+        unknown = ids - valid_ids
+        if unknown:
+            bad.append(f"  line {lineno}: unknown skill_id(s) {sorted(unknown)}")
+        elif not text:
+            bad.append(f"  line {lineno}: has no {text_col}")
+        else:
+            rows.append((text, ids))
 
     if bad:
         sys.exit(f"{path} has problems:\n" + "\n".join(bad) +

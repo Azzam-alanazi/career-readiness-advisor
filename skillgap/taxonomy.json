@@ -1,23 +1,544 @@
 {
   "skills": [
-    {"id": "sql", "en": "SQL and relational database querying", "ar": "قواعد البيانات SQL", "category": "technical"},
-    {"id": "python", "en": "Python programming", "ar": "برمجة بايثون", "category": "technical"},
-    {"id": "java", "en": "Java programming", "ar": "برمجة جافا", "category": "technical"},
-    {"id": "excel", "en": "Microsoft Excel and spreadsheets", "ar": "مايكروسوفت اكسل وجداول البيانات", "category": "technical"},
-    {"id": "powerbi", "en": "Power BI and data visualization dashboards", "ar": "باور بي آي ولوحات المعلومات", "category": "technical"},
-    {"id": "erp", "en": "ERP systems such as SAP or Oracle", "ar": "أنظمة تخطيط موارد المؤسسات", "category": "technical"},
-    {"id": "networking", "en": "Computer networking and TCP IP", "ar": "شبكات الحاسب", "category": "technical"},
-    {"id": "cybersecurity", "en": "Information security and cybersecurity", "ar": "أمن المعلومات والأمن السيبراني", "category": "technical"},
-    {"id": "requirements", "en": "Requirements gathering and business analysis", "ar": "تحليل الأعمال وجمع المتطلبات", "category": "technical"},
-    {"id": "process_modeling", "en": "Business process modeling and BPMN", "ar": "نمذجة العمليات", "category": "technical"},
-    {"id": "project_mgmt", "en": "Project management and planning", "ar": "إدارة المشاريع والتخطيط", "category": "technical"},
-    {"id": "accounting", "en": "Accounting and bookkeeping", "ar": "المحاسبة ومسك الدفاتر", "category": "technical"},
-    {"id": "financial_reporting", "en": "Financial statement preparation", "ar": "إعداد القوائم المالية", "category": "technical"},
-    {"id": "digital_marketing", "en": "Digital marketing and social media campaigns", "ar": "التسويق الرقمي ووسائل التواصل", "category": "technical"},
-    {"id": "hr_ops", "en": "Human resources operations and recruitment", "ar": "الموارد البشرية والتوظيف", "category": "technical"},
-    {"id": "communication", "en": "Communication and presentation skills", "ar": "مهارات التواصل والعرض", "category": "soft"},
-    {"id": "teamwork", "en": "Teamwork and collaboration", "ar": "العمل الجماعي", "category": "soft"},
-    {"id": "problem_solving", "en": "Analytical thinking and problem solving", "ar": "التفكير التحليلي وحل المشكلات", "category": "soft"},
-    {"id": "english", "en": "English language proficiency", "ar": "إتقان اللغة الإنجليزية", "category": "soft"}
+    {
+      "id": "SK01",
+      "en": "Requirements analysis",
+      "ar": "تحليل المتطلبات",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK02",
+      "en": "Requirements elicitation",
+      "ar": "استخلاص المتطلبات من أصحاب المصلحة",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK03",
+      "en": "Business process analysis",
+      "ar": "تحليل عمليات الأعمال",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK04",
+      "en": "Business process modelling",
+      "ar": "نمذجة عمليات الأعمال",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK05",
+      "en": "Functional specifications",
+      "ar": "المواصفات الوظيفية",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK06",
+      "en": "Stakeholder management",
+      "ar": "إدارة أصحاب المصلحة",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK07",
+      "en": "Workshop facilitation",
+      "ar": "تيسير ورش العمل",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK08",
+      "en": "Documentation management",
+      "ar": "إدارة الوثائق والتوثيق",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK09",
+      "en": "Project coordination",
+      "ar": "تنسيق المشاريع",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK10",
+      "en": "Agile/Scrum",
+      "ar": "المنهجيات الرشيقة وسكرم",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK11",
+      "en": "User acceptance testing",
+      "ar": "اختبار قبول المستخدم",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK12",
+      "en": "Software testing",
+      "ar": "اختبار البرمجيات",
+      "category": "software_development"
+    },
+    {
+      "id": "SK13",
+      "en": "Data analysis",
+      "ar": "تحليل البيانات",
+      "category": "data"
+    },
+    {
+      "id": "SK14",
+      "en": "Data visualization",
+      "ar": "تصور البيانات ولوحات المعلومات",
+      "category": "data"
+    },
+    {
+      "id": "SK15",
+      "en": "Data modelling",
+      "ar": "نمذجة البيانات",
+      "category": "data"
+    },
+    {
+      "id": "SK16",
+      "en": "Database management",
+      "ar": "إدارة قواعد البيانات",
+      "category": "data"
+    },
+    {
+      "id": "SK17",
+      "en": "SQL",
+      "ar": "لغة الاستعلام الهيكلية SQL",
+      "category": "data"
+    },
+    {
+      "id": "SK18",
+      "en": "ETL / data integration",
+      "ar": "استخراج البيانات وتحويلها وتحميلها وتكاملها",
+      "category": "data"
+    },
+    {
+      "id": "SK19",
+      "en": "Data quality management",
+      "ar": "إدارة جودة البيانات",
+      "category": "data"
+    },
+    {
+      "id": "SK20",
+      "en": "Data migration",
+      "ar": "ترحيل البيانات",
+      "category": "data"
+    },
+    {
+      "id": "SK21",
+      "en": "Business intelligence",
+      "ar": "ذكاء الأعمال",
+      "category": "data"
+    },
+    {
+      "id": "SK22",
+      "en": "Machine learning",
+      "ar": "تعلم الآلة",
+      "category": "data"
+    },
+    {
+      "id": "SK23",
+      "en": "Artificial intelligence",
+      "ar": "الذكاء الاصطناعي",
+      "category": "data"
+    },
+    {
+      "id": "SK24",
+      "en": "Programming",
+      "ar": "البرمجة",
+      "category": "software_development"
+    },
+    {
+      "id": "SK25",
+      "en": "Python programming",
+      "ar": "برمجة بايثون",
+      "category": "software_development"
+    },
+    {
+      "id": "SK26",
+      "en": "C/C++ programming",
+      "ar": "برمجة سي وسي بلس بلس",
+      "category": "software_development"
+    },
+    {
+      "id": "SK27",
+      "en": "PHP programming",
+      "ar": "برمجة بي إتش بي",
+      "category": "software_development"
+    },
+    {
+      "id": "SK28",
+      "en": "JavaScript programming",
+      "ar": "برمجة جافاسكريبت",
+      "category": "software_development"
+    },
+    {
+      "id": "SK29",
+      "en": "TypeScript programming",
+      "ar": "برمجة تايب سكريبت",
+      "category": "software_development"
+    },
+    {
+      "id": "SK30",
+      "en": "Web application development",
+      "ar": "تطوير تطبيقات الويب",
+      "category": "software_development"
+    },
+    {
+      "id": "SK31",
+      "en": "Web development",
+      "ar": "تطوير الويب",
+      "category": "software_development"
+    },
+    {
+      "id": "SK32",
+      "en": "API development",
+      "ar": "تطوير واجهات برمجة التطبيقات",
+      "category": "software_development"
+    },
+    {
+      "id": "SK33",
+      "en": "REST APIs",
+      "ar": "واجهات REST البرمجية",
+      "category": "software_development"
+    },
+    {
+      "id": "SK34",
+      "en": "Frontend development",
+      "ar": "تطوير الواجهات الأمامية",
+      "category": "software_development"
+    },
+    {
+      "id": "SK35",
+      "en": "Backend development",
+      "ar": "تطوير الواجهات الخلفية",
+      "category": "software_development"
+    },
+    {
+      "id": "SK36",
+      "en": "Mobile application development",
+      "ar": "تطوير تطبيقات الهاتف المحمول",
+      "category": "software_development"
+    },
+    {
+      "id": "SK37",
+      "en": "Responsive web design",
+      "ar": "تصميم الويب المتجاوب",
+      "category": "software_development"
+    },
+    {
+      "id": "SK38",
+      "en": "Accessibility",
+      "ar": "إتاحة الوصول لذوي الإعاقة",
+      "category": "software_development"
+    },
+    {
+      "id": "SK39",
+      "en": "Internationalization / localization",
+      "ar": "التدويل والتوطين",
+      "category": "software_development"
+    },
+    {
+      "id": "SK40",
+      "en": "Software architecture",
+      "ar": "معمارية البرمجيات",
+      "category": "software_development"
+    },
+    {
+      "id": "SK41",
+      "en": "Cloud computing",
+      "ar": "الحوسبة السحابية",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK42",
+      "en": "DevOps",
+      "ar": "ثقافة ديف أوبس وتكامل التطوير والتشغيل",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK43",
+      "en": "Continuous integration / continuous delivery",
+      "ar": "التكامل المستمر والتسليم المستمر",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK44",
+      "en": "Version control",
+      "ar": "إدارة إصدارات الشيفرة البرمجية",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK45",
+      "en": "Build automation",
+      "ar": "أتمتة بناء البرمجيات",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK46",
+      "en": "Linux administration",
+      "ar": "إدارة أنظمة لينكس",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK47",
+      "en": "Windows administration",
+      "ar": "إدارة أنظمة ويندوز",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK48",
+      "en": "Network administration",
+      "ar": "إدارة الشبكات",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK49",
+      "en": "Network troubleshooting",
+      "ar": "استكشاف أعطال الشبكات وإصلاحها",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK50",
+      "en": "Active Directory",
+      "ar": "خدمة الدليل النشط Active Directory",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK51",
+      "en": "IT infrastructure deployment",
+      "ar": "نشر البنية التحتية لتقنية المعلومات",
+      "category": "infrastructure"
+    },
+    {
+      "id": "SK52",
+      "en": "Technical support",
+      "ar": "الدعم الفني",
+      "category": "it_support"
+    },
+    {
+      "id": "SK53",
+      "en": "Help desk / service desk",
+      "ar": "مكتب المساعدة ومكتب الخدمة",
+      "category": "it_support"
+    },
+    {
+      "id": "SK54",
+      "en": "Incident management",
+      "ar": "إدارة الحوادث",
+      "category": "it_support"
+    },
+    {
+      "id": "SK55",
+      "en": "Problem management",
+      "ar": "إدارة المشكلات",
+      "category": "it_support"
+    },
+    {
+      "id": "SK56",
+      "en": "Root cause analysis",
+      "ar": "تحليل الأسباب الجذرية",
+      "category": "it_support"
+    },
+    {
+      "id": "SK57",
+      "en": "Application support",
+      "ar": "دعم التطبيقات",
+      "category": "it_support"
+    },
+    {
+      "id": "SK58",
+      "en": "IT service management (ITIL)",
+      "ar": "إدارة خدمات تقنية المعلومات ITIL",
+      "category": "it_support"
+    },
+    {
+      "id": "SK59",
+      "en": "Service-level management",
+      "ar": "إدارة مستويات الخدمة",
+      "category": "it_support"
+    },
+    {
+      "id": "SK60",
+      "en": "Remote support",
+      "ar": "الدعم الفني عن بُعد",
+      "category": "it_support"
+    },
+    {
+      "id": "SK61",
+      "en": "Hardware maintenance",
+      "ar": "صيانة الأجهزة",
+      "category": "it_support"
+    },
+    {
+      "id": "SK62",
+      "en": "IT asset management",
+      "ar": "إدارة أصول تقنية المعلومات",
+      "category": "it_support"
+    },
+    {
+      "id": "SK63",
+      "en": "Patch management",
+      "ar": "إدارة التحديثات والتصحيحات الأمنية",
+      "category": "it_support"
+    },
+    {
+      "id": "SK64",
+      "en": "Backup and recovery",
+      "ar": "النسخ الاحتياطي واستعادة البيانات",
+      "category": "it_support"
+    },
+    {
+      "id": "SK65",
+      "en": "IT security",
+      "ar": "أمن تقنية المعلومات",
+      "category": "security"
+    },
+    {
+      "id": "SK66",
+      "en": "Identity and access management",
+      "ar": "إدارة الهوية والوصول",
+      "category": "security"
+    },
+    {
+      "id": "SK67",
+      "en": "Security monitoring",
+      "ar": "مراقبة الأمن السيبراني",
+      "category": "security"
+    },
+    {
+      "id": "SK68",
+      "en": "Data protection",
+      "ar": "حماية البيانات والخصوصية",
+      "category": "security"
+    },
+    {
+      "id": "SK69",
+      "en": "Change management",
+      "ar": "إدارة التغيير",
+      "category": "it_support"
+    },
+    {
+      "id": "SK70",
+      "en": "ERP systems",
+      "ar": "أنظمة تخطيط موارد المؤسسات",
+      "category": "erp"
+    },
+    {
+      "id": "SK71",
+      "en": "SAP configuration",
+      "ar": "إعداد وتهيئة نظام ساب SAP",
+      "category": "erp"
+    },
+    {
+      "id": "SK72",
+      "en": "Oracle ERP",
+      "ar": "نظام أوراكل لتخطيط موارد المؤسسات",
+      "category": "erp"
+    },
+    {
+      "id": "SK73",
+      "en": "ERP implementation",
+      "ar": "تطبيق أنظمة تخطيط موارد المؤسسات",
+      "category": "erp"
+    },
+    {
+      "id": "SK74",
+      "en": "ERP integration",
+      "ar": "تكامل أنظمة تخطيط موارد المؤسسات",
+      "category": "erp"
+    },
+    {
+      "id": "SK75",
+      "en": "ERP process optimization",
+      "ar": "تحسين عمليات أنظمة تخطيط الموارد",
+      "category": "erp"
+    },
+    {
+      "id": "SK76",
+      "en": "ERP user training",
+      "ar": "تدريب مستخدمي أنظمة تخطيط الموارد",
+      "category": "erp"
+    },
+    {
+      "id": "SK77",
+      "en": "Financial management processes",
+      "ar": "عمليات الإدارة المالية",
+      "category": "erp"
+    },
+    {
+      "id": "SK78",
+      "en": "Procurement processes",
+      "ar": "عمليات المشتريات",
+      "category": "erp"
+    },
+    {
+      "id": "SK79",
+      "en": "Supply chain management",
+      "ar": "إدارة سلسلة الإمداد",
+      "category": "erp"
+    },
+    {
+      "id": "SK80",
+      "en": "Human resources management",
+      "ar": "إدارة الموارد البشرية",
+      "category": "erp"
+    },
+    {
+      "id": "SK81",
+      "en": "Enterprise application integration",
+      "ar": "تكامل تطبيقات المؤسسة",
+      "category": "erp"
+    },
+    {
+      "id": "SK82",
+      "en": "Middleware",
+      "ar": "البرمجيات الوسيطة",
+      "category": "erp"
+    },
+    {
+      "id": "SK83",
+      "en": "Reporting",
+      "ar": "إعداد التقارير",
+      "category": "business_analysis"
+    },
+    {
+      "id": "SK84",
+      "en": "Technical problem solving",
+      "ar": "حل المشكلات التقنية",
+      "category": "professional"
+    },
+    {
+      "id": "SK85",
+      "en": "Communication",
+      "ar": "مهارات التواصل",
+      "category": "professional"
+    },
+    {
+      "id": "SK86",
+      "en": "Customer service",
+      "ar": "خدمة العملاء",
+      "category": "professional"
+    },
+    {
+      "id": "SK87",
+      "en": "Teamwork",
+      "ar": "العمل الجماعي",
+      "category": "professional"
+    },
+    {
+      "id": "SK88",
+      "en": "Mentoring",
+      "ar": "التوجيه والإرشاد المهني",
+      "category": "professional"
+    },
+    {
+      "id": "SK89",
+      "en": "Quality assurance",
+      "ar": "ضمان الجودة",
+      "category": "software_development"
+    },
+    {
+      "id": "SK90",
+      "en": "Security testing",
+      "ar": "اختبار الاختراق والأمن",
+      "category": "security"
+    }
   ]
 }
