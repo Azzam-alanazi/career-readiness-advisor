@@ -47,13 +47,35 @@ with word-averaging embeddings produced precision of 0.31 and ranked "HR
 operations" above "cybersecurity" for a network-security phrase.
 
 1. Run `validate.py` with `multilingual-e5-base`
-2. Expand `LABELED` in that file to 20–30 hand-labeled postings
+2. Hand-label **15 postings** in `test/labeled_postings.csv`
 3. Re-run the sweep; pick the threshold with best F1
 4. **If best F1 < 0.6, stop.** Fix the model or taxonomy. Do not build on noise.
 
 Record the precision/recall table. It goes in the evaluation chapter.
 
 Nothing in Phase 1+ starts until this passes.
+
+### Why 15 and not 20–30
+
+The original 20–30 assumed labelling could be shared with a model. It cannot:
+AI-assisted labelling was measured against hand annotation on five postings and
+reached **Jaccard 0.61** (precision 0.77, recall 0.74) — close enough to look
+usable, far enough off to be wrong in ways that matter. It is documented in
+`skillgap/CHANGELOG.md` and rejected as ground truth. So every label is hand-written,
+and the budget is a person's afternoon rather than a pipeline's throughput.
+
+15 is what that budget buys at roughly 15–20 minutes per posting, and it is
+three per career across the five target careers — enough that no career rests on
+a single posting. It is chosen for reachability, and the cost is real and should
+be stated in the evaluation chapter rather than buried: at 15 postings a single
+label flipping still moves F1 by roughly two points, confidence intervals on any
+reported figure are wide, and the sweep can overfit a threshold to this specific
+sample. The plateau-width criterion in `validate.py` exists to blunt that, not to
+remove it.
+
+**15 is a floor, not a target.** Label more when there is time; the numbers only
+get more trustworthy. What must not happen is closing the gate on fewer, or
+topping up the set with machine labels to reach the count.
 
 ## Phase 1 — data
 5. CSV ingestion for curated Saudi job postings (columns: career_category,

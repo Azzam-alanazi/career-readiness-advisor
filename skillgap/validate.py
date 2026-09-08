@@ -56,6 +56,11 @@ LABEL_COLUMNS = ("skill_ids", "taxonomy_skill_ids", "labels")
 # The gate from the project spec. Below this, stop and fix the model or taxonomy.
 MIN_F1 = 0.60
 
+# Hand-labelled postings the spec requires before the gate can close. Lowered
+# from 20-30 once AI-assisted labelling was measured at Jaccard 0.61 and
+# rejected, which made every label hand-written. A floor, not a target.
+GATE_MIN_POSTINGS = 15
+
 # Display grid only. The reported argmax is NOT taken from this list -- see
 # exact_argmax(). A grid can only find a peak it happens to land on, and an
 # earlier version of this file missed the true optimum at 0.885 because the
@@ -391,8 +396,9 @@ def main():
     if not postings:
         sys.exit(f"\n{POSTINGS_CSV} has no labeled rows. Fill in posting_text and "
                  f"skill_ids (separated by '{SKILL_SEP}') before running.")
-    if len(postings) < 20:
-        print(f"  NOTE: the spec asks for 20-30 postings. At {len(postings)} the "
+    if len(postings) < GATE_MIN_POSTINGS:
+        print(f"  NOTE: the gate closes at {GATE_MIN_POSTINGS} hand-labelled "
+              f"postings. At {len(postings)} the "
               f"numbers below move a lot when any single label flips.")
 
     print("\n=== Synonym probes ===")

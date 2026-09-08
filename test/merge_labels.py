@@ -58,12 +58,18 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--write", action="store_true",
                     help="apply the merge (default is a dry run)")
+    ap.add_argument("--file", default=MANUAL.name,
+                    help="labelled file to merge (default: manual_validation.csv)")
     args = ap.parse_args()
 
     tax = {s["id"]: s["en"] for s in
            json.loads(TAXONOMY.read_text(encoding="utf-8"))["skills"]}
-    manual, corpus, hold = read(MANUAL), read(CORPUS), read(HOLDOUT)
-    ai_by_id = {r["id"]: r for r in hold}
+    source = HERE / args.file
+    manual, corpus = read(source), read(CORPUS)
+    # The baseline only covers the validation draw. Later batches are ground
+    # truth being built, not a spot check, so a row with no baseline is merged
+    # without a comparison rather than refused.
+    ai_by_id = {r["id"]: r for r in read(HOLDOUT)} if HOLDOUT.exists() else {}
 
     # ---- refuse on anything unlabelled ----------------------------------
     blank = [r["id"] for r in manual if not (r.get("skill_ids") or "").strip()]
@@ -80,8 +86,6 @@ def main() -> None:
             problems.append(f"  id {r['id']}: unknown skill id(s) {unknown}")
         if r["id"] not in {c["id"] for c in corpus}:
             problems.append(f"  id {r['id']}: not present in {CORPUS.name}")
-        if r["id"] not in ai_by_id:
-            problems.append(f"  id {r['id']}: no AI baseline to compare against")
     if problems:
         sys.exit("cannot merge:\n" + "\n".join(problems) +
                  f"\n\nvalid ids are SK01..SK90 (see skillgap/TAXONOMY_REFERENCE.md)")
@@ -91,12 +95,19 @@ def main() -> None:
                 and (r.get("skill_ids") or "").strip()]
 
     # ---- agreement -------------------------------------------------------
-    print(f"{len(manual)} postings labelled, compared against the AI baseline\n")
+    comparable = [r for r in manual if r["id"] in ai_by_id]
+    print(f"{len(manual)} rows labelled in {source.name}; {len(comparable)} have "
+          f"an AI baseline to compare against")
+    if len(comparable) < len(manual):
+        skipped = [r["id"] for r in manual if r["id"] not in ai_by_id]
+        print(f"merged without comparison (no baseline): {', '.join(skipped)}")
+    print()
+
     print(f"{'id':<5}{'career':<24}{'manual':<8}{'ai':<6}{'shared':<8}"
           f"{'prec':<7}{'rec':<7}{'jacc':<7}")
     tot_hit = tot_manual = tot_ai = 0
     macro = []
-    for r in manual:
+    for r in comparable:
         m, a = ids(r["skill_ids"]), ids(ai_by_id[r["id"]]["ai_skill_ids"])
         p, rc, j = prf(m, a)
         macro.append((p, rc, j))
@@ -104,12 +115,14 @@ def main() -> None:
         print(f"{r['id']:<5}{r['career'][:22]:<24}{len(m):<8}{len(a):<6}"
               f"{len(m & a):<8}{p:<7.2f}{rc:<7.2f}{j:<7.2f}")
 
+    if not comparable:
+        print("(no row in this file carries a baseline -- nothing to compare)")
     mp = tot_hit / tot_ai if tot_ai else 0.0
     mr = tot_hit / tot_manual if tot_manual else 0.0
     mj = tot_hit / (tot_manual + tot_ai - tot_hit) if (tot_manual + tot_ai) else 0.0
     print(f"\n{'micro (pooled)':<37}{tot_manual:<8}{tot_ai:<6}{tot_hit:<8}"
           f"{mp:<7.2f}{mr:<7.2f}{mj:<7.2f}")
-    n = len(macro)
+    n = len(macro) or 1
     print(f"{'macro (mean of per-posting)':<37}{'':<8}{'':<6}{'':<8}"
           f"{sum(x[0] for x in macro)/n:<7.2f}{sum(x[1] for x in macro)/n:<7.2f}"
           f"{sum(x[2] for x in macro)/n:<7.2f}")
@@ -118,7 +131,7 @@ def main() -> None:
 
     # ---- where they disagree --------------------------------------------
     print("\n=== disagreements ===")
-    for r in manual:
+    for r in comparable:
         m, a = ids(r["skill_ids"]), ids(ai_by_id[r["id"]]["ai_skill_ids"])
         only_m, only_a = sorted(m - a), sorted(a - m)
         if not (only_m or only_a):
@@ -159,8 +172,8 @@ def main() -> None:
     print(f"\nmerged {len(by_id)} labelled postings into {CORPUS.name} "
           f"({done} of {len(corpus)} rows now carry labels)")
     print(f"backup: {CORPUS.name}.bak")
-    print("\nvalidate.py reads this file. It needs 20-30 labelled postings for the")
-    print("sweep to mean anything -- five is a spot check on the AI, not a gate.")
+    print(f"\nvalidate.py reads this file. The Phase 0 gate closes at 15 "
+          f"hand-labelled postings; {done} are labelled now.")
 
 
 if __name__ == "__main__":

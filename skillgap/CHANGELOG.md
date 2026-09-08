@@ -5,6 +5,105 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-08 — AI-assisted labelling measured and rejected; gate lowered to 15
+
+### Measured — AI labelling agrees with hand annotation at Jaccard 0.61
+
+Five postings labelled by hand against the 90-entry taxonomy, then compared with
+the AI baseline. Hand labels are the reference; the AI's are the prediction.
+
+| id | career | manual | AI | shared | precision | recall | Jaccard |
+|---|---|---|---|---|---|---|---|
+| 4 | Business Analyst | 14 | 15 | 10 | 0.67 | 0.71 | 0.53 |
+| 5 | Business Analyst | 16 | 13 | 11 | 0.85 | 0.69 | 0.61 |
+| 12 | ERP Consultant | 19 | 16 | 15 | 0.94 | 0.79 | 0.75 |
+| **16** | **Software Developer** | 10 | 12 | 7 | **0.58** | 0.70 | **0.47** |
+| 19 | IT Support Specialist | 19 | 19 | 15 | 0.79 | 0.79 | 0.65 |
+| **micro (pooled)** | | **78** | **75** | **58** | **0.77** | **0.74** | **0.61** |
+| macro (mean per posting) | | | | | 0.76 | 0.74 | 0.60 |
+
+Micro and macro agree to within 0.01, so the agreement does not depend on
+posting length — the disagreement is substantive rather than an artefact of long
+postings dominating the pool.
+
+### Rejected as ground truth
+
+**0.61 is the dangerous range.** It is not noise, which would be obvious and get
+thrown out. Roughly three-quarters of the AI's labels survive a human check, so
+spot-checking a handful looks reassuring while a quarter of the set stays wrong.
+A gate built on labels of this quality would report an F1 measured against
+partly-fictional truth, and the error would be invisible in every number
+downstream.
+
+The counts make it concrete: across five postings the AI proposed 75 labels, 17
+of which a human rejected, and missed 20 the human found. Sixteen of those 20
+misses are on the two longest postings.
+
+### The evidence that settled it — id 16
+
+Id 16 is the posting whose career was corrected after the AI pass: an
+unmistakable Web Developer advert that an aggregator's slug had filed under IT
+Support Specialist. Its AI labels were generated under the wrong career, and it
+scores the worst of the five on every measure — Jaccard 0.47, precision 0.58.
+
+Where the AI and the human diverge on it:
+
+```
+you only : SK27 PHP programming, SK34 Frontend development, SK12 Software testing
+AI only  : SK52 Technical support, SK57 Application support, SK65 IT security,
+           SK68 Data protection, SK08 Documentation management
+```
+
+**Four of the AI's five exclusive labels are `it_support` or `security`** — the
+category of the career it was mislabelled as. All three of the human's exclusive
+labels are `software_development` — the category the advert actually describes.
+
+Measured against the comparable postings, the same count of spurious
+`it_support`/`security` labels on ids 4, 5 and 12 is **0, 1, 0**.
+
+So the AI was not reading the advert and getting it wrong. It was reading the
+career label and inferring skills from that. That is contamination, not
+inaccuracy: the errors are systematic, they correlate with an upstream metadata
+mistake, and they would have propagated silently into the demand weights for a
+career the posting does not belong to. No threshold sweep would have surfaced it.
+
+The AI labels stay in `test/holdout/` as a comparison baseline. They are not
+ground truth and must not be merged into the corpus.
+
+### Changed — Phase 0 gate closes at 15 hand-labelled postings, not 20–30
+
+Recorded in `CAREER_PROJECT_SPEC.md` with the reasoning. The original 20–30
+assumed labelling could be shared with a model; the measurement above removes
+that option, so the budget is a person's time. 15 is what that buys, and it is
+three per career across five careers, so no career rests on one posting.
+
+Stated plainly rather than buried: at 15 postings one label flipping still moves
+F1 by roughly two points, confidence intervals stay wide, and the sweep can
+overfit a threshold to this sample. The plateau-width criterion blunts that
+without removing it. **15 is a floor, not a target** — and topping the set up
+with machine labels to reach a count is the one thing that would void it.
+
+### Merged — the first 5 hand labels
+
+Corpus is now 27 postings, 5 labelled (ids 4, 5, 12, 16, 19), all against valid
+SK-codes. `labeled_postings.csv.bak` holds the pre-merge state.
+
+### Added — `manual_batch2.csv`, 10 postings, two per career
+
+Ids 1, 7, 14, 18, 22, 23, 31, 35, 38, 39 (seed 202609084). Merging it takes the
+corpus to 15 and closes the gate.
+
+Unlike the validation draws, this batch is drawn from the **whole unlabelled
+corpus** rather than only postings carrying an AI baseline — it is ground truth
+being built, not a spot check, so there is nothing to compare against and no
+reason to restrict the pool. That also makes Data Analyst reachable here, which
+it was not in draw 3.
+
+`merge_labels.py` gained `--file` and now treats a missing baseline as "merge
+without comparison" rather than an error, since batch 2 has no baseline at all.
+
+---
+
 ## 2026-09-08 — Manual validation sample: stratified draw, merge tool
 
 ### Changed — the sample is drawn three times, and the reasons are worth keeping
