@@ -3,6 +3,9 @@ postings in ../manual_validation.csv.
 
 Reading it before you finish labelling destroys the only independent check
 on those labels -- anchoring is not something you can decide not to do.
+That includes the label counts, which is why draw 1 was retired.
 
-Drawn with seed 20260905 from the 15 postings that carry AI
-labels and are still in the collected set.
+Draw 2, seed 20260908, drawn from the 11 postings that have a
+baseline and were not part of draw 1. archive/ holds draw 1.
+
+merge_labels.py reads this file after you have labelled, not before.
