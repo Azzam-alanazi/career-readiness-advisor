@@ -5,6 +5,103 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-08 — Manual validation sample: stratified draw, merge tool
+
+### Changed — the sample is drawn three times, and the reasons are worth keeping
+
+**Draw 1** (seed 20260905, ids 3, 7, 18, 22, 25) was retired because the script
+printed each posting's AI label count — 10, 10, 10, 12, 19. Knowing roughly how
+many skills to expect anchors a manual pass, and anchoring is not something a
+labeller can decide not to do. Those five are excluded from every later draw
+rather than merely re-randomised; re-drawing one would carry the anchor back in.
+
+**Draw 2** (seed 20260908, ids 4, 5, 11, 14, 39) was a plain random draw over
+the remaining 11. It landed on Business Analyst ×3 and ERP Consultant ×2 — two
+careers out of five, when four were available. Valid random, poor coverage for
+validating a system whose whole output is a cross-career comparison.
+
+**Draw 3** (seed 202609083) is stratified: one posting from each reachable
+career, plus one extra from whichever stratum had the most left afterwards.
+
+| | BA | Data Analyst | ERP | IT Support | SW Dev |
+|---|---|---|---|---|---|
+| corpus (27) | 6 | 5 | 6 | 5 | 5 |
+| has an AI baseline (16) | 5 | 1 | 3 | 2 | 5 |
+| eligible, draw 1 excluded (11) | 4 | **0** | 3 | 1 | 3 |
+| **draw 3** | **2** | 0 | **1** | **1** | **1** |
+
+Ids **4, 5, 12, 16, 19**. The extra went to Business Analyst, which had 3 left
+against ERP's 2 and Software Developer's 2 after the first pass. Ties break on
+career name so the draw reproduces from the seed alone.
+
+Draw 2's counts were never printed, so its postings stayed eligible and two of
+them (4, 5) survive into draw 3. All three draws are archived side by side under
+`test/archive/` and `test/holdout/archive/`.
+
+### Coverage limitation — Data Analyst cannot be validated
+
+**Data Analyst has no reachable posting and draw 3 does not cover it.** The
+career holds 5 postings, but only one of them (id 7) carries an AI baseline, and
+id 7 was in draw 1. Excluding draw 1 therefore empties the stratum. There is no
+way to draw a Data Analyst posting that is both comparable against the baseline
+and unanchored.
+
+This is recorded rather than worked around, because both workarounds are worse
+than the gap. Re-admitting id 7 reintroduces a known anchor into the one place
+the project measures itself honestly. Drawing an unbaselined Data Analyst
+posting gives something to label but nothing to compare it against, which is not
+validation. The manual-versus-AI agreement figures will describe four careers of
+five, and the evaluation chapter should say so.
+
+The root cause is upstream: the AI labelling pass ran against the pre-repair
+collection, and 4 of the 5 Data Analyst postings then in the set were later
+excluded as aggregator summaries. Closing the gap needs a baseline pass over the
+current corpus, not a different draw.
+
+### Note — id 16's baseline predates its career correction
+
+Id 16 sits in draw 3 as Software Developer. Its AI labels were generated when it
+was still filed under IT Support Specialist — the aggregator's slug said
+`it-support-specialist` while the advert was plainly a Web Developer role. The
+posting text is identical; only the career label moved. If the labelling pass
+used career as context, that baseline was produced under the wrong one, which
+would show up as disagreement attributable to the pipeline rather than to
+judgement. Worth remembering when reading id 16's row in the comparison.
+
+### Added — `test/merge_labels.py`
+
+Writes hand labels from `manual_validation.csv` into the corpus and reports
+agreement against the held-out AI baseline.
+
+- Dry run by default; `--write` applies. Verified the dry run leaves the corpus
+  at zero labelled rows.
+- **Refuses while any of the five is blank**, naming which. A partial merge would
+  quietly become a partial ground truth.
+- Rejects unknown skill ids before touching anything — caught both `SK999` and a
+  lowercased `sk17` in testing.
+- Per-posting precision, recall and Jaccard, plus micro and macro overall, then
+  the disagreements listed by skill name.
+- Backs up to `.bak` and writes in place. `os.replace()` fails here: OneDrive
+  holds a handle on `test/` that permits writes but refuses deletes, which is
+  also what broke the first archive attempt.
+
+Direction is stated in the file and matters: **your labels are the reference,
+the AI's are the prediction.** Precision is "of what the AI proposed, how much
+you kept"; recall is "of what you found, how much the AI got". Read the other way
+round, the conclusion inverts.
+
+Exercised end to end against throwaway copies with fabricated labels — every
+branch, then confirmed the real files were untouched.
+
+### Fixed — the eligible pool was joined on the wrong key
+
+Postings were matched to the AI baseline by id. The recovered posting is id 39
+in the corpus and id 2 in the baseline, so an id join dropped it silently and
+the pool was one short. Matching is now by canonical URL. Id 39 became eligible
+and was drawn into draw 2.
+
+---
+
 ## 2026-09-08 — Repo recovery: provenance, guards, lost data
 
 Follows an audit of the repo. No parameters changed, nothing relabelled, and

@@ -5,7 +5,9 @@ Reading it before you finish labelling destroys the only independent check
 on those labels -- anchoring is not something you can decide not to do.
 That includes the label counts, which is why draw 1 was retired.
 
-Draw 2, seed 20260908, drawn from the 11 postings that have a
-baseline and were not part of draw 1. archive/ holds draw 1.
+Draw 3, seed 202609083: stratified, one posting per career across
+Business Analyst, ERP Consultant, Software Developer, IT Support Specialist, plus one extra from Business Analyst.
+Data Analyst is unreachable -- its only baselined posting was in draw 1.
+archive/ holds draws 1 and 2.
 
 merge_labels.py reads this file after you have labelled, not before.
