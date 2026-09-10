@@ -74,7 +74,7 @@ because the catalog is.
 python -m pytest
 ```
 
-24 tests, offline, about three seconds. A stand-in bag-of-words embedder replaces
+37 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -82,7 +82,31 @@ Covered: the failed gate reaching every response; demand-weighted readiness and
 ranking; bilingual names; rejection of unknown careers, courses and profiles;
 profiles surviving a restart; the model loading once and never per request; a
 warm restart skipping the model entirely; cache invalidation on a config change;
-and startup refusing a stale config before any model work.
+startup refusing a stale config before any model work; and the reports below.
+
+## Reports
+
+Read-only. They change nothing the API serves.
+
+```bash
+python -m backend.reports min-demand
+```
+
+```bash
+python -m backend.reports course-reach --explain
+```
+
+- `min-demand` sweeps `min_demand` from 0.10 to 0.50 for the definition-of-done
+  scenario: readiness, skills counted, covered and missing, and readiness had
+  every catalog course been taken, plus the posting count each value implies
+  per career. It checks that its row at the engine default is exactly what the
+  API serves, and that no value between its rows behaves differently.
+- `course-reach` lists which of the taxonomy's skills any catalog course maps
+  to, with each skill's demand per career. `--explain` loads the model and
+  shows, chunk by chunk, what each course sentence voted for or why it was
+  dropped; it raises if that account disagrees with the served map.
+
+Results as of 2026-09-10 are in `../skillgap/CHANGELOG.md`.
 
 ## Verified end to end
 

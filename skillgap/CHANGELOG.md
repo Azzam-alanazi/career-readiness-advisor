@@ -1,7 +1,121 @@
 # Changelog — skill-gap engine
 
-Running record of what changed, when, and why. Phase 0 (validation gate) only.
-Nothing from Phase 1+ has been started.
+Running record of what changed, when, and why.
+
+---
+
+## 2026-09-10 — Phase 4 follow-up: `min_demand` sweep and course reach
+
+Reports only. Nothing the API serves has changed: `min_demand` is still the
+engine default of 0.15, and the course map is untouched. Both reports come from
+`backend/reports.py`, which reads the same engine state the API builds, from
+cache, so the model is loaded only for `course-reach --explain`.
+
+### `min_demand` — three outcomes, none of them credible
+
+The spec's scenario: Business Analyst (6 postings), completed IS 201, IS 210,
+IS 230, IS 240, IS 250 and BUS 210.
+
+| min_demand | skill must be in | counted | covered | missing | closable by any course | readiness | with all 16 courses |
+|---|---|---|---|---|---|---|---|
+| 0.10–0.15 (current) | ≥ 1 of 6 postings | 36 | 2 | 34 | 4 | 4.8% | 16.1% |
+| 0.20–0.30 | ≥ 2 of 6 | 17 | 1 | 16 | 2 | 4.7% | 16.3% |
+| 0.35–0.50 | ≥ 3 of 6 | 6 | 0 | 6 | 1 | 0.0% | 14.3% |
+
+- **`min_demand` is a posting count in disguise.** Demand is always k postings
+  over the career's count, so for six postings the 0.10–0.50 range produces
+  exactly three results. The report checks every value to the nearest 0.001 and
+  confirms none behaves differently from a row shown.
+- **Raising it does not raise readiness.** The student's two covered skills are
+  low-demand (Requirements elicitation in 2 of 6 postings, Communication in 1 of
+  6), so a stricter bar removes them first: 4.8%, then 4.7%, then 0%.
+- **The catalog caps readiness at 14–16% whatever the value.** A student who
+  had taken all 16 courses would score 16.1% at the current setting. The number
+  cannot become credible through `min_demand`; course reach, below, is the
+  constraint.
+- **The same value means a different posting count per career**, because
+  careers have 5 or 6 postings:
+
+  | min_demand | BA (6) | DA (5) | ERP (6) | ITS (5) | SD (5) |
+  |---|---|---|---|---|---|
+  | 0.10–0.15 | 1 · 36 skills | 1 · 23 | 1 · 26 | 1 · 30 | 1 · 44 |
+  | 0.20 | 2 · 17 | 1 · 23 | 2 · 11 | 1 · 30 | 1 · 44 |
+  | 0.25–0.30 | 2 · 17 | 2 · 11 | 2 · 11 | 2 · 9 | 2 · 16 |
+  | 0.35–0.40 | 3 · 6 | 2 · 11 | 3 · 4 | 2 · 9 | 2 · 16 |
+  | 0.45–0.50 | 3 · 6 | 3 · 5 | 3 · 4 | 3 · 2 | 3 · 7 |
+
+  At 0.20, 0.35 and 0.40 the five-posting careers get a lower bar than the
+  six-posting ones. Only 0.10–0.15, 0.25–0.30 and 0.45–0.50 mean the same
+  count everywhere, and only for today's counts: adding one posting to a career
+  moves its boundaries.
+
+Not changed. Choosing the value is a product decision, taken from this table.
+
+### Course reach — 15 of 90 skills
+
+The 16 catalog courses reach 15 skills: Requirements elicitation, Business
+process modelling, Database management, Business intelligence, Programming,
+Python programming, Web application development, Web development, Network
+troubleshooting, IT security, ERP systems, ERP integration, Financial management
+processes, Human resources management, Communication. Four courses reach
+nothing: IS 201, IS 220, IS 340, MKT 301.
+
+Of the 75 unreachable skills, **31 are named by two or more postings in at
+least one career**. They are the ones that matter for readiness: Functional
+specifications (BA 5/6), CI/CD (SD 4/5), User acceptance testing (BA 4/6), ERP
+implementation (ERP 4/6), ETL / data integration, Technical problem solving,
+Documentation management, Stakeholder management, Quality assurance, Help desk,
+Requirements analysis, Mentoring, Software testing, Technical support, ERP user
+training, Agile/Scrum, Data analysis, SQL, Reporting, Business process analysis,
+DevOps, Version control, Accessibility, ITSM (ITIL), Teamwork, Workshop
+facilitation, Data visualization, Machine learning, TypeScript, Windows
+administration, Identity and access management. Another 32 appear in a single
+posting only, and 12 in none. `python -m backend.reports course-reach` prints
+all 90 with their demand per career.
+
+### Why so few — the matcher as much as the text
+
+`course-reach --explain` re-runs extraction chunk by chunk, and raises if its
+account disagrees with the served map. It agrees for all 16 courses.
+
+- **One sentence, one skill.** Courses use `chunk_top1`, inherited from postings
+  and never measured on course text. Each chunk votes for at most one skill, so
+  the 40 catalog chunks can reach at most 40 skills however many they name. IS
+  320's one body sentence names SAP, Oracle ERP, configuration, implementation
+  and change management; it reaches ERP integration and nothing else.
+- **The margin decides most outcomes.** Of 40 chunks, 18 voted, 19 were dropped
+  because the top skill led the runner-up by less than 0.01, and 3 fell below the
+  threshold. Course titles are hit hardest: "IT Project Management" ranks ITIL
+  first by 0.003.
+- **Some drops were correct reads.** SQL in IS 230 (lead 0.001), ETL in IS 310
+  (under 0.01 by less than 0.001), Project coordination in IS 340 (0.008). Most of
+  the other dropped top-1s were misreads the margin rightly rejected —
+  "Introduction to Information Systems" as ERP systems, "using Java" as
+  JavaScript, "side and server" as Backup and recovery.
+- **Hyphens split chunks.** `split_chunks` treats `-` as a bullet marker, so
+  "Object-Oriented", "entity-relationship", "client-side" and "non-specialist"
+  are cut mid-term, and fragments under 15 characters are discarded. Postings go
+  through the same rule and Phase 0 was measured with it, so it is recorded, not
+  changed.
+- **The taxonomy has no Java.** IS 220 teaches Java; its nearest entry is
+  JavaScript.
+
+### What this means for real course descriptions
+
+Covering the 31 skills above is necessary but not sufficient. Under the current
+course parameters a description reaches a skill only if a sentence or bullet is
+about that skill alone and clearly — a comma-separated list reaches one skill at
+most, and hyphenated terms are split. The other lever is measuring the course
+domain instead of inheriting from postings: `labeled_courses.csv` still has no
+labels, and `validate.py` sweeps course parameters once it does.
+
+### Tests
+
+13 new, in `backend/tests/test_reports.py`, on the fixture world: the posting
+count each `min_demand` implies (exact boundaries included), the sweep against
+hand-computed readiness, its row at the default matching the API, detection of
+values the table would skip, reach and demand per skill, and `--explain`
+reproducing the served map or refusing a matcher it does not describe.
 
 ---
 
