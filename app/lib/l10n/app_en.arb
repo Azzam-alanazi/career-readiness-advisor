@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Career Readiness",
+  "switchLanguage": "العربية",
+  "@switchLanguage": {"description": "Always the name of the OTHER language, written in that language."},
+
+  "onboardingTitle": "Your profile",
+  "onboardingIntro": "Tell us what you have studied and where you want to work. We compare it with what employers ask for.",
+  "majorLabel": "Major",
+  "majorHint": "e.g. Information Systems",
+  "careerLabel": "Target career",
+  "careerRequired": "Choose a career to continue.",
+  "coursesLabel": "Completed courses ({count} selected)",
+  "@coursesLabel": {"placeholders": {"count": {"type": "int"}}},
+  "coursesCatalogNote": "Listed as they appear in the course catalog.",
+  "submit": "See my readiness",
+  "submitFailed": "Your profile could not be saved. Check the connection and try again.",
+
+  "readinessTitle": "Readiness",
+  "readinessFor": "Readiness for {career}",
+  "@readinessFor": {"placeholders": {"career": {"type": "String"}}},
+  "readinessExplained": "The share of in-demand skills you already have, weighted by how often employers ask for each.",
+  "coveredTitle": "Skills you have ({count})",
+  "@coveredTitle": {"placeholders": {"count": {"type": "int"}}},
+  "noneCovered": "None of the in-demand skills yet. The list below shows where to start.",
+  "missingTitle": "Skills to build, most in demand first ({count})",
+  "@missingTitle": {"placeholders": {"count": {"type": "int"}}},
+  "demandShare": "in {percent} of postings",
+  "@demandShare": {"placeholders": {"percent": {"type": "String"}}},
+  "seeRecommendations": "Suggested courses",
+
+  "recommendationsTitle": "Suggested courses",
+  "suggestionTitle": "Suggestions, not verdicts",
+  "suggestionBody": "These courses are ranked by how much market demand their descriptions suggest they could cover. Treat them as a starting point for a conversation with your academic advisor, not as a decision or a guarantee.",
+  "couldHelpWith": "Could help with",
+  "noRecommendations": "No course in the catalog covers these gaps.",
+  "startOver": "Start over",
+
+  "qualityTitle": "Estimates, not validated results",
+  "qualityTitlePassed": "About these figures",
+  "qualityGateFailed": "In validation, the skill matcher scored F1 {f1}, below the {floor} it needed to pass. Read these figures as rough estimates.",
+  "@qualityGateFailed": {"placeholders": {"f1": {"type": "String"}, "floor": {"type": "String"}}},
+  "qualityCoursesUnchecked": "Which skills each course teaches has not been checked against hand-labelled courses, so some courses may count for less than they should.",
+  "qualityEnglishSource": "Market demand comes from English-language job postings. Skill names are shown in your chosen language.",
+
+  "errorUnreachable": "Can't reach the server. Is the backend running?",
+  "errorServer": "The server couldn't answer that request.",
+  "retry": "Try again",
+
+  "careerBusinessAnalyst": "Business Analyst",
+  "careerDataAnalyst": "Data Analyst",
+  "careerErpConsultant": "ERP Consultant",
+  "careerItSupportSpecialist": "IT Support Specialist",
+  "careerSoftwareDeveloper": "Software Developer"
+}

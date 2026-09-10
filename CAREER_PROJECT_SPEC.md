@@ -214,6 +214,24 @@ as the next decisions.
 15. Recommendations screen: courses and certifications that close the gaps
 16. Arabic + English with working RTL (`flutter_localizations`)
 
+### Status: BUILT 2026-09-10 — `app/`
+
+Items 13–16 are implemented against the Phase 3 backend: Riverpod state,
+freezed models, feature-first under `lib/features/`. Both the readiness and the
+suggestions screens show the Phase 0 quality flag in the student's language,
+and suggested courses are presented as suggestions, not verdicts.
+
+Item 16 is met as a **bilingual interface** — full Arabic UI with right-to-left
+layout, and Arabic skill names from the taxonomy's hand-written labels. It is
+not a demonstration of cross-lingual matching: no Arabic text is matched
+anywhere in this flow, and every posting is English. Engine decision 2 remains
+as untested as the Phase 0 closure records.
+
+Verified headlessly by 19 tests and `flutter analyze`, and by a contract check
+that runs the definition-of-done scenario against the live backend through the
+app's own models. Not yet run on a device: this machine has no Android
+toolchain.
+
 ## Conventions
 - Feature-first: `lib/features/{onboarding,profile,gap,recommendations}/`
 - Each feature: `data/`, `domain/`, `presentation/`

@@ -5,6 +5,100 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-10 — Phase 4: Flutter app
+
+Onboarding, readiness and suggested courses, for Android, in English and Arabic,
+against the Phase 3 backend. Riverpod 3 for state; freezed 4 and
+json_serializable for models; feature-first under
+`app/lib/features/{onboarding,profile,gap,recommendations}/{data,domain,presentation}`,
+as the spec's conventions require.
+
+### The quality flag reaches the student
+
+Both the readiness and the suggestions screens show the API's `validation`
+block: that the matcher failed its gate, with the real F1 (0.503) and the floor
+(0.60); that course-to-skill mapping was never checked; and that the demand
+data comes from English-language postings.
+
+The flag is rebuilt from the block's **structured fields**, not from the prose
+`note` the API also sends. That note is English-only, so an Arabic reader would
+have been handed the most important caveat in the app in a language they had
+just switched away from.
+
+### Suggestions, not verdicts
+
+The suggestions screen opens with that statement, above the courses it
+qualifies — "Suggestions, not verdicts" / "اقتراحات، لا أحكام" — and describes
+them as a starting point for a conversation with an academic advisor rather
+than a decision. A widget test asserts the notice sits above the first course.
+
+### Bilingual display — not a demonstration of cross-lingual matching
+
+The request framed Arabic support as where cross-lingual matching gets
+demonstrated, since the postings are all English. It does not demonstrate that,
+and the evaluation chapter should not say it does.
+
+The Arabic skill names on screen are the hand-written translations stored in
+`taxonomy.json`. No Arabic text is embedded or matched anywhere in this flow:
+the API embeds nothing per request, students pick courses from a list, and
+every posting is English. What the app demonstrates is spec item 16 — a
+bilingual interface with working right-to-left layout — not engine decision 2.
+Cross-lingual matching stays exactly as untested as the Phase 0 closure
+recorded. The quality flag says as much to Arabic readers: demand comes from
+English postings, and skill names are shown in the chosen language.
+
+### Decisions worth keeping
+
+- **Responses are decoded as UTF-8 from the raw bytes.** FastAPI sends
+  `application/json` with no charset, and every Arabic skill name passes
+  through the client, so charset guessing is not left to chance. Tested.
+- **Automatic retry is off.** Riverpod 3 retries failed providers with backoff
+  by default, which would leave a student watching a spinner while an
+  unreachable backend is retried. An error with "try again" is more honest. The
+  tests use the same policy, so what is tested is what ships.
+- **Right-to-left is tested by layout, not by flag.** The Arabic test checks that
+  the warning icon moves to the right of its heading, not merely that
+  `Directionality` reports RTL.
+- **Career names are translated in the app** with a fallback to the backend's
+  English name, so a career added later still appears. **Course names are
+  not** — the catalog is English — and the onboarding screen says so.
+- **The release manifest was missing `INTERNET`.** Debug and profile builds get
+  it from their own manifests; release only has what the main manifest
+  declares, so a release build could not have reached any backend. Added.
+  Cleartext HTTP is allowed in debug only, for the local backend.
+- **Start over rebuilds the major field.** A `TextFormField` keeps its own text,
+  so resetting the draft alone left the old major on screen; the draft carries
+  a revision the field is keyed on. Tested.
+
+### Verified
+
+19 tests, headless: models against backend-shaped JSON, the API client, the
+onboarding controller, and the whole flow in English and Arabic including an
+unreachable backend, a failed save, and start over. `flutter analyze` clean.
+
+**Contract check against the live backend: 15 of 15 pass.** The widget tests
+run against fakes written to match the backend's JSON, so on their own they
+cannot catch the two drifting apart. `tool/contract_check.dart` ran the spec's
+definition-of-done scenario (Business Analyst, six courses) against the running
+API through the app's own models. It created a real profile and got back
+readiness 5% (2 covered, 34 missing), with the missing skills ranked by demand,
+which is the order the UI renders them in without re-sorting. Every skill had
+an Arabic label, the quality flag was present on both responses, and the three
+suggestions (IS 350, IS 310, IS 320) each closed only skills the student was
+missing, none of them a course already completed. Every real response parsed
+through the same models the app uses.
+
+The 5% is the figure Phase 3 already recorded as not credible, caused upstream
+by course mapping and `min_demand`. The app shows it faithfully, with the
+quality flag beside it.
+
+### Not verified
+
+This machine has no Android toolchain, no Visual Studio and no Chrome, so the
+app has not been launched on a device, an emulator or a desktop window.
+
+---
+
 ## 2026-09-10 — Phase 3: FastAPI backend
 
 Phase 0 is closed (next entry). This builds spec Phase 3 on top of it, and with

@@ -1,0 +1,34 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'gap_report.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_GapReport _$GapReportFromJson(Map<String, dynamic> json) => _GapReport(
+  profileId: json['profile_id'] as String,
+  career: json['career'] as String,
+  readiness: (json['readiness'] as num).toDouble(),
+  readinessPercent: (json['readiness_percent'] as num).toInt(),
+  covered: (json['covered'] as List<dynamic>)
+      .map((e) => SkillEntry.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  missing: (json['missing'] as List<dynamic>)
+      .map((e) => SkillEntry.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  validation: ValidationInfo.fromJson(
+    json['validation'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$GapReportToJson(_GapReport instance) =>
+    <String, dynamic>{
+      'profile_id': instance.profileId,
+      'career': instance.career,
+      'readiness': instance.readiness,
+      'readiness_percent': instance.readinessPercent,
+      'covered': instance.covered.map((e) => e.toJson()).toList(),
+      'missing': instance.missing.map((e) => e.toJson()).toList(),
+      'validation': instance.validation.toJson(),
+    };
