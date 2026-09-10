@@ -36,3 +36,9 @@ Thumbs.db
 desktop.ini
 .idea/
 .vscode/
+
+# Backend runtime state. Both regenerate: the engine cache from the committed
+# inputs it is keyed on, the profile database through use.
+backend/.cache/
+backend/data/
+.pytest_cache/

@@ -1,0 +1,13 @@
+# Backend on top of the engine. The engine's own pins -- torch, transformers,
+# sentence-transformers, and the scipy pin that works around Windows Application
+# Control -- come from skillgap/requirements.txt.
+-r ../skillgap/requirements.txt
+
+fastapi==0.141.1
+starlette==1.6.0
+pydantic==2.13.5
+uvicorn==0.52.4
+
+# tests
+pytest==9.1.1
+httpx==0.28.1

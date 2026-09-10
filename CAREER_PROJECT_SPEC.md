@@ -185,6 +185,29 @@ Arabic regardless of which language the underlying posting was written in.
 12. Cache embeddings and career profiles at startup; do not reload the model
     per request
 
+### Status: BUILT 2026-09-10 — `backend/`
+
+Items 11 and 12 are implemented, and with them Phase 1 item 6. Career profiles
+and course-to-skill maps are built once and persisted under a key that hashes
+every input, so they are never recomputed per request and a changed input can
+never be served stale. What is cached is the result of embedding rather than the
+vectors, because no request needs a vector; the model is used only to build
+profiles, and a warm restart does not load it at all.
+
+Every readiness figure the API returns carries the Phase 0 validation status,
+`gate_passed: false`, so the app can show the failed gate beside the numbers it
+qualifies.
+
+Verified on real data with the definition-of-done scenario (Business Analyst,
+six completed courses): readiness percentage, missing skills ranked with posting
+shares, three recommendations, bilingual skill names; a warm restart takes 0.0 s
+from cache and a request about 3 ms. **The mechanics meet the definition of
+done; the numbers do not yet mean much.** Readiness came out at 5% for a student
+who took Systems Analysis and Design, because course mapping yields only 0–2
+skills per course — four courses map to none — and `min_demand=0.15` admits any
+skill seen in one of six postings. Both are recorded in `skillgap/CHANGELOG.md`
+as the next decisions.
+
 ## Phase 4 — app
 13. Onboarding: major, completed courses, target career
 14. Readiness screen: score, covered skills, missing skills ranked by demand

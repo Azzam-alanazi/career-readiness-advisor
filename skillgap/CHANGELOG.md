@@ -5,6 +5,125 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-10 — Phase 3: FastAPI backend
+
+Phase 0 is closed (next entry). This builds spec Phase 3 on top of it, and with
+it spec item 6 from Phase 1: career profiles persisted rather than recomputed.
+
+### Added — `backend/`
+
+| file | role |
+|---|---|
+| `engine.py` | builds everything once at startup: model, taxonomy, a demand profile per career, every catalog course mapped to skills |
+| `store.py` | student profiles in SQLite |
+| `schemas.py` | request and response models |
+| `main.py` | FastAPI app and routes |
+| `tests/` | 24 tests against a fixture world and a stand-in embedder |
+
+Endpoints: `/health`, `/careers`, `/courses`, `POST /profiles`,
+`/profiles/{id}`, `/profiles/{id}/gap`, `/profiles/{id}/recommendations`.
+
+### The failed gate is in every response
+
+`/health`, every gap response and every recommendation response carry a
+`validation` block: `gate_passed: false`, best F1, the floor, whether course
+mapping was ever measured, and a plain-language note. The Phase 0 closure asked
+for the failure to live in the data rather than in prose, and this is where the
+app will read it from.
+
+### Decisions worth keeping
+
+- **Nothing is embedded per request.** Students pick courses from the catalog, so
+  the model is needed only to build profiles. The spec asks to cache embeddings;
+  what is cached is the *result* of embedding — profiles and course maps —
+  because no request ever needs a vector.
+- **Profiles persist under a key that hashes every input**: taxonomy, config,
+  posting text, course text, model name, and the engine source. Relabelling a
+  posting does not invalidate the cache; changing anything extraction reads does.
+  A stale profile cannot be served — the same rule `StaleConfigError` enforces
+  for parameters.
+- **A warm start never loads the model.** On a cache hit the embedder is never
+  constructed.
+- **Startup refuses a stale config** rather than serving results from parameters
+  measured against a different taxonomy.
+- **Chunking matches `validate.py`**: extraction runs on the stored posting text,
+  `" | "` separators included, because that is what the parameters were measured
+  on. The merge simulation already showed restoring the line breaks does not help.
+- **`min_demand=0.15` passes through untouched.** It has never been validated;
+  the API uses the engine default rather than adding a second unvalidated number
+  in the service layer.
+- **SQLite runs with a TRUNCATE journal.** OneDrive can refuse the journal
+  deletes SQLite's default mode depends on.
+
+### Tests
+
+24 tests, offline, about three seconds. A bag-of-words stand-in embedder with a
+per-instance vocabulary (so no hash collisions create false similarity) replaces
+the 1 GB model, over a four-skill world small enough that every expected value
+can be checked by hand. They cover the failed gate reaching every response,
+demand-weighted readiness, ranking, bilingual names, rejection of unknown input,
+profiles surviving a restart, the model loading exactly once, a warm restart
+skipping it, cache invalidation, and stale-config refusal before any model work.
+
+### Verified end to end — the mechanics work; the numbers are not credible
+
+Ran the spec's definition-of-done scenario against the real model and data:
+Business Analyst, six completed courses (IS 201, IS 210, IS 230, IS 240, IS 250,
+BUS 210).
+
+| check | result |
+|---|---|
+| cold start (extract, then cache) | 34.7 s |
+| warm start | 0.0 s — from cache, model never loaded |
+| per-request latency | ~3 ms |
+| profile survives a restart | yes |
+| `validation` block | present: `gate_passed: false`, plus the course-mapping caveat |
+
+**Mechanically, the definition of done is met.** The student gets a readiness
+percentage, the missing skills ranked with the share of postings needing each,
+and three recommended courses, with skill names in English and Arabic.
+
+**Substantively, the numbers are not credible, and that belongs on the record.**
+Readiness came out at **5% — 2 skills covered, 34 missing** — for a student who
+has taken Systems Analysis and Design, Database Management Systems and Business
+Communication. Two causes, both measured, both already flagged as unvalidated:
+
+1. **Course mapping is starved.** The 16 catalog courses map to 15 skills in
+   total, 0–2 each, and four map to nothing at all — among them IS 340 IT Project
+   Management, which therefore can never be recommended. Course parameters are
+   inherited from postings: `chunk_top1` lets each chunk vote for a single skill,
+   and catalog sentences pack several skills into one clause, so most of each
+   description votes for nothing. The session-4 course smoke test recorded this
+   as the expected failure mode; there are still no labelled courses to measure it
+   against. Across the whole catalog only **15 of the 90 skills are
+   reachable at all**, so a missing skill outside those 15 can never be closed by
+   any recommendation.
+2. **`min_demand=0.15` admits almost everything.** With 6 Business Analyst
+   postings, one posting is 17% of the career, so a skill mentioned by a single
+   employer clears the bar — and the profile counts 36 relevant skills. Readiness
+   divides by all of them. The pattern holds in every career: **53-70% of each
+   career's counted skills rest on a single posting** (Business Analyst 19 of
+   36, IT Support Specialist 21 of 30, Software Developer 28 of 44).
+
+Neither is a backend defect: the API serves what the engine computes. Neither was
+changed here. Phase 0 is closed, and `min_demand` was flagged in session 2 and
+deliberately left alone. Both are the next decisions to make.
+
+### Not done
+
+- **Phase 2 is not started.** There is no hand-correction interface for course
+  mappings, and the catalog has no `credits` column.
+- **Course names are English only**, because the catalog is. Skill names are
+  bilingual.
+- **Phase 1 item 5's column names were never adopted.** The spec lists
+  `career_category`, `company`, `location`, `source_site`, `posting_url`,
+  `full_description`; the corpus uses `career`, `employer`, `city`, `source`,
+  `url`, `posting_text`. The API reads what exists.
+- Starlette 1.6 deprecates `httpx` in its test client in favour of `httpx2`. The
+  tests pass with a warning.
+
+---
+
 ## 2026-09-10 — Phase 0 gate FAILED at F1 0.50: taxonomy granularity diagnosis
 
 **This result stands.** It is a finding about the 90-entry taxonomy, recorded in
