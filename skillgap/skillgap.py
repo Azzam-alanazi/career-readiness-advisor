@@ -106,6 +106,13 @@ def load_match_params(domain: str = "postings", path: str = CONFIG_PATH,
         "threshold": float(section["match_threshold"]),
         "margin": float(section.get("match_margin", 0.0)),
         "validated": bool(section.get("validated", False)),
+        # False when validate.py measured these parameters but they missed the
+        # F1 floor. They still load -- the engine has to run -- but anything
+        # presenting results should say the matcher failed its own gate.
+        # Configs written before the field existed only ever came from a
+        # passing run, so a missing field means passed.
+        "gate_passed": bool(cfg.get("gate_passed", True)),
+        "best_f1": section.get("best_f1"),
     }
 
 

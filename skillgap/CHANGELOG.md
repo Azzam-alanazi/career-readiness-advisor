@@ -5,6 +5,193 @@ Nothing from Phase 1+ has been started.
 
 ---
 
+## 2026-09-10 — Phase 0 gate FAILED at F1 0.50: taxonomy granularity diagnosis
+
+**This result stands.** It is a finding about the 90-entry taxonomy, recorded in
+full whatever the remediation turns out to be, and must not be overwritten by a
+later passing number.
+
+### The failure
+
+Swept against the 15 hand-labelled postings (199 label mentions, 71 of the 90
+skills in use), with the 90-entry taxonomy:
+
+| method | F1 | precision | recall | threshold | margin | plateau width |
+|---|---|---|---|---|---|---|
+| **chunk_top1** (best) | **0.503** | 0.61 | 0.43 | 0.8140 | 0.01 | **0.0018** |
+| skill_centric | 0.469 | 0.44 | 0.50 | 0.8463 | — | **0.0000** |
+
+Gate floor 0.60. `validate.py` stopped and wrote nothing, as designed; the stale
+`config.json` and the `StaleConfigError` guard both still stand.
+
+The plateau widths matter as much as the F1. Both optima are single points —
+0.0018 and zero — so even 0.503 is a value fitted to these 15 postings rather
+than a property of the method. The earlier 0.900 held across a 0.1412-wide band.
+
+### What collapsed: separation, not just F1
+
+| | 19-entry taxonomy, 3 postings | 90-entry taxonomy, 15 postings |
+|---|---|---|
+| correct-skill mean similarity | 0.911 | 0.846 |
+| other-skill mean similarity | 0.836 | 0.825 |
+| **separation** | **0.075** | **0.021** |
+| synonym probes | 5/5 | 5/6 |
+
+Separation — how far the right skill stands above the rest — fell by roughly
+70%. The probes show the same thing at small scale: SQL (SK17) now ranks second
+behind Database management (SK16), 0.85 to 0.84, and the passing probes win by
+hundredths or less; Communication (SK85) ties its two runners-up at 0.82.
+
+### Is granularity the cause? The similarity evidence
+
+Pairwise similarity across all 90 entries, measured the way matching sees it —
+the best of each pair's four English/Arabic label pairings, since
+`skill_scores()` max-pools over both languages:
+
+| statistic | value |
+|---|---|
+| median pair | 0.8339 |
+| p25 / p75 | 0.8211 / 0.8503 |
+| p99 | 0.9208 |
+| max | 0.9767 (SK70 ERP systems / SK73 ERP implementation) |
+| pairs ≥ 0.92 | 43 of 4005 (1.1%) |
+| pairs ≥ 0.90 | 81 (2.0%) |
+| pairs ≥ 0.86 | 621 (15.5%) |
+
+Two readings, and the second is the more important:
+
+1. **There are genuinely confusable pairs.** 43 sit above 0.92, clustered in ERP
+   (SK70/72/73/74/75/76), web development (SK30/31/34/35/36), and programming
+   languages (SK24–29).
+2. **The whole space is compressed, not just a few pairs.** The chosen operating
+   threshold, 0.814, is *below the median similarity of two unrelated skills*.
+   At that threshold most of the taxonomy clears the bar on most chunks, which
+   is why skill-centric matching at 0.80 produces 1079 false positives against
+   197 true ones. That is a calibration property of the whole label set, and it
+   is not something merging the top 1% of pairs can move.
+
+### The labels disagree with the model about what is confusable
+
+Of the 43 pairs above 0.92, **25 are separated by the hand labels**: the
+annotator puts one on a posting without the other. The embedding cannot tell
+them apart; a person reading the advert can, and does:
+
+| sim | pair | apart on |
+|---|---|---|
+| 0.9767 | ERP systems / ERP implementation | 1 posting |
+| 0.9662 | Frontend / Backend development | (Frontend used alone) |
+| 0.9428 | ERP systems / Oracle ERP | 3 |
+| 0.9410 | Python / PHP programming | 3 |
+| 0.9382 | Linux / Windows administration | (Windows used alone, twice) |
+| 0.9327 | Requirements analysis / Requirements elicitation | 2 |
+
+Merging any of these would make the metric easier by deleting a distinction the
+ground truth actually contains. That is not a fix; it is moving the goalposts to
+where the model already stands.
+
+### Merge policies measured — 50–60 entries is not reachable on evidence
+
+Merges are built by union over qualifying pairs, then checked for the weakest
+link inside each resulting group, because transitive chaining can join two
+entries that are nowhere near each other.
+
+| policy | entries | groups | weakest internal link | verdict |
+|---|---|---|---|---|
+| A: ≥0.92, never separated by labels | **85** | 4 | 0.9216 | clean |
+| B: ≥0.92, plus pairs with no label evidence | 74 | 8 | 0.8481 | chaining starts |
+| C: ≥0.90, plus pairs with no label evidence | 63 | 6 | **0.8104** | absurd |
+
+Policy A's four groups are all defensible: ERP implementation / process
+optimization / user training (always labelled together), Data analysis / Data
+visualization, Python / C/C++, and Web application development / Web
+development (0.9615, never apart).
+
+Only by admitting unevidenced pairs — the 19 skills never used in any label —
+does the count approach 60, and the chains that produces are not merges anyone
+would accept: policy C folds Software testing, Programming, IT security and
+Middleware into one 15-member group whose weakest link, 0.8104, is *below the
+median similarity of two unrelated skills*. It also puts Business process
+modelling in a group with Data analysis, and Database management with Linux,
+Windows and Network administration. Chaining through unused nodes also quietly
+merges *used* skills the labels separate, violating the rule indirectly.
+
+### Merge simulation — merging does not recover the gate; it makes it worse
+
+Every policy was run through the real sweep (`exact_argmax` over both matching
+methods, same model, same 15 postings), with the labels remapped mechanically:
+both ids in a merged pair become the surviving id.
+
+| policy | entries | labels | best F1 | precision | recall | plateau | separation |
+|---|---|---|---|---|---|---|---|
+| unmerged — this simulation's baseline | 90 | 199 | **0.486** | 0.55 | 0.43 | 0.0002 | 0.0231 |
+| A: ≥0.92, never separated by labels | 85 | 188 | 0.482 | 0.41 | 0.58 | 0.0000 | 0.0223 |
+| B: ≥0.92, plus unevidenced pairs | 74 | 187 | 0.485 | 0.41 | 0.59 | 0.0010 | 0.0214 |
+| C: ≥0.90, plus unevidenced pairs | 63 | 178 | 0.465 | 0.39 | 0.57 | 0.0010 | 0.0198 |
+| ≥0.88, plus unevidenced pairs | 38 | 130 | 0.458 | 0.48 | 0.44 | 0.0001 | 0.0179 |
+| upper bound: every pair ≥0.92, labels ignored | 57 | 159 | 0.463 | 0.53 | 0.41 | 0.0000 | 0.0157 |
+| upper bound: every pair ≥0.90, labels ignored | 37 | 102 | 0.456 | 0.57 | 0.38 | 0.0011 | 0.0149 |
+
+**No policy beats the unmerged taxonomy** — not the evidence-backed one, and not
+the upper bound that merges every confusable pair while ignoring the labels
+entirely. Separation falls monotonically as entries are merged, 0.0231 → 0.0149.
+At best merging trades precision for recall, and it loses on balance.
+
+That is the measured basis for "the merge lever is exhausted". It is not only
+that merging would delete distinctions the annotator makes — even deleting them
+buys nothing.
+
+Two caveats, so the table is not over-read:
+
+1. **This simulation's baseline is 0.486, not the harness's 0.503.** It chunked
+   postings with their original line breaks restored — the stored `" | "`
+   separators turned back into newlines — while `validate.py` chunks the text as
+   stored. That is the only difference between the two pipelines, so compare
+   rows within this table, not against 0.503. It also settles a side question:
+   restoring line structure does not help; it scores slightly lower.
+2. **A merged entry kept only its surviving member's label text.** A union merge
+   — keeping every member's English and Arabic labels and max-pooling over all
+   of them, as the engine already pools the two languages — was not tested, so
+   this table does not rule it out.
+
+### Closed — Phase 0 ends here and does not reopen
+
+The gate failed, and Phase 0 was closed anyway. That decision is recorded here,
+not implied.
+
+- **No merge policy adopted.** In particular, nothing that chains through the 19
+  skills the hand labels never use.
+- **Final configuration.** Written to `config.json` by the real harness from the
+  real measurement, not typed by hand:
+
+  | field | value |
+  |---|---|
+  | method | `chunk_top1` |
+  | threshold / margin | 0.814 / 0.01 |
+  | best F1 / precision / recall | 0.503 / 0.6115 / 0.4271 |
+  | threshold plateau | 0.8130–0.8149 (width 0.0018) |
+  | taxonomy_skills | 90 |
+  | validated | true |
+  | **gate_passed** | **false** |
+
+- **The failure travels in the data.** `validate.py` gained
+  `--record-failed-gate`. By default a failing run still writes nothing; with the
+  flag it writes the best measured parameters marked `gate_passed: false`.
+  `load_match_params()` now returns `gate_passed` and `best_f1`, so every
+  consumer can qualify what it shows. Configs written before the field existed
+  came only from passing runs, so a missing field reads as passed.
+- **The `StaleConfigError` guard passes again.** The config records 90 skills,
+  matching the taxonomy, so `demo.py` and the engine run.
+
+Two findings for the evaluation chapter, both measured, both standing:
+
+1. **Granularity collapses separation.** 0.075 on the 19-entry taxonomy, 0.021 on
+   the 90-entry one — the correct skill barely clears its competitors.
+2. **Human annotation distinguishes what the model cannot.** 25 of the 43 pairs
+   above 0.92 similarity are separated by the hand labels. The labels are finer
+   than the matcher; the ceiling is the model's, not the annotator's.
+
+---
+
 ## 2026-09-08 — AI-assisted labelling measured and rejected; gate lowered to 15
 
 ### Measured — AI labelling agrees with hand annotation at Jaccard 0.61

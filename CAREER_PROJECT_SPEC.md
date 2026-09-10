@@ -53,7 +53,49 @@ operations" above "cybersecurity" for a network-security phrase.
 
 Record the precision/recall table. It goes in the evaluation chapter.
 
-Nothing in Phase 1+ starts until this passes.
+Nothing in Phase 1+ starts until this passes. — *Superseded: the gate did not
+pass, and Phase 0 was closed by decision. See the closure below.*
+
+### Status: CLOSED 2026-09-10 — gate FAILED at F1 0.503
+
+**Phase 0 is closed and does not reopen.** This departs from step 4 knowingly:
+fixing the taxonomy was attempted and the lever is exhausted, and the failure is
+carried forward as data rather than hidden.
+
+**Result.** 15 hand-labelled postings, 199 label mentions, 90-entry taxonomy.
+Best F1 **0.503** — `chunk_top1`, precision 0.61, recall 0.43, threshold 0.814,
+margin 0.01 — against the 0.60 floor. The winning threshold plateau is only
+0.0018 wide, so even that figure is fitted to this sample.
+
+**Final configuration.** `skillgap/config.json` holds those measured parameters
+with `validated: true` and **`gate_passed: false`**, written by
+`validate.py --record-failed-gate` from the real measurement. The engine runs on
+them. The failure lives in the data every consumer loads —
+`load_match_params()` returns `gate_passed`, and the API returns it alongside
+every readiness figure — not only in this document.
+
+**Finding — taxonomy granularity.** Moving from the 19-entry starter taxonomy to
+90 entries collapsed separation, the margin by which the correct skill stands
+above the rest, from **0.075 to 0.021**. The median similarity between two
+*unrelated* skills (0.834) now sits above the operating threshold (0.814), and
+43 pairs exceed 0.92.
+
+**Finding — human annotation distinguishes what the model cannot.** Of those 43
+confusable pairs, **25 are separated by the hand labels**: the annotator applies
+one without the other. Frontend/Backend development (0.966), Python/PHP (0.941)
+and Linux/Windows administration (0.938) are all pairs the model cannot tell
+apart and a person reading the advert can. Merging them would raise the metric
+by deleting distinctions the ground truth actually contains. Merging only the
+pairs the labels never separate stops at 85 entries; getting any lower requires
+chaining through unused skills into groups such as Software testing + IT
+security + Middleware. The merge lever is exhausted: simulated through the real
+sweep, no merge policy scored above the unmerged taxonomy — including an upper
+bound that merged every pair above 0.92 while ignoring the labels — and
+separation fell as entries were merged.
+
+**Downstream consequence.** Readiness figures are the engine's best measured
+output, not validated output, and must be presented that way — in the
+evaluation chapter and in the app.
 
 ### Why 15 and not 20–30
 

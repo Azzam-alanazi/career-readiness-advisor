@@ -19,7 +19,9 @@ reads its matching parameters from. On a failing run it writes nothing, so
 nothing downstream can accidentally run on parameters that never passed.
 
 Usage:
-    python validate.py
+    python validate.py                        # stops on a failed gate
+    python validate.py --record-failed-gate   # writes config.json anyway,
+                                              # marked gate_passed=false
 """
 
 import csv
@@ -448,7 +450,16 @@ def main():
             print("\n  Both domains agree on method, threshold and margin.")
 
     gate = min([p_best["f1"]] + ([c_best["f1"]] if c_best else []))
-    if gate < MIN_F1:
+    gate_passed = gate >= MIN_F1
+
+    # A failing run normally writes nothing, so nothing downstream can run on
+    # parameters that never passed. --record-failed-gate is the one deliberate
+    # exception: it writes the best measured parameters with gate_passed false,
+    # for when validation has closed on a failed gate and the engine still has
+    # to run. The failure then travels in the data every consumer loads, not
+    # only in prose that someone might not read.
+    record_failed = "--record-failed-gate" in sys.argv
+    if not gate_passed and not record_failed:
         print(f"\nSTOP. Best F1 {gate:.2f} is under the {MIN_F1} gate.")
         print("config.json was NOT written, so nothing else will run.")
         print("These tables belong in your evaluation chapter either way.")
@@ -459,6 +470,9 @@ def main():
         "validated_on": date.today().isoformat(),
         "taxonomy_skills": len(ids),
         "synonym_probes_passed": f"{n_pass}/{len(SYNONYM_PROBES)}",
+        "gate_passed": gate_passed,
+        "gate_min_f1": MIN_F1,
+        "gate_best_f1": round(gate, 4),
         "postings": section(p_best, len(postings),
                             sum(len(t) for _, t in postings), True),
         "courses": (section(c_best, len(courses),
@@ -467,7 +481,13 @@ def main():
                     section(p_best, 0, 0, False, inherited_from="postings")),
     }
     save_config(payload)
-    print(f"\nwrote config.json")
+    if gate_passed:
+        print(f"\nwrote config.json (gate passed, best F1 {gate:.3f})")
+    else:
+        print(f"\nGATE FAILED -- best F1 {gate:.3f} is under the {MIN_F1} floor.")
+        print("wrote config.json anyway (--record-failed-gate), marked "
+              "gate_passed=false. The engine will run; anything presenting its "
+              "output should say the matcher did not pass validation.")
     print("These tables belong in your evaluation chapter.")
 
 

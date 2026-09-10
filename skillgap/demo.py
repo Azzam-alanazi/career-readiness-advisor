@@ -14,6 +14,10 @@ from skillgap import (Embedder, Taxonomy, build_career_profile,
 # separate parameters because they are different kinds of text.
 POSTING_PARAMS = load_match_params("postings")
 COURSE_PARAMS = load_match_params("courses")
+if not POSTING_PARAMS["gate_passed"]:
+    print(f"NOTE: the matcher FAILED its validation gate (best F1 "
+          f"{POSTING_PARAMS['best_f1']}).")
+    print("      The figures below are best-measured output, not validated output.")
 if not COURSE_PARAMS["validated"]:
     print("NOTE: course parameters are inherited from postings, not measured.")
     print("      Label labeled_courses.csv and re-run validate.py.")

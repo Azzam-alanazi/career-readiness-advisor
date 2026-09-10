@@ -5,45 +5,36 @@ course descriptions, then computes a demand-weighted gap.
 
 ## Current state — read this first
 
-**The engine will not run right now, on purpose.** `config.json` records
-parameters swept against the 19-entry starter taxonomy; `taxonomy.json` now has
-90 entries. `load_match_params()` raises `StaleConfigError` rather than applying
-them.
-
-That guard exists because the silent version was worse. Before it, `demo.py` ran
-to completion against the 90-entry taxonomy and reported **0% readiness with two
-skills detected** — no crash, no warning. The cause is measurable: a denser
-taxonomy packs neighbouring skills closer together, so the median gap between a
-chunk's top-1 and top-2 skill halves, and a margin tuned on 19 skills discards
-almost everything on 90.
-
-| taxonomy | chunks clearing threshold | also clearing `margin=0.03` | median top1−top2 gap |
-|---|---|---|---|
-| 19-entry | 218 / 301 | 66 | 0.0145 |
-| 90-entry | 234 / 301 | **30** | 0.0075 |
-
-Clearing it needs a sweep against the current taxonomy, which needs labels. The
-labels are the blocker, not the code.
-
-## Where things stand in Phase 0
+**Phase 0 closed on 2026-09-10 with the validation gate FAILED** — best F1
+0.503 against a 0.60 floor. The engine runs, but its output is best-measured,
+not validated. `config.json` records `gate_passed: false`,
+`load_match_params()` returns it, and anything presenting results must say so.
 
 | | |
 |---|---|
-| Validation gate | **not yet closed** — the recorded F1 0.900 was measured on 3 postings / 11 labels against the old 19-entry taxonomy |
+| Validation gate | **FAILED, closed** — F1 0.503 (precision 0.61, recall 0.43) on 15 hand-labelled postings, 199 labels |
+| Final parameters | `chunk_top1`, threshold 0.814, margin 0.01 — plateau only 0.0018 wide |
+| Separation | **0.021** on the 90-entry taxonomy, down from 0.075 on the 19-entry one |
 | Taxonomy | 90 entries, `SK01`–`SK90`, English + Arabic, 8 categories |
-| Postings collected | 27, five careers, no duplicates, **5 hand-labelled** |
-| Postings excluded | 19, each with a recorded reason |
-| Courses | 16 catalog entries, **0 labelled** |
-| Next step | label `../test/manual_batch2.csv` (10 postings, two per career), merge, then re-sweep |
+| Postings | 27 collected, 15 hand-labelled; 19 excluded, each with a recorded reason |
+| Courses | 16 catalog entries, **0 labelled** — course mapping never measured |
 
-The 0.900 was measured against the 19-entry taxonomy on the three rows now in
-`archive/labeled_postings_starter19.csv`. It does not describe the current
-system, and it is the only F1 the project has.
+**Why it failed: granularity.** A 90-entry taxonomy packs neighbouring skills
+closer together than this model can separate. The median similarity of two
+*unrelated* skills, 0.834, sits above the operating threshold, and 43 pairs
+exceed 0.92. Twenty-five of those 43 are pairs the hand labels keep apart —
+Frontend/Backend, Python/PHP, Linux/Windows — so human annotation distinguishes
+what the model cannot. Merging only the pairs the labels never separate stops at
+85 entries; the merge lever is exhausted. The full diagnosis is in
+`CHANGELOG.md`.
 
-The gate closes at **15 hand-labelled postings** — lowered from 20–30 because
-AI-assisted labelling was measured against hand annotation and rejected
-(Jaccard 0.61), so every label is hand-written. 5 are done, 10 are drawn and
-waiting in `../test/manual_batch2.csv`.
+`StaleConfigError` still guards the other failure mode: parameters swept
+against one taxonomy are refused if a different one is loaded. Before that
+guard, stale parameters produced **0% readiness with two skills detected** and
+no error at all.
+
+The earlier F1 0.900 was measured on 3 postings against the 19-entry taxonomy
+(`archive/labeled_postings_starter19.csv`). It does not describe this system.
 
 ## Run
 
@@ -172,9 +163,9 @@ preferring whichever column actually has values.
 
 ## Known limitations
 
-- **Every recorded F1 rests on 3 postings and 11 labels**, against the previous
-  taxonomy. The gate now closes at 15 hand-labelled postings; 5 are done. Even at
-  15, one label flipping moves F1 by roughly two points.
+- **The matcher failed its gate.** Best F1 0.503 against a 0.60 floor, on 15
+  hand-labelled postings, with a winning threshold plateau only 0.0018 wide. At
+  15 postings one label flipping still moves F1 by roughly two points.
 - **AI-assisted labelling was measured and rejected** as ground truth: Jaccard
   0.61 against hand annotation, with errors that track an upstream career
   mislabel rather than the advert text. See `CHANGELOG.md`. The AI labels in
@@ -189,8 +180,8 @@ preferring whichever column actually has values.
   fix that; until it is filled in, course parameters are inherited from postings
   and marked unvalidated.
 - **`SK01 Requirements analysis` and `SK02 Requirements elicitation`** — and
-  several other near-synonym pairs — sit within ~0.01 of each other. That is the
-  mechanism behind the margin collapse described at the top.
+  several other near-synonym pairs — sit within ~0.01 of each other. Pairs like
+  these are why separation fell to 0.021; the diagnosis is in `CHANGELOG.md`.
 - **The sample is English-only.** This survived a corrected filter (see
   `CHANGELOG.md`), so it reflects the market on these boards rather than a
   collection artefact, but cross-lingual matching stays untested.
