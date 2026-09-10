@@ -56,29 +56,49 @@ Record the precision/recall table. It goes in the evaluation chapter.
 Nothing in Phase 1+ starts until this passes. — *Superseded: the gate did not
 pass, and Phase 0 was closed by decision. See the closure below.*
 
-### Status: CLOSED 2026-09-10 — gate FAILED at F1 0.503
+### Status: CLOSED — gate FAILED in both domains
 
 **Phase 0 is closed and does not reopen.** This departs from step 4 knowingly:
 fixing the taxonomy was attempted and the lever is exhausted, and the failure is
-carried forward as data rather than hidden.
+carried forward as data rather than hidden. It closed on 2026-09-10 with the
+posting domain measured. On 2026-09-11 the course domain was measured as well,
+against 16 hand-labelled catalog entries, and the closure stands on both.
 
-**Result.** 15 hand-labelled postings, 199 label mentions, 90-entry taxonomy.
-Best F1 **0.503** — `chunk_top1`, precision 0.61, recall 0.43, threshold 0.814,
-margin 0.01 — against the 0.60 floor. The winning threshold plateau is only
-0.0018 wide, so even that figure is fitted to this sample.
+**Result.** Both domains fall short of the 0.60 floor, on the 91-entry taxonomy.
 
-**Final configuration.** `skillgap/config.json` holds those measured parameters
-with `validated: true` and **`gate_passed: false`**, written by
-`validate.py --record-failed-gate` from the real measurement. The engine runs on
-them. The failure lives in the data every consumer loads —
-`load_match_params()` returns `gate_passed`, and the API returns it alongside
-every readiness figure — not only in this document.
+| domain | hand-labelled | winner | threshold / margin | F1 | precision / recall | plateau |
+|---|---|---|---|---|---|---|
+| postings | 15 postings, 199 labels | `chunk_top1` | 0.8140 / 0.01 | **0.504** | 0.62 / 0.43 | 0.0018 wide |
+| courses | 16 courses, 44 labels | `chunk_top1` | 0.81465 / 0.00 | **0.514** | 0.63 / 0.43 | 0.000016 wide |
+
+**Both winners are provisional.** The plateau is the range of thresholds that
+holds the best F1; at 0.0018 and 0.000016 wide (0.0000 at four decimals), each
+optimum is fitted to its own sample. The course threshold is stored to five
+decimals because four put it below a plateau that narrow. On courses,
+`chunk_top1` also beat `skill_centric` (F1 0.500) by less than 0.02, which at
+this sample size is not a reliable margin. The posting
+figure was 0.503 on the 90-entry taxonomy; adding SK91 Java programming moved it
+to 0.504 by removing one false positive.
+
+**Final configuration.** `skillgap/config.json` holds both domains' measured
+parameters with `validated: true` and **`gate_passed: false`**. `validate.py` now
+always writes it and records a failed gate in the data instead of refusing to
+write: after a taxonomy change, a refused write leaves a config that
+`StaleConfigError` rejects, and the app cannot start at all. The failure lives in
+the data every consumer loads — `load_match_params()` returns `gate_passed`, and
+the API returns it alongside every readiness figure — not only in this document.
 
 **Finding — taxonomy granularity.** Moving from the 19-entry starter taxonomy to
 90 entries collapsed separation, the margin by which the correct skill stands
-above the rest, from **0.075 to 0.021**. The median similarity between two
-*unrelated* skills (0.834) now sits above the operating threshold (0.814), and
-43 pairs exceed 0.92.
+above the rest, from **0.075 to 0.021** on postings. The median similarity
+between two *unrelated* skills (0.834) now sits above the operating threshold
+(0.814), and 43 pairs exceed 0.92. Course text separates better, at **0.052**,
+and still does not clear the floor.
+
+**Finding — the SQL probe fails.** Five of six synonym probes pass. "Experience
+writing queries against relational databases" ranks SK16 Database management
+first (0.85) and SK17 SQL second (0.84): two neighbouring skills 0.01 apart, the
+confusion the granularity finding describes.
 
 **Finding — human annotation distinguishes what the model cannot.** Of those 43
 confusable pairs, **25 are separated by the hand labels**: the annotator applies
@@ -178,6 +198,15 @@ Arabic regardless of which language the underlying posting was written in.
 9. Course-to-skill mapping via the same extraction path
 10. Hand-correction interface for bad mappings — thin catalog descriptions
     produce thin mappings, and this needs a human in the loop
+
+### Status: item 9 measured 2026-09-11
+
+Course-to-skill mapping runs through the same extraction path with its own
+measured parameters: `chunk_top1`, threshold 0.81465, margin 0.00, F1 0.514
+against 16 hand-labelled courses (44 labels). The catalog reaches 26 of 91
+skills, 20 of them among the 41 the labels contain; the other 21 labelled
+skills are reached by no course. Item 8's `credits` column and item 10's
+correction interface are not started.
 
 ## Phase 3 — API
 11. FastAPI service exposing: list careers, submit student profile, get gap

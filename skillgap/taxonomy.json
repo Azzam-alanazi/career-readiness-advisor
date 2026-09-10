@@ -539,6 +539,12 @@
       "en": "Security testing",
       "ar": "اختبار الاختراق والأمن",
       "category": "security"
+    },
+    {
+      "id": "SK91",
+      "en": "Java programming",
+      "ar": "برمجة جافا",
+      "category": "software_development"
     }
   ]
 }

@@ -12,8 +12,9 @@ decision, and says so in the data. `/health`, every gap response and every
 recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
 
-Course-to-skill mapping has also never been measured against labelled courses,
-and the same block says so.
+Course-to-skill mapping has been measured too, on 16 hand-labelled courses, and
+also falls short, at F1 0.514. `best_f1` in the block is the posting figure,
+0.504, which is also the gate figure because it is the lower of the two.
 
 ## Run
 
@@ -74,7 +75,7 @@ because the catalog is.
 python -m pytest
 ```
 
-37 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+39 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -101,12 +102,14 @@ python -m backend.reports course-reach --explain
   every catalog course been taken, plus the posting count each value implies
   per career. It checks that its row at the engine default is exactly what the
   API serves, and that no value between its rows behaves differently.
-- `course-reach` lists which of the taxonomy's skills any catalog course maps
-  to, with each skill's demand per career. `--explain` loads the model and
-  shows, chunk by chunk, what each course sentence voted for or why it was
-  dropped; it raises if that account disagrees with the served map.
+- `course-reach` lists what each catalog course maps to, and which of the
+  taxonomy's skills any course reaches, with each skill's demand per career.
+  `--explain` loads the model and shows, chunk by chunk, what each sentence gave
+  its course — every skill at or over the threshold under `skill_centric`, at
+  most one vote under `chunk_top1` — or why it gave nothing; it raises if that
+  account disagrees with the served map.
 
-Results as of 2026-09-10 are in `../skillgap/CHANGELOG.md`.
+Results, dated, are in `../skillgap/CHANGELOG.md`.
 
 ## Verified end to end
 

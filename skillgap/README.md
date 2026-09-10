@@ -5,19 +5,20 @@ course descriptions, then computes a demand-weighted gap.
 
 ## Current state — read this first
 
-**Phase 0 closed on 2026-09-10 with the validation gate FAILED** — best F1
-0.503 against a 0.60 floor. The engine runs, but its output is best-measured,
-not validated. `config.json` records `gate_passed: false`,
-`load_match_params()` returns it, and anything presenting results must say so.
+**Phase 0 is closed with the validation gate FAILED in both domains** —
+postings F1 0.504 and courses F1 0.514, against a 0.60 floor. The engine runs,
+but its output is best-measured, not validated. `config.json` records
+`gate_passed: false`, `load_match_params()` returns it, and anything presenting
+results must say so.
 
 | | |
 |---|---|
-| Validation gate | **FAILED, closed** — F1 0.503 (precision 0.61, recall 0.43) on 15 hand-labelled postings, 199 labels |
-| Final parameters | `chunk_top1`, threshold 0.814, margin 0.01 — plateau only 0.0018 wide |
-| Separation | **0.021** on the 90-entry taxonomy, down from 0.075 on the 19-entry one |
-| Taxonomy | 90 entries, `SK01`–`SK90`, English + Arabic, 8 categories |
+| Validation gate | **FAILED, closed** — postings F1 0.504 (precision 0.62, recall 0.43) on 15 hand-labelled postings, 199 labels; courses F1 0.514 (precision 0.63, recall 0.43) on 16 hand-labelled courses, 44 labels |
+| Final parameters | postings `chunk_top1`, threshold 0.8140, margin 0.01, plateau 0.0018 wide; courses `chunk_top1`, threshold 0.81465, margin 0.00, plateau 0.000016 wide — both provisional |
+| Separation | postings **0.021** (0.075 on the 19-entry taxonomy); courses 0.052 |
+| Taxonomy | 91 entries, `SK01`–`SK91`, English + Arabic, 8 categories — `SK91` Java programming added 2026-09-11 |
 | Postings | 27 collected, 15 hand-labelled; 19 excluded, each with a recorded reason |
-| Courses | 16 catalog entries, **0 labelled** — course mapping never measured |
+| Courses | 16 catalog entries, all hand-labelled, 2 of them `NONE` |
 
 **Why it failed: granularity.** A 90-entry taxonomy packs neighbouring skills
 closer together than this model can separate. The median similarity of two
@@ -127,7 +128,13 @@ symmetric form won, which is what the model card specifies for similarity.
 Two labeled sets are swept, not one — postings and course catalog entries are
 different kinds of text, so each gets its own parameters. If they disagree,
 `validate.py` reports the disagreement and keeps both. A domain with no labels
-inherits the other's parameters, marked `"validated": false` with scores `null`.
+inherits parameters from the other, marked `"validated": false` with scores
+`null`. Unlabelled courses inherit postings' best `skill_centric` result rather
+than the overall winner, on the reasoning that `chunk_top1` starves a catalog
+sentence naming several skills. Measured on 16 labelled courses, that did not
+hold: `chunk_top1` won on course text, and the inherited `skill_centric`
+threshold over-matched, scoring F1 0.228 against the labels where inheriting the
+posting winner scored 0.475. The rule is dormant while courses are labelled.
 
 Within each domain, two matching methods:
 
@@ -155,17 +162,19 @@ scored precision 0.20.
 ## Labelling
 
 Put `SK`-codes in the labels column, separated by `;` — e.g. `SK01;SK17;SK85`.
-`TAXONOMY_REFERENCE.md` lists all 90 grouped by category. Unknown ids are a hard
-error, so a typo cannot silently become a false negative.
+`TAXONOMY_REFERENCE.md` lists all 91 grouped by category. Write `NONE` for a text
+that involves none of them; a blank cell means "not labelled yet" and is skipped.
+Unknown ids are a hard error, so a typo cannot silently become a false negative.
 
 `validate.py` accepts labels in `skill_ids`, `taxonomy_skill_ids` or `labels`,
 preferring whichever column actually has values.
 
 ## Known limitations
 
-- **The matcher failed its gate.** Best F1 0.503 against a 0.60 floor, on 15
-  hand-labelled postings, with a winning threshold plateau only 0.0018 wide. At
-  15 postings one label flipping still moves F1 by roughly two points.
+- **The matcher failed its gate in both domains.** Postings F1 0.504 on 15
+  hand-labelled postings, courses F1 0.514 on 16 courses, against a 0.60 floor,
+  with winning plateaus 0.0018 and 0.000016 wide. At these sizes one label
+  flipping moves F1 by two points or more.
 - **AI-assisted labelling was measured and rejected** as ground truth: Jaccard
   0.61 against hand annotation, with errors that track an upstream career
   mislabel rather than the advert text. See `CHANGELOG.md`. The AI labels in
@@ -176,9 +185,10 @@ preferring whichever column actually has values.
   turn a coverage gap into a passing test.
 - **No technical-writing skill.** "Write a technical report documenting the
   findings" has nowhere correct to land.
-- **Course extraction has never been measured.** `labeled_courses.csv` exists to
-  fix that; until it is filled in, course parameters are inherited from postings
-  and marked unvalidated.
+- **Course extraction rests on 16 labelled courses**, labelled by one person
+  after the model's course mappings had been shown, so those labels are not
+  blind the way the posting labels were. `chunk_top1` won on course text by
+  under 0.02 F1 over `skill_centric`, on a plateau 0.000016 wide.
 - **`SK01 Requirements analysis` and `SK02 Requirements elicitation`** — and
   several other near-synonym pairs — sit within ~0.01 of each other. Pairs like
   these are why separation fell to 0.021; the diagnosis is in `CHANGELOG.md`.
@@ -196,7 +206,7 @@ preferring whichever column actually has values.
 | `skillgap.py` | Engine: extraction, profiling, gap analysis, recommendations |
 | `validate.py` | Parameter sweep and sanity checks |
 | `demo.py` | End-to-end example |
-| `taxonomy.json` | 90-entry skill taxonomy, bilingual — the live one |
+| `taxonomy.json` | 91-entry skill taxonomy, bilingual — the live one: the 90 built from `real_skill_taxonomy_90.csv`, plus `SK91` Java programming |
 | `real_skill_taxonomy_90.csv` | Source the taxonomy was built from |
 | `TAXONOMY_REFERENCE.md` | Printable sheet, grouped by category, for labelling |
 | `taxonomy_starter_19.json` | The 19-entry taxonomy every recorded F1 was measured against |

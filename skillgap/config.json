@@ -1,18 +1,18 @@
 {
   "model": "intfloat/multilingual-e5-base",
-  "validated_on": "2026-09-10",
-  "taxonomy_skills": 90,
+  "validated_on": "2026-09-11",
+  "taxonomy_skills": 91,
   "synonym_probes_passed": "5/6",
   "gate_passed": false,
   "gate_min_f1": 0.6,
-  "gate_best_f1": 0.503,
+  "gate_best_f1": 0.5045,
   "postings": {
     "match_method": "chunk_top1",
     "match_threshold": 0.814,
     "match_margin": 0.01,
     "validated": true,
-    "best_f1": 0.503,
-    "precision": 0.6115,
+    "best_f1": 0.5045,
+    "precision": 0.6159,
     "recall": 0.4271,
     "threshold_plateau": [
       0.813,
@@ -24,15 +24,18 @@
   },
   "courses": {
     "match_method": "chunk_top1",
-    "match_threshold": 0.814,
-    "match_margin": 0.01,
-    "validated": false,
-    "inherited_from": "postings",
-    "note": "parameters copied from 'postings'; never measured on this domain's text. Label its CSV and re-run.",
-    "best_f1": null,
-    "precision": null,
-    "recall": null,
-    "labeled_texts": 0,
-    "labeled_skill_mentions": 0
+    "match_threshold": 0.81465,
+    "match_margin": 0.0,
+    "validated": true,
+    "best_f1": 0.5135,
+    "precision": 0.6333,
+    "recall": 0.4318,
+    "threshold_plateau": [
+      0.81464,
+      0.81466
+    ],
+    "threshold_plateau_width": 1.6e-05,
+    "labeled_texts": 16,
+    "labeled_skill_mentions": 44
   }
 }

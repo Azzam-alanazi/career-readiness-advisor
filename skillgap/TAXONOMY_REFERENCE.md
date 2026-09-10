@@ -1,7 +1,12 @@
-# Skill taxonomy — 90 entries
+# Skill taxonomy — 91 entries
 
-Labelling reference for `manual_validation.csv`. Put the codes in
-`skill_ids`, separated by `;` — for example `SK01;SK17;SK85`.
+Labelling reference for the hand-labelled CSVs: `labeled_courses.csv` now,
+`manual_validation.csv` before it. Put the codes in `skill_ids`, separated by
+`;` — for example `SK01;SK17;SK85`. Write `NONE` for a text that involves none
+of these skills; a blank cell means "not labelled yet" and is skipped.
+
+`SK91` Java programming was added on 2026-09-11, after every posting label was
+written, so no posting label uses it.
 
 ## BUSINESS ANALYSIS & DELIVERY (12)
 
@@ -36,7 +41,7 @@ Labelling reference for `manual_validation.csv`. Put the codes in
 | `SK22` | Machine learning | تعلم الآلة |
 | `SK23` | Artificial intelligence | الذكاء الاصطناعي |
 
-## SOFTWARE DEVELOPMENT (19)
+## SOFTWARE DEVELOPMENT (20)
 
 | code | English | العربية |
 |---|---|---|
@@ -59,6 +64,7 @@ Labelling reference for `manual_validation.csv`. Put the codes in
 | `SK39` | Internationalization / localization | التدويل والتوطين |
 | `SK40` | Software architecture | معمارية البرمجيات |
 | `SK89` | Quality assurance | ضمان الجودة |
+| `SK91` | Java programming | برمجة جافا |
 
 ## INFRASTRUCTURE, CLOUD & NETWORKS (11)
 

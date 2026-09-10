@@ -71,6 +71,20 @@ def test_explain_reproduces_the_served_course_map(tmp_path, embedder):
     assert (body.top, body.voted) == ("SQ", True)
 
 
-def test_explain_refuses_a_matcher_it_does_not_describe(world, embedder):
+def test_explain_under_skill_centric_lists_every_skill_a_chunk_clears(world, embedder):
+    # The fixture world matches with skill_centric at 0.45.
+    state = build_state(world, embedder)
+    explained = dict(explain_courses(state, paths=world, embedder_factory=embedder))
+    title, body = explained["IS230"]
+    assert (title.voted, title.reason) == (False, "below threshold 0.45")
+    assert [s for s, _ in body.cleared] == ["SQ"]
+    assert body.reason == "1 at or over threshold 0.45"
+
+
+def test_explain_refuses_a_matcher_it_does_not_describe(tmp_path, embedder):
+    config = make_config()
+    paths = write_world(tmp_path / "w", config)
+    state = build_state(paths, embedder)
+    state.course_params["method"] = "something_else"
     with pytest.raises(SystemExit):
-        explain_courses(build_state(world, embedder), paths=world, embedder_factory=embedder)
+        explain_courses(state, paths=paths, embedder_factory=embedder)

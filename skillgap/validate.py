@@ -14,14 +14,15 @@ They are swept separately and reported separately. If their optima disagree,
 that disagreement is the finding; each domain keeps its own parameters rather
 than being averaged into one compromise that fits neither.
 
-On a passing run this writes config.json, which is where the rest of the engine
-reads its matching parameters from. On a failing run it writes nothing, so
-nothing downstream can accidentally run on parameters that never passed.
+Every run writes config.json, which is where the rest of the engine reads its
+matching parameters from -- a run that fails the F1 gate included. The failure
+is recorded in the data, as gate_passed: false beside the measured F1, rather
+than by refusing to write: after any taxonomy change a refused write leaves
+config.json measured against the old taxonomy, StaleConfigError refuses that,
+and the app cannot start at all.
 
 Usage:
-    python validate.py                        # stops on a failed gate
-    python validate.py --record-failed-gate   # writes config.json anyway,
-                                              # marked gate_passed=false
+    python validate.py
 """
 
 import csv
@@ -42,6 +43,13 @@ MODEL = "intfloat/multilingual-e5-base"
 POSTINGS_CSV = "../test/labeled_postings.csv"
 COURSES_CSV = "labeled_courses.csv"
 SKILL_SEP = ";"
+
+# Written in a labels cell to mean "labelled: teaches no skill in the taxonomy".
+# A blank cell means "not labelled yet" and is skipped, so without a marker a
+# catalog entry that genuinely teaches none of the skills could never be
+# counted -- and every skill the matcher wrongly found in it would go
+# unmeasured, flattering precision.
+NO_SKILLS = "NONE"
 
 # Column holding the text to match. Both CSVs share a structure; only this
 # column is named for its domain.
@@ -77,6 +85,17 @@ DISPLAY_MARGINS = [0.00, 0.01, 0.02, 0.03, 0.05, 0.08]
 # A winning plateau narrower than this is fitted to the sample, not the task.
 MIN_PLATEAU = 0.01
 
+# With no labelled courses, the course domain borrows posting parameters --
+# skill_centric's, not whichever method won on postings, on the reasoning that
+# chunk_top1 lets each sentence vote for one skill while catalog sentences name
+# several. Measurement did not bear that out. On the 16 courses labelled on
+# 2026-09-11, chunk_top1 won (F1 0.514 against skill_centric's 0.500), and as
+# an inherited default this rule scored F1 0.228 against those labels where the
+# old one, inheriting the posting winner, scored 0.475 (CHANGELOG, 2026-09-11).
+# It applies only while courses are unlabelled; labelled courses are swept like
+# postings, both methods, and the measurement decides.
+COURSES_INHERIT_METHOD = "skill_centric"
+
 # Phrases that avoid the taxonomy's exact wording. If these miss, the model
 # is doing keyword matching in disguise, not semantics.
 # Retargeted to the 90-entry taxonomy's ids. The old spreadsheet/Excel probe was
@@ -103,7 +122,8 @@ def load_labeled(path: str, valid_ids: set[str]) -> tuple[list, int]:
 
     A row with text but no labels is treated as not yet labeled and skipped,
     not as an error -- that is what an unfilled template row looks like, and
-    the count is reported so a forgotten row cannot hide.
+    the count is reported so a forgotten row cannot hide. A row labelled
+    NONE is labelled with no skills, and does count.
 
     Every skill_id is checked against the taxonomy. A typo in a label silently
     becomes a false negative for a skill that does not exist, which would
@@ -144,7 +164,8 @@ def load_labeled(path: str, valid_ids: set[str]) -> tuple[list, int]:
         if text and not raw:
             pending += 1
             continue  # written, not yet labeled
-        ids = {s.strip() for s in raw.split(SKILL_SEP) if s.strip()}
+        ids = (set() if raw.upper() == NO_SKILLS
+               else {s.strip() for s in raw.split(SKILL_SEP) if s.strip()})
         unknown = ids - valid_ids
         if unknown:
             bad.append(f"  line {lineno}: unknown skill_id(s) {sorted(unknown)}")
@@ -297,7 +318,7 @@ def report_spread(labeled_scores, ids) -> dict:
 
 
 def sweep_domain(label: str, ls, ids) -> dict:
-    """Print both methods' tables for one domain and return the winner."""
+    """Print both methods' tables for one domain. Returns (winner, best per method)."""
     print(f"\n{'=' * 70}")
     print(f"DOMAIN: {label}   ({len(ls)} texts, "
           f"{sum(len(t) for _, t in ls)} ground-truth labels)")
@@ -343,7 +364,23 @@ def sweep_domain(label: str, ls, ids) -> dict:
     if best["width"] < MIN_PLATEAU:
         print(f"     WARNING: plateau only {best['width']:.4f} wide -- fitted to "
               f"this sample, treat as provisional")
-    return best
+    return best, {a["method"]: a, b["method"]: b}
+
+
+def threshold_decimals(best: dict) -> int:
+    """
+    Fewest decimals, from four, that keep the rounded threshold on its plateau.
+
+    Four are plenty on a wide plateau. The course plateau measured on 2026-09-11
+    was 0.0000157 wide, and rounding its threshold to four decimals, 0.8146, put
+    it below the plateau: one more chunk voted, and the served course map scored
+    F1 0.507 under a recorded 0.514.
+    """
+    lo, hi = best["plateau"]
+    for d in range(4, 10):
+        if lo <= round(best["threshold"], d) <= hi:
+            return d
+    return 10
 
 
 def section(best: dict, n_texts: int, n_labels: int, validated: bool,
@@ -355,17 +392,18 @@ def section(best: dict, n_texts: int, n_labels: int, validated: bool,
     donor domain's F1 across would put a number in the record that was never
     measured on this kind of text, and that number would eventually be quoted.
     """
+    d = threshold_decimals(best)
     out = {
         "match_method": best["method"],
-        "match_threshold": round(best["threshold"], 4),
+        "match_threshold": round(best["threshold"], d),
         "match_margin": round(best["margin"], 4),
         "validated": validated,
     }
     if inherited_from:
         out.update({
             "inherited_from": inherited_from,
-            "note": f"parameters copied from '{inherited_from}'; never measured "
-                    f"on this domain's text. Label its CSV and re-run.",
+            "note": f"{best['method']} parameters copied from '{inherited_from}'; "
+                    f"never measured on this domain's text. Label its CSV and re-run.",
             "best_f1": None, "precision": None, "recall": None,
             "labeled_texts": 0, "labeled_skill_mentions": 0,
         })
@@ -374,9 +412,10 @@ def section(best: dict, n_texts: int, n_labels: int, validated: bool,
             "best_f1": round(best["f1"], 4),
             "precision": round(best["precision"], 4),
             "recall": round(best["recall"], 4),
-            "threshold_plateau": [round(best["plateau"][0], 4),
-                                  round(best["plateau"][1], 4)],
-            "threshold_plateau_width": round(best["width"], 4),
+            "threshold_plateau": [round(best["plateau"][0], d),
+                                  round(best["plateau"][1], d)],
+            "threshold_plateau_width": (round(best["width"], 4)
+                                        or float(f"{best['width']:.2g}")),
             "labeled_texts": n_texts,
             "labeled_skill_mentions": n_labels,
         })
@@ -414,19 +453,25 @@ def main():
               f"got={[(s, round(v,2)) for s, v in hits]}")
     print(f"  {n_pass}/{len(SYNONYM_PROBES)} pass")
 
-    p_best = sweep_domain("postings", precompute(tax, postings), ids)
-    c_best = sweep_domain("courses", precompute(tax, courses), ids) if courses else None
+    p_ls = precompute(tax, postings)
+    c_ls = precompute(tax, courses) if courses else None
+    p_best, p_by_method = sweep_domain("postings", p_ls, ids)
+    c_best = sweep_domain("courses", c_ls, ids)[0] if courses else None
+    c_inherited = p_by_method[COURSES_INHERIT_METHOD]
 
     print(f"\n{'=' * 70}")
     print("COMPARISON")
     print("=" * 70)
     if c_best is None:
         print(f"  courses: no labeled rows in {COURSES_CSV}, sweep skipped.")
-        print("  Course parameters will be INHERITED from postings and marked")
-        print("  unvalidated. Postings bullets carry one requirement each while")
-        print("  catalog entries pack several into a sentence, so there is no")
-        print("  reason to assume the same parameters suit both. Label the")
-        print("  course CSV and re-run to find out.")
+        print(f"  Course parameters will be INHERITED from postings' best "
+              f"{COURSES_INHERIT_METHOD} result")
+        print(f"  (th={c_inherited['threshold']:.4f}, F1 {c_inherited['f1']:.3f} on "
+              f"postings) and marked unvalidated.")
+        print("  Postings bullets carry one requirement each while catalog")
+        print("  entries pack several into a sentence, so there is no reason to")
+        print("  assume the same parameters suit both. Label the course CSV and")
+        print("  re-run to find out.")
     else:
         rows = [("postings", p_best), ("courses", c_best)]
         print(f"  {'domain':<12}{'method':<16}{'thresh':<10}{'margin':<9}{'F1':<8}{'width'}")
@@ -452,19 +497,13 @@ def main():
     gate = min([p_best["f1"]] + ([c_best["f1"]] if c_best else []))
     gate_passed = gate >= MIN_F1
 
-    # A failing run normally writes nothing, so nothing downstream can run on
-    # parameters that never passed. --record-failed-gate is the one deliberate
-    # exception: it writes the best measured parameters with gate_passed false,
-    # for when validation has closed on a failed gate and the engine still has
-    # to run. The failure then travels in the data every consumer loads, not
-    # only in prose that someone might not read.
-    record_failed = "--record-failed-gate" in sys.argv
-    if not gate_passed and not record_failed:
-        print(f"\nSTOP. Best F1 {gate:.2f} is under the {MIN_F1} gate.")
-        print("config.json was NOT written, so nothing else will run.")
-        print("These tables belong in your evaluation chapter either way.")
-        sys.exit(1)
-
+    # A failed gate is recorded in the data, not enforced by refusing to write.
+    # Refusing was the default until 2026-09-11, with --record-failed-gate as
+    # the way round it. But Phase 0 closed on a failed gate, so every run fails
+    # it, and after a taxonomy change a refused write strands the app on a
+    # config StaleConfigError will not load. gate_passed: false travels in the
+    # data every consumer reads instead; the API returns it beside every figure.
+    # --record-failed-gate is still accepted and changes nothing.
     payload = {
         "model": MODEL,
         "validated_on": date.today().isoformat(),
@@ -478,16 +517,32 @@ def main():
         "courses": (section(c_best, len(courses),
                             sum(len(t) for _, t in courses), True)
                     if c_best else
-                    section(p_best, 0, 0, False, inherited_from="postings")),
+                    section(c_inherited, 0, 0, False, inherited_from="postings")),
     }
+    # The parameters written must reproduce the F1 recorded beside them.
+    # threshold_decimals() is what keeps a rounded threshold on its plateau;
+    # this is what proves it did, for every measured section.
+    for name, ls, measured in (("postings", p_ls, p_best), ("courses", c_ls, c_best)):
+        sec = payload[name]
+        if measured is None or not sec["validated"]:
+            continue
+        th, mg = sec["match_threshold"], sec["match_margin"]
+        if sec["match_method"] == "skill_centric":
+            pre = lambda s, i, t=th: predict_skill_centric(s, i, t)
+        else:
+            pre = lambda s, i, t=th, m=mg: predict_chunk_top1(s, i, t, m)
+        f1 = prf(pre, ls, ids)[5]
+        if abs(f1 - measured["f1"]) > 1e-9:
+            raise AssertionError(f"{name}: the parameters about to be written score "
+                                 f"F1 {f1:.4f}, not the measured {measured['f1']:.4f}")
     save_config(payload)
     if gate_passed:
         print(f"\nwrote config.json (gate passed, best F1 {gate:.3f})")
     else:
         print(f"\nGATE FAILED -- best F1 {gate:.3f} is under the {MIN_F1} floor.")
-        print("wrote config.json anyway (--record-failed-gate), marked "
-              "gate_passed=false. The engine will run; anything presenting its "
-              "output should say the matcher did not pass validation.")
+        print("wrote config.json with gate_passed=false. The engine will run; "
+              "anything presenting its output must say the matcher did not pass "
+              "validation.")
     print("These tables belong in your evaluation chapter.")
 
 

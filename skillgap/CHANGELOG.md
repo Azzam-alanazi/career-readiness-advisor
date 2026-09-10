@@ -4,6 +4,196 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-11 — Phase 0 closure: both domains measured, `config.json` written
+
+Phase 0 stays closed as failed and does not reopen. What changed is the record:
+the course domain is now measured on hand labels, SK91 Java programming joined
+the taxonomy, and `config.json` carries both domains' measured parameters with
+`validated: true` and `gate_passed: false`. `validate.py` now writes that file on
+every run.
+
+### Result — both domains below the 0.60 floor
+
+| domain | hand-labelled | winner | threshold / margin | F1 | precision / recall | TP / FP / FN | plateau |
+|---|---|---|---|---|---|---|---|
+| postings | 15 postings, 199 labels | `chunk_top1` | 0.8140 / 0.01 | **0.504** | 0.62 / 0.43 | 85 / 53 / 114 | 0.0018 wide |
+| courses | 16 courses, 44 labels | `chunk_top1` | 0.81465 / 0.00 | **0.514** | 0.63 / 0.43 | 19 / 11 / 25 | 0.000016 wide |
+
+- **Both winners are provisional.** Each plateau, the range of thresholds that
+  holds the best F1, is too narrow to be anything but fitted to its sample:
+  0.0018 on postings, 0.000016 on courses (0.0000 at four decimals). On courses
+  `chunk_top1` beat `skill_centric` (F1 0.500 at 0.8819) by under 0.02, which
+  `validate.py` itself flags as unreliable at this size. The course curve is
+  flat and noisy rather than peaked: on the display grid, `chunk_top1` at margin
+  0.00 stays between 0.45 and 0.51 from threshold 0.70 to 0.88.
+- **The domains disagree on margin**, 0.01 against 0.00, and each keeps its own.
+- **Separation** is 0.021 on postings and 0.052 on courses. The granularity
+  finding stands: going from 19 to 90 entries collapsed posting separation from
+  0.075 to 0.021, and the median similarity of two unrelated skills (0.834) sits
+  above the operating threshold. Course text separates better and still misses
+  the floor.
+- **Synonym probes: 5 of 6.** "Experience writing queries against relational
+  databases" ranks SK16 Database management first (0.85) and SK17 SQL second
+  (0.84).
+- **The measurement reproduces.** Before any change, re-running the sweep on the
+  90-entry taxonomy returned the 2026-09-10 posting result exactly: F1 0.503,
+  threshold 0.814, margin 0.01, plateau 0.8130–0.8149.
+
+### `config.json` — the failure in the data, not a refusal to write
+
+`python validate.py` without `--record-failed-gate` measured both domains, then
+refused to write: "STOP ... config.json was NOT written". With a failed gate that
+is every run, and after a taxonomy change a refused write leaves `config.json`
+measured on the old taxonomy, which `StaleConfigError` rejects, so the app cannot
+start. `validate.py` now always writes, with `gate_passed: false` beside the
+measured F1; `--record-failed-gate` is accepted and changes nothing. The final
+`config.json` was written by a run without the flag, and a test pins the
+behaviour: a failing gate with no flag still writes.
+
+**A rounding bug, found by scoring the served map against the labels.**
+`validate.py` stored thresholds to four decimals. The course plateau runs
+0.8146400–0.8146558, and 0.8146 sits just below it, so one more sentence voted:
+BUS 210's "Professional writing, presentation delivery, meeting facilitation
+..." as Mentoring, at 0.81462, which is not in the labels. The served course map
+scored F1 0.507 under a recorded 0.514. `validate.py` now keeps the fewest
+decimals, from four, that stay on the plateau (0.81465 here; postings keep
+0.814), and before writing it re-scores every measured section with the
+parameters as stored and raises if the F1 differs. The served course map now
+scores exactly 19 / 11 / 25, F1 0.5135.
+
+**What the app shows.** The API's validation block now has
+`course_mapping_validated: true`, so its note and the app's quality banner drop
+the "not checked against hand-labelled courses" line. `best_f1` is the posting
+figure, 0.5045, which is also the gate figure because it is the lower of the
+two; the app's own `formatNumber` renders it as 0.504 in English and Arabic.
+
+### SK91 Java programming — added by the user
+
+IS 220 teaches Java and the nearest entry was JavaScript. The user added SK91
+(برمجة جافا, `software_development`) to `taxonomy.json`; the script meant to add
+it found it already there and wrote nothing. `TAXONOMY_REFERENCE.md` lists it.
+Every posting label predates it.
+
+- **No posting matches Java.** The one posting that names it, posting 7 (Data
+  Analyst), says "Python or Java". That sentence used to vote Python; now the two
+  compete, neither leads by the 0.01 margin, and it votes for nothing. Posting
+  7's labels have no Python, so a false positive went: FP 54 → 53, F1 0.503 →
+  0.5045. Data Analyst's profile loses Python programming (1 of 5 postings).
+- **On courses,** IS 220 now reaches Java under the measured parameters.
+
+### The `skill_centric` switch, measured against the course labels
+
+Requested: switch the course domain to `skill_centric`, because `chunk_top1`
+lets one sentence reach one skill. Implemented as the rule for an unlabelled
+course domain, inheriting postings' best `skill_centric` result (threshold
+0.8463, itself F1 0.467 on a zero-width plateau), so that labelled courses would
+still be swept on both methods. Scored against the 16 hand labels:
+
+| course mapping | reach | TP | FP | FN | precision | recall | F1 |
+|---|---|---|---|---|---|---|---|
+| before: `chunk_top1` 0.814 / 0.01, inherited, 90 skills | 15 | 14 | 1 | 30 | 0.93 | 0.32 | 0.475 |
+| `skill_centric` 0.8463, inherited, 90 skills | 70 | 32 | 211 | 12 | 0.13 | 0.73 | 0.223 |
+| `skill_centric` 0.8463, inherited, 91 skills | 71 | 33 | 213 | 11 | 0.13 | 0.75 | 0.228 |
+| **measured: `chunk_top1` 0.81465 / 0.00, 91 skills** | **26** | 19 | 11 | 25 | 0.63 | 0.43 | **0.514** |
+
+- **The switch as specified halved course F1.** Reach rose from 15 to 70 almost
+  entirely through false positives: IT service management was mapped to 11 of
+  16 courses, and Digital Marketing to 18 skills including Active Directory.
+  Business Analyst readiness for the six-course scenario rose to 51.6%, but the
+  labels back only 6 of its 19 covered skills.
+- **The measurement did not bear out that `chunk_top1` is wrong for catalog
+  text.** On course text it won, 0.514 against 0.500, a gap too small to call
+  either way. What held the old mapping back was the margin: at 0.01, 19 of 40
+  catalog sentences were dropped for too small a lead; at the measured 0.00, none
+  are. The one-sentence-one-skill ceiling remains: 40 sentences, so at most 40
+  skills.
+- **The rule stays**, since it was the requested behaviour and is dormant while
+  courses are labelled, but `validate.py` and the README now say what the labels
+  showed: as an inherited default it scored 0.228 where inheriting the posting
+  winner scored 0.475.
+
+### Course reach with the measured parameters
+
+**26 of 91 skills, against the 15 baseline and the 41 the labels contain.** 20
+of the 26 are labelled skills; the baseline's 15 held 14. Every course now
+reaches at least one skill: the four that reached none (IS 201, IS 220, IS 340,
+MKT 301) reach one to four.
+
+- **Reached but in no label (6):** C/C++ programming, Mobile application
+  development, Help desk / service desk, IT service management (ITIL), Backup and
+  recovery, ERP integration. The 11 false positives by course: IS 201 ERP
+  systems; IS 220 C/C++ programming, Mobile application development; IS 240 Data
+  analysis, ERP implementation; IS 250 C/C++ programming; IS 320 ERP integration;
+  IS 330 Backup and recovery; IS 340 ITIL; MKT 301 Web development; BUS 210 Help
+  desk / service desk.
+- **Labelled but reached by no course (21):** Requirements analysis, Business
+  process analysis, Functional specifications, Workshop facilitation,
+  Documentation management, Agile/Scrum, Data visualization, Data modelling,
+  JavaScript programming, Frontend development, Backend development, Software
+  architecture, Network administration, Identity and access management, Data
+  protection, Change management, SAP configuration, Oracle ERP, Reporting,
+  Technical problem solving, Teamwork.
+
+### `min_demand` sweep, re-run — Business Analyst, six courses
+
+Held at 0.15. Course reach changed, so the numbers moved:
+
+| min_demand | skill must appear in | counted | covered | missing | closable by any course | readiness | with all 16 courses |
+|---|---|---|---|---|---|---|---|
+| 0.10–0.15 (current) | ≥ 1 of 6 postings | 36 | 5 | 31 | 5 | 9.7% | 24.2% |
+| 0.20–0.30 | ≥ 2 of 6 | 17 | 1 | 16 | 3 | 4.7% | 20.9% |
+| 0.35–0.50 | ≥ 3 of 6 | 6 | 0 | 6 | 1 | 0.0% | 14.3% |
+
+On 2026-09-10 the same rows read 4.8%, 4.7% and 0.0%, with ceilings of 16.1%,
+16.3% and 14.3%. Only the current setting moved materially. Its five covered
+skills are Requirements elicitation, Communication, SQL, ERP systems and Help
+desk / service desk, and only the first three are backed by the labels: ERP
+systems comes from IS 201's introduction and Help desk from BUS 210. Had the
+course map matched the labels exactly, readiness at 0.15 would be 33.9% (9
+covered). Six skills the labels put on these courses, and Business Analysts ask
+for, go uncredited: Functional specifications, Documentation management,
+Requirements analysis, Workshop facilitation, Technical problem solving,
+Reporting. The posting side sets the rest: at 3 or more postings, no catalog
+course can lift readiness past 14.3%.
+
+The per-career table is as on 2026-09-10 except for Data Analyst, which counts
+22 skills at 0.10–0.20 instead of 23 (Python, above).
+
+### The course labels
+
+16 catalog entries, hand-labelled by the user on 2026-09-11: 44 labels, 41
+distinct skills, two courses marked `NONE`, Java used. `validate.py` gained the
+`NONE` marker for "labelled, no skills"; a blank cell still means "not labelled
+yet". So a course that teaches nothing in the taxonomy counts, and its false
+positives are measured. **These labels are not blind the way the posting labels
+were.** They were written after the model's course mappings had been shown: the
+`chunk_top1` map in the 2026-09-10 entry, and the `skill_centric` map minutes
+before the labels were saved. That belongs in the evaluation chapter beside the
+course F1.
+
+### Verified
+
+- `validate.py` without the flag wrote `config.json`, and its reproduce check
+  passed for both domains.
+- The served course map scores 19 / 11 / 25 against the labels, matching the
+  measurement.
+- 41 backend tests pass, up from 37. The new ones cover the failed-gate write,
+  `NONE`, threshold decimals, and `--explain` under `skill_centric`.
+- `tool/contract_check.dart` against the restarted backend: 15 of 15. Business
+  Analyst with six courses gets readiness 10% (5 covered, 31 missing),
+  `gate_passed=false` with `best_f1=0.5045`, and three suggestions: IS 310 (ETL /
+  data integration, Business intelligence), IS 350 (Business process modelling)
+  and IS 340 (Project coordination).
+
+### Also changed
+
+- `backend/reports.py`: `course-reach` prints a per-course table, and
+  `--explain` covers `skill_centric` as well as `chunk_top1`.
+- `skillgap/README.md`, `backend/README.md` and `CAREER_PROJECT_SPEC.md` record
+  the closure, both domains' figures, the 91-entry taxonomy and item 9's status.
+
+---
+
 ## 2026-09-10 — Phase 4 follow-up: `min_demand` sweep and course reach
 
 Reports only. Nothing the API serves has changed: `min_demand` is still the

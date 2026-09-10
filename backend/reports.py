@@ -152,23 +152,31 @@ class ChunkVote:
     top_score: float
     runner_up: str
     lead: float
-    voted: bool
+    cleared: tuple[tuple[str, float], ...]   # skills this chunk gives the course
     reason: str
+
+    @property
+    def voted(self) -> bool:
+        return bool(self.cleared)
 
 
 def explain_courses(state: EngineState, paths: engine.Paths | None = None,
                     embedder_factory=None) -> list[tuple[str, list[ChunkVote]]]:
     """
-    Re-run course extraction one chunk at a time and record why each chunk did
-    or did not vote. Checked against the served course map, so an explanation
-    that disagrees with what the API serves raises instead of printing. `paths`
-    must be the ones `state` was built from.
+    Re-run course extraction one chunk at a time and record what each chunk
+    gave its course, and why. Under skill_centric a chunk gives every skill it
+    scores at or over the threshold; under chunk_top1, at most its top skill,
+    and only with enough lead over the runner-up. Checked against the served
+    course map, so an explanation that disagrees with what the API serves raises
+    instead of printing. `paths` must be the ones `state` was built from.
     """
     params = state.course_params
-    if params["method"] != "chunk_top1":
-        raise SystemExit(f"--explain describes chunk_top1; courses use {params['method']}")
+    method, threshold, margin = params["method"], params["threshold"], params["margin"]
+    if method not in ("skill_centric", "chunk_top1"):
+        raise SystemExit(f"--explain does not describe the {method!r} matcher")
     paths = paths or engine.Paths()
     tax = sg.Taxonomy(str(paths.taxonomy), (embedder_factory or sg.Embedder)(state.model))
+    ids = [s.id for s in tax.skills]
     out = []
     for row in engine._read_csv(paths.courses):
         code = row["course_code"]
@@ -178,15 +186,19 @@ def explain_courses(state: EngineState, paths: engine.Paths | None = None,
             order = np.argsort(-scores)
             top, second = int(order[0]), int(order[1])
             score, lead = float(scores[top]), float(scores[top]) - float(scores[second])
-            if score < params["threshold"]:
-                voted, reason = False, f"below threshold {params['threshold']}"
-            elif lead < params["margin"]:
-                voted, reason = False, f"lead under margin {params['margin']}"
+            if score < threshold:
+                cleared, reason = (), f"below threshold {threshold}"
+            elif method == "skill_centric":
+                cleared = tuple((ids[i], float(scores[i])) for i in order
+                                if scores[i] >= threshold)
+                reason = f"{len(cleared)} at or over threshold {threshold}"
+            elif lead < margin:
+                cleared, reason = (), f"lead under margin {margin}"
             else:
-                voted, reason = True, "voted"
-            votes.append(ChunkVote(chunk, tax.skills[top].id, score,
-                                   tax.skills[second].id, lead, voted, reason))
-        explained = {v.top for v in votes if v.voted}
+                cleared, reason = ((ids[top], score),), "voted"
+            votes.append(ChunkVote(chunk, ids[top], score, ids[second], lead,
+                                   cleared, reason))
+        explained = {s for v in votes for s, _ in v.cleared}
         if explained != set(state.courses[code].skills) or \
                 explained != set(tax.match_auto(chunks, params)):
             raise AssertionError(f"{code}: explanation {sorted(explained)} disagrees "
@@ -207,6 +219,17 @@ def _table(headers: list[str], rows: list[list[object]]) -> str:
 
 def _pct(x: float) -> str:
     return f"{x * 100:.1f}%"
+
+
+def _matcher(state: EngineState) -> str:
+    p = state.course_params
+    out = f"{p['method']}, threshold {p['threshold']}"
+    if p["method"] == "chunk_top1":
+        out += f", margin {p['margin']}"
+    if p["validated"]:
+        return out + ", validated on courses"
+    donor = state.config.get("courses", {}).get("inherited_from")
+    return out + ", never validated on courses" + (f" (inherited from {donor})" if donor else "")
 
 
 def render_min_demand(state: EngineState) -> str:
@@ -238,7 +261,8 @@ def render_min_demand(state: EngineState) -> str:
 
     return "\n".join([
         f"## min_demand sweep: {SCENARIO_CAREER}, {n} postings",
-        f"Completed courses: {', '.join(SCENARIO_COURSES)}.",
+        f"Completed courses: {', '.join(SCENARIO_COURSES)}. "
+        f"Course matching: {_matcher(state)}.",
         "",
         scenario,
         "",
@@ -271,6 +295,14 @@ def render_course_reach(state: EngineState) -> str:
     out = [
         f"## Course reach: {len(reached)} of {len(reach)} skills reachable "
         f"from {len(state.courses)} catalog courses",
+        f"Course matching: {_matcher(state)}.",
+        "",
+        "### By course",
+        "",
+        _table(["course", "name", "skills", "reaches"],
+               [[code, c.name, len(c.skills),
+                 ", ".join(skill(s)["en"] for s in c.skills) or "nothing"]
+                for code, c in state.courses.items()]),
         "",
         "### Reachable",
         "",
@@ -295,22 +327,36 @@ def render_course_reach(state: EngineState) -> str:
 def render_explain(state: EngineState) -> str:
     name = lambda s: state.skills[s]["en"]  # noqa: E731
     explained = explain_courses(state)
-    p = state.course_params
+    centric = state.course_params["method"] == "skill_centric"
+    rule = ("each chunk gives its course every skill it scores at or over the threshold"
+            if centric else "each chunk votes for at most one skill")
     out = ["## Why each course maps to what it does",
-           f"Courses use {p['method']}, threshold {p['threshold']}, margin {p['margin']}, "
-           f"validated on courses: {p['validated']}. Each chunk votes for at most one skill.",
-           ""]
+           f"Course matching: {_matcher(state)}. Under it, {rule}.", ""]
     for code, votes in explained:
         course = state.courses[code]
         got = ", ".join(f"{s} {name(s)}" for s in course.skills) or "nothing"
-        out.append(f"**{code} {course.name}** ({len(votes)} chunks): {got}")
+        out.append(f"**{code} {course.name}** ({len(votes)} chunks, "
+                   f"{len(course.skills)} skills): {got}")
         for v in votes:
             text = v.chunk if len(v.chunk) <= 70 else v.chunk[:67] + "..."
-            out.append(f"- \"{text}\" -> {v.top} {name(v.top)} {v.top_score:.3f}, "
-                       f"lead {v.lead:+.3f} over {v.runner_up} {name(v.runner_up)}: {v.reason}")
+            if centric and v.voted:
+                shown = ", ".join(f"{s} {name(s)} {x:.3f}" for s, x in v.cleared[:6])
+                more = f" (+{len(v.cleared) - 6} more)" if len(v.cleared) > 6 else ""
+                out.append(f"- \"{text}\" -> {v.reason}: {shown}{more}")
+            else:
+                out.append(f"- \"{text}\" -> {v.top} {name(v.top)} {v.top_score:.3f}, "
+                           f"lead {v.lead:+.3f} over {v.runner_up} {name(v.runner_up)}: "
+                           f"{v.reason}")
         out.append("")
 
     all_votes = [v for _, votes in explained for v in votes]
+    if centric:
+        per_chunk = [len(v.cleared) for v in all_votes]
+        out.append(f"Chunks: {len(all_votes)}. Clearing no skill: "
+                   f"{sum(n == 0 for n in per_chunk)}. Skills cleared per chunk: "
+                   f"median {float(np.median(per_chunk)):g}, most {max(per_chunk)}.")
+        return "\n".join(out)
+
     reached = {s for c in state.courses.values() for s in c.skills}
     dropped = sorted({v.top for v in all_votes if not v.voted} - reached)
     out += [
