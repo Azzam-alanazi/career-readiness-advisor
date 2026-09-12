@@ -1,11 +1,11 @@
 {
   "model": "intfloat/multilingual-e5-base",
-  "validated_on": "2026-09-11",
+  "validated_on": "2026-09-12",
   "taxonomy_skills": 91,
   "synonym_probes_passed": "5/6",
   "gate_passed": false,
   "gate_min_f1": 0.6,
-  "gate_best_f1": 0.5045,
+  "gate_best_f1": 0.3725,
   "postings": {
     "match_method": "chunk_top1",
     "match_threshold": 0.814,
@@ -23,19 +23,19 @@
     "labeled_skill_mentions": 199
   },
   "courses": {
-    "match_method": "chunk_top1",
-    "match_threshold": 0.81465,
+    "match_method": "skill_centric",
+    "match_threshold": 0.894,
     "match_margin": 0.0,
     "validated": true,
-    "best_f1": 0.5135,
-    "precision": 0.6333,
-    "recall": 0.4318,
+    "best_f1": 0.3725,
+    "precision": 0.7037,
+    "recall": 0.2533,
     "threshold_plateau": [
-      0.81464,
-      0.81466
+      0.8939,
+      0.894
     ],
-    "threshold_plateau_width": 1.6e-05,
-    "labeled_texts": 16,
-    "labeled_skill_mentions": 44
+    "threshold_plateau_width": 0.0002,
+    "labeled_texts": 33,
+    "labeled_skill_mentions": 75
   }
 }

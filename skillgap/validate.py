@@ -307,6 +307,11 @@ def report_spread(labeled_scores, ids) -> dict:
     q = np.percentile(allv, [1, 25, 50, 75, 99])
     pos, neg = [], []
     for scores, truth in labeled_scores:
+        # A text too short to chunk -- a course title under 15 characters --
+        # has no similarities to describe. It still counts in F1: its labels
+        # are misses.
+        if not scores.size:
+            continue
         for i, sid in enumerate(ids):
             (pos if sid in truth else neg).append(scores[:, i].max())
     pos, neg = np.array(pos), np.array(neg)

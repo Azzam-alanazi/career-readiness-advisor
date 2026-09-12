@@ -12,13 +12,14 @@ decision, and says so in the data. `/health`, every gap response and every
 recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
 
-Course-to-skill extraction was measured too, on 16 hand-labelled placeholder
-courses, and also falls short, at F1 0.514. The catalog is now the real Shaqra IS
-catalog, titles only and not yet labelled, so every course is mapped by
-extraction on text the measurement never covered. The block says so:
-`course_mapping_validated` stays false until every course is hand-labelled.
-`best_f1` is the posting figure, 0.504, which is also the gate figure because it
-is the lower of the two.
+Every course in the catalog, the real Shaqra IS catalog, is hand-labelled. The
+skills the API credits for a course are its labels, so the block's
+`course_mapping_validated` is true. Course extraction, measured against those
+labels on the course titles, falls short too, at F1 0.373: the lower of the two
+figures and the gate figure in `config.json`. `best_f1` in the block stays the
+posting figure, 0.504, because extraction maps no served course while every
+course is labelled. A course added without labels would be mapped by extraction,
+and 0.373 is the figure that would qualify it.
 
 ## Run
 
@@ -84,7 +85,7 @@ because the catalog is.
 python -m pytest
 ```
 
-60 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+61 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 

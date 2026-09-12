@@ -1,34 +1,34 @@
 ﻿id,course_code,course_title,track,lang,course_text,skill_ids
-1,CIT 201,Introduction to Database Systems,college,en,Introduction to Database Systems. ,
-2,CIT 202,Computer Networks (1),college,en,Computer Networks (1). ,
-3,CIT 403,Operating Systems,college,en,Operating Systems. ,
-4,CSC 202,Basics of Programming and Algorithms,college,en,Basics of Programming and Algorithms. ,
-5,CSC 212,Programming Language I,college,en,Programming Language I. ,
-6,CSC 213,Programming Language II,college,en,Programming Language II. ,
-9,CIS 221,System Analysis and Design,college,en,System Analysis and Design. ,
-10,CIS 307,Data Structure,college,en,Data Structure. ,
-12,MATH 210,Principles of Probabilities and Statistics,college,en,Principles of Probabilities and Statistics. ,
-15,CIS 301,Advance Systems Analysis and Design,core,en,Advance Systems Analysis and Design. ,
-16,CIS 302,Database Management Systems,core,en,Database Management Systems. ,
-17,CIS 303,Basic of Management and Business,core,en,Basic of Management and Business. ,
-18,CIS 306,Information Security,core,en,Information Security. ,
-19,CIS 400,Applications Programming,core,en,Applications Programming. ,
-20,CIS 402,Health Information Systems,core,en,Health Information Systems. ,
-21,CIS 403,Organization Skills,core,en,Organization Skills. ,
-22,CIS 404,Distributed Systems,core,en,Distributed Systems. ,
-23,CIS 405,Operations Management,core,en,Operations Management. ,
-24,CIS 407,Enterprise Resources Planning Systems,core,en,Enterprise Resources Planning Systems. ,
-26,CIS 409,E-business,core,en,E-business. ,
-27,CIS 501,Decision Support Systems,core,en,Decision Support Systems. ,
-28,CIS 502,Knowledge Management,core,en,Knowledge Management. ,
-29,CIS 505,Data Mining,core,en,Data Mining. ,
-30,CIS 516,Project Management in Information Systems,core,en,Project Management in Information Systems. ,
-31,CSC 304,Web Programming,core,en,Web Programming. ,
-32,CIT 402,Human Computer Interactions,core,en,Human Computer Interactions. ,
-33,CIT 506,Computer Ethics,core,en,Computer Ethics. ,
-37,CIS 504,Data Visualization,elective_analytics,en,Data Visualization. ,
-38,CIS 507,Data Analysis in Digital Marketing,elective_analytics,en,Data Analysis in Digital Marketing. ,
-39,CIS 508,Business Intelligence,elective_analytics,en,Business Intelligence. ,
-40,CIS 509,Business Analytics,elective_analytics,en,Business Analytics. ,
-46,CIS 515,Introduction to E-commerce,elective_ecommerce,en,Introduction to E-commerce. ,
-47,CIS 517,Business Computer Languages,elective_ecommerce,en,Business Computer Languages. ,
+1,CIT 201,Introduction to Database Systems,college,en,Introduction to Database Systems. ,SK15;SK16;SK17
+2,CIT 202,Computer Networks (1),college,en,Computer Networks (1). ,SK48;SK49
+3,CIT 403,Operating Systems,college,en,Operating Systems. ,SK46;SK47
+4,CSC 202,Basics of Programming and Algorithms,college,en,Basics of Programming and Algorithms. ,SK24;SK26;SK84
+5,CSC 212,Programming Language I,college,en,Programming Language I. ,SK24;SK26;SK84
+6,CSC 213,Programming Language II,college,en,Programming Language II. ,SK24;SK91;SK40
+9,CIS 221,System Analysis and Design,college,en,System Analysis and Design. ,SK01;SK02;SK04;SK05;SK08
+10,CIS 307,Data Structure,college,en,Data Structure. ,SK24;SK84
+12,MATH 210,Principles of Probabilities and Statistics,college,en,Principles of Probabilities and Statistics. ,SK13
+15,CIS 301,Advance Systems Analysis and Design,core,en,Advance Systems Analysis and Design. ,SK01;SK02;SK03;SK04;SK05
+16,CIS 302,Database Management Systems,core,en,Database Management Systems. ,SK15;SK16;SK17
+17,CIS 303,Basic of Management and Business,core,en,Basic of Management and Business. ,NONE
+18,CIS 306,Information Security,core,en,Information Security. ,SK65;SK66;SK68
+19,CIS 400,Applications Programming,core,en,Applications Programming. ,SK24;SK84
+20,CIS 402,Health Information Systems,core,en,Health Information Systems. ,NONE
+21,CIS 403,Organization Skills,core,en,Organization Skills. ,NONE
+22,CIS 404,Distributed Systems,core,en,Distributed Systems. ,SK40;SK84
+23,CIS 405,Operations Management,core,en,Operations Management. ,NONE
+24,CIS 407,Enterprise Resources Planning Systems,core,en,Enterprise Resources Planning Systems. ,SK70;SK71;SK73;SK74;SK75
+26,CIS 409,E-business,core,en,E-business. ,NONE
+27,CIS 501,Decision Support Systems,core,en,Decision Support Systems. ,SK13;SK14;SK21;SK83
+28,CIS 502,Knowledge Management,core,en,Knowledge Management. ,NONE
+29,CIS 505,Data Mining,core,en,Data Mining. ,SK13;SK22
+30,CIS 516,Project Management in Information Systems,core,en,Project Management in Information Systems. ,SK09;SK10;SK87
+31,CSC 304,Web Programming,core,en,Web Programming. ,SK24;SK27;SK28;SK30;SK31
+32,CIT 402,Human Computer Interactions,core,en,Human Computer Interactions. ,NONE
+33,CIT 506,Computer Ethics,core,en,Computer Ethics. ,NONE
+37,CIS 504,Data Visualization,elective_analytics,en,Data Visualization. ,SK13;SK14;SK83
+38,CIS 507,Data Analysis in Digital Marketing,elective_analytics,en,Data Analysis in Digital Marketing. ,SK13;SK14;SK83
+39,CIS 508,Business Intelligence,elective_analytics,en,Business Intelligence. ,SK13;SK14;SK18;SK21;SK83
+40,CIS 509,Business Analytics,elective_analytics,en,Business Analytics. ,SK13;SK14;SK21;SK83
+46,CIS 515,Introduction to E-commerce,elective_ecommerce,en,Introduction to E-commerce. ,NONE
+47,CIS 517,Business Computer Languages,elective_ecommerce,en,Business Computer Languages. ,SK24;SK84

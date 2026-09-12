@@ -4,6 +4,140 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-12 — Shaqra courses labelled: labels served, extraction measured
+
+All 33 Shaqra courses are hand-labelled: 75 labels over 39 distinct skills, with 9
+courses marked `NONE`. The labels now serve every course's skills, and extraction
+is scored against real labels on this catalog for the first time.
+
+### Course reach and readiness, three ways
+
+| | placeholder catalog, extraction on descriptions | Shaqra, extraction on titles | **Shaqra, labels (served)** |
+|---|---|---|---|
+| courses | 16 | 33 | 33 |
+| skills reached | 26 | 13 | **39** |
+| courses reaching no skill | 0 | 2 | 9, the `NONE` courses |
+| Business Analyst readiness, `min_demand` 0.15 | 9.7% (5 covered) | 3.2% (1 covered) | **30.6%** (7 covered) |
+| at 0.20–0.30 | 4.7% | 4.7% | **41.9%** |
+| at 0.35–0.50 | 0.0% | 0.0% | **66.7%** |
+| with every catalog course taken, at 0.15 | 24.2% | 8.1% | **56.5%** |
+
+The `min_demand` sweep on the labels, held at 0.15, for the demo scenario (CSC
+202, CIT 201, CIT 202, CIS 221, CIS 302, CIS 303):
+
+| min_demand | skill must appear in | counted | covered | missing | closable by any course | readiness | with all 33 courses |
+|---|---|---|---|---|---|---|---|
+| 0.10–0.15 (current) | ≥ 1 of 6 postings | 36 | 7 | 29 | 9 | 30.6% | 56.5% |
+| 0.20–0.30 | ≥ 2 of 6 | 17 | 6 | 11 | 6 | 41.9% | 72.1% |
+| 0.35–0.50 | ≥ 3 of 6 | 6 | 4 | 2 | 1 | 66.7% | 81.0% |
+
+- **The seven covered skills are all label-backed:** Functional specifications,
+  Documentation management, Business process modelling, Requirements analysis,
+  Requirements elicitation, Technical problem solving and SQL. They come from
+  System Analysis and Design, the database courses and programming. On titles
+  alone, the one covered skill was a misread.
+- **At 3 or more postings,** four of the six skills Business Analysts ask for most
+  are now covered, where before none were.
+- **The two label sets overlap on most skills.** The placeholder labels used 41
+  skills and the Shaqra labels use 39; 32 are in both.
+
+### Extraction scored against real labels, for the first time on this catalog
+
+Against the labels, at the parameters `config.json` then held (measured on the
+placeholder descriptions: `chunk_top1`, 0.81465, margin 0.00): 12 correct, 19
+false, 63 missed. That is precision 0.39, recall 0.16, F1 0.226.
+
+- **By course:** in 12 of the 33, the extracted skill is among the labels; in 19
+  it is not; 2 extracted nothing.
+- **The labels confirm the misreads** the previous entry flagged by inspection:
+  Operating Systems → ERP systems, Computer Networks (1) → C/C++ programming,
+  Principles of Probabilities and Statistics → C/C++ programming, Organization
+  Skills → Human resources management.
+- **They also catch one that inspection missed:** Computer Ethics → IT security,
+  which is labelled `NONE`.
+
+### The full sweep, re-run because there are enough labels to measure
+
+The course domain now has 33 hand-labelled texts and 75 labels. The project's
+floor for a measurement is 15 labelled texts, and the measurement this replaces
+rested on 16 texts and 44 labels. On the titles:
+
+| method | F1 | precision / recall | TP / FP / FN | threshold | plateau |
+|---|---|---|---|---|---|
+| `skill_centric` | **0.373** | 0.70 / 0.25 | 19 / 8 / 56 | 0.8940 | 0.8939–0.8940, 0.0002 wide |
+| `chunk_top1` | 0.273 | 0.92 / 0.16 | 12 / 1 / 63 | 0.8917, margin 0.00 | 0.8894–0.8940, 0.0046 wide |
+
+- **`skill_centric` wins, but provisionally.** Its lead of 0.10 is well past the
+  0.02 `validate.py` treats as unreliable, but its plateau is 0.0002 wide.
+- **On descriptions the result was the reverse.** There, `chunk_top1` won by
+  under 0.02. A title gives one chunk, and `chunk_top1` takes at most one skill
+  per chunk, which holds its recall to 0.16. `skill_centric` can credit several
+  skills from one phrase.
+- **Course separation is 0.043 on titles,** against 0.052 on the placeholder
+  descriptions.
+- **The posting side reproduced exactly:** `chunk_top1` at 0.8140 with margin
+  0.01, F1 0.504.
+- **`config.json`** now holds courses at `skill_centric` 0.894, validated, with
+  F1 0.3725 on 33 texts and 75 labels. `gate_best_f1` moves from 0.5045 to
+  0.3725, because the course figure is now the lower of the two.
+- **The API's `best_f1` stays the posting figure, 0.5045, deliberately.** Every
+  course is labelled, so extraction maps nothing the app serves, and the course
+  figure qualifies nothing on screen. A course added without labels would be
+  mapped by extraction, and 0.373 would then be the figure that qualifies it.
+- **Re-scored at the new parameters,** extraction against the labels matches the
+  sweep: 19 correct, 8 false, 56 missed, F1 0.373.
+- **Served numbers did not move.** The labels serve every course, so the
+  `min_demand` row at 0.15 read 30.6% before and after.
+
+### A crash fixed in `validate.py`
+
+The first run crashed in the course domain and exited before writing
+`config.json`. `report_spread` took the maximum score of every text, and
+"E-business" and "Data Mining" are too short to form a chunk. The spread report
+now skips texts with no chunks, since they have no similarities to describe.
+F1 still counts their labels as misses. A regression test pins both halves.
+
+### Online courses re-synced
+
+Against the labelled map, `sync` added 3 placeholders (Frontend development, IT
+service management (ITIL), Human resources management) and removed 25 for skills
+the labels now cover, among them Requirements analysis, SQL and Functional
+specifications. That leaves 43. The three added were previously credited only by
+title misreads. None of the rows was filled in.
+
+### The labels are not blind
+
+The Shaqra labels were written after the title-extraction mappings had been
+shown, in the previous entry and in session. The placeholder labels were written
+the same way. That belongs in the evaluation chapter beside the course F1.
+
+### `labeled_courses_shaqra.csv` removed
+
+The user deleted the 48-course source file. Nothing is lost:
+`labeled_courses.csv` (33 courses) and `labeled_courses_excluded.csv` (15)
+together hold every course's code, title and track, and the original stays in git
+history at `f097ace`. The README no longer lists it.
+
+### Verified
+
+- **Backend: 61 tests pass.** The new one is the unchunked-text regression.
+- **`validate.py` completed and wrote `config.json`,** and its reproduce check
+  passed for both domains.
+- **`/health` on the live backend** shows 33 courses, 43 placeholders and
+  `course_mapping_validated: true`. The note no longer names courses mapped by
+  extraction.
+- **The contract check passes 20 of 20.**
+  - Business Analyst readiness is 31% (7 covered, 29 missing).
+  - Nine university courses are suggested, all by label. The top three are CIS
+    508 Business Intelligence (ETL / data integration, Business intelligence,
+    Reporting), CIS 501 Decision Support Systems (Business intelligence,
+    Reporting) and CIS 516 Project Management in Information Systems
+    (Agile/Scrum, Project coordination).
+  - Of the 29 missing skills, a university course closes 9. The other 20 have
+    neither kind of course, since no online course is filled in yet.
+
+---
+
 ## 2026-09-12 — The real Shaqra catalog, titles only; labels first
 
 The placeholder catalog is replaced by the real Shaqra IS catalog: official codes

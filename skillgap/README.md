@@ -6,19 +6,20 @@ course descriptions, then computes a demand-weighted gap.
 ## Current state — read this first
 
 **Phase 0 is closed with the validation gate FAILED in both domains** —
-postings F1 0.504 and courses F1 0.514, against a 0.60 floor. The engine runs,
-but its output is best-measured, not validated. `config.json` records
+postings F1 0.504, and courses F1 0.373 on the real catalog's titles (0.514 on
+the placeholder descriptions), against a 0.60 floor. The engine runs, but its
+output is best-measured, not validated. `config.json` records
 `gate_passed: false`, `load_match_params()` returns it, and anything presenting
 results must say so.
 
 | | |
 |---|---|
-| Validation gate | **FAILED, closed** — postings F1 0.504 (precision 0.62, recall 0.43) on 15 hand-labelled postings, 199 labels; courses F1 0.514 (precision 0.63, recall 0.43) on 16 hand-labelled courses, 44 labels |
-| Final parameters | postings `chunk_top1`, threshold 0.8140, margin 0.01, plateau 0.0018 wide; courses `chunk_top1`, threshold 0.81465, margin 0.00, plateau 0.000016 wide — both provisional |
-| Separation | postings **0.021** (0.075 on the 19-entry taxonomy); courses 0.052 |
+| Validation gate | **FAILED, closed** — postings F1 0.504 (precision 0.62, recall 0.43) on 15 hand-labelled postings, 199 labels; courses F1 0.373 (precision 0.70, recall 0.25) on 33 hand-labelled Shaqra course titles, 75 labels (0.514 on the 16 placeholder descriptions) |
+| Final parameters | postings `chunk_top1`, threshold 0.8140, margin 0.01, plateau 0.0018 wide; courses `skill_centric`, threshold 0.8940, plateau 0.0002 wide — both provisional |
+| Separation | postings **0.021** (0.075 on the 19-entry taxonomy); courses 0.043 on titles (0.052 on the placeholder descriptions) |
 | Taxonomy | 91 entries, `SK01`–`SK91`, English + Arabic, 8 categories — `SK91` Java programming added 2026-09-11 |
 | Postings | 27 collected, 15 hand-labelled; 19 excluded, each with a recorded reason |
-| Courses | 33 real Shaqra IS courses (15 of 48 excluded, each with a reason), titles only, none hand-labelled yet |
+| Courses | 33 real Shaqra IS courses (15 of 48 excluded, each with a reason), titles only, all hand-labelled: 75 labels, 9 courses `NONE` |
 
 **Why it failed: granularity.** A 90-entry taxonomy packs neighbouring skills
 closer together than this model can separate. The median similarity of two
@@ -172,8 +173,8 @@ preferring whichever column actually has values.
 ## Known limitations
 
 - **The matcher failed its gate in both domains.** Postings F1 0.504 on 15
-  hand-labelled postings, courses F1 0.514 on 16 courses, against a 0.60 floor,
-  with winning plateaus 0.0018 and 0.000016 wide. At these sizes one label
+  hand-labelled postings, courses F1 0.373 on 33 labelled course titles, against
+  a 0.60 floor, with winning plateaus 0.0018 and 0.0002 wide. At these sizes one label
   flipping moves F1 by two points or more.
 - **AI-assisted labelling was measured and rejected** as ground truth: Jaccard
   0.61 against hand annotation, with errors that track an upstream career
@@ -186,16 +187,14 @@ preferring whichever column actually has values.
 - **No technical-writing skill.** "Write a technical report documenting the
   findings" has nowhere correct to land.
 - **The course catalog is titles only.** Shaqra's course descriptions are not
-  available, so each course is one short phrase: under `chunk_top1` it maps to
-  at most one skill, and titles under 15 characters map to none. That is a limit
-  of the data, not of the method. Until a course is hand-labelled, extraction on
-  its title is what the app serves for it, unmeasured.
-- **The course parameters were measured on the placeholder catalog**: 16
-  descriptive entries, labelled by one person after the model's course mappings
-  had been shown. `chunk_top1` won there by under 0.02 F1 on a plateau 0.000016
-  wide. They are not re-measured on the Shaqra titles, which have no labels yet.
-  Re-running `validate.py` before any Shaqra course is labelled would make the
-  course domain inherit postings' `skill_centric` parameters again.
+  available, so each course is one short phrase, and titles under 15 characters
+  give extraction nothing. That is a limit of the data, not of the method.
+  Every course is hand-labelled, so the app serves the labels. Extraction on
+  the titles, measured against them, scores F1 0.373 (precision 0.70, recall
+  0.25) and maps only a course added without labels.
+- **The course labels are one person's, and not blind.** The 33 Shaqra labels,
+  like the 16 placeholder ones before them, were written after the model's
+  mappings for those courses had been shown.
 - **`SK01 Requirements analysis` and `SK02 Requirements elicitation`** — and
   several other near-synonym pairs — sit within ~0.01 of each other. Pairs like
   these are why separation fell to 0.021; the diagnosis is in `CHANGELOG.md`.
@@ -217,9 +216,8 @@ preferring whichever column actually has values.
 | `real_skill_taxonomy_90.csv` | Source the taxonomy was built from |
 | `TAXONOMY_REFERENCE.md` | Printable sheet, grouped by category, for labelling |
 | `taxonomy_starter_19.json` | The 19-entry taxonomy every recorded F1 was measured against |
-| `labeled_courses.csv` | The catalog the engine serves: 33 Shaqra IS courses, titles only. Hand labels go in `skill_ids` and replace extraction for that course |
-| `labeled_courses_shaqra.csv` | All 48 Shaqra IS courses as supplied: official codes, titles, tracks |
-| `labeled_courses_excluded.csv` | The 15 left out of the catalog, each with its reason |
+| `labeled_courses.csv` | The catalog the engine serves: 33 Shaqra IS courses, titles only, all hand-labelled in `skill_ids`. Labels replace extraction for every course |
+| `labeled_courses_excluded.csv` | The 15 Shaqra courses left out of the catalog, each with its reason. With `labeled_courses.csv` it holds all 48 |
 | `online_courses.csv` | Online courses for gap skills no university course teaches — you fill this in; `python -m backend.online status` shows what is left |
 | `config.json` | Generated by `validate.py`. Do not hand-edit |
 | `CHANGELOG.md` | What changed when, and the measurements behind each decision |

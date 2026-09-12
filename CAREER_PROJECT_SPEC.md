@@ -69,7 +69,16 @@ against 16 hand-labelled catalog entries, and the closure stands on both.
 | domain | hand-labelled | winner | threshold / margin | F1 | precision / recall | plateau |
 |---|---|---|---|---|---|---|
 | postings | 15 postings, 199 labels | `chunk_top1` | 0.8140 / 0.01 | **0.504** | 0.62 / 0.43 | 0.0018 wide |
-| courses | 16 courses, 44 labels | `chunk_top1` | 0.81465 / 0.00 | **0.514** | 0.63 / 0.43 | 0.000016 wide |
+| courses, placeholder catalog (2026-09-11) | 16 courses, 44 labels | `chunk_top1` | 0.81465 / 0.00 | 0.514 | 0.63 / 0.43 | 0.000016 wide |
+| courses, Shaqra titles (2026-09-12) | 33 courses, 75 labels | `skill_centric` | 0.8940 | **0.373** | 0.70 / 0.25 | 0.0002 wide |
+
+**Re-measured on the real catalog, 2026-09-12.** Once all 33 Shaqra courses were
+hand-labelled, the course domain was measured again on their titles, the only
+text there is. `skill_centric` won, 0.373 against `chunk_top1`'s 0.273, on a
+plateau 0.0002 wide, so this winner is provisional too. It is now the lower
+figure and the gate figure `config.json` records. It qualifies nothing the app
+serves while every course is labelled, because the served course skills are the
+labels themselves. The placeholder row is kept as history.
 
 **Both winners are provisional.** The plateau is the range of thresholds that
 holds the best F1; at 0.0018 and 0.000016 wide (0.0000 at four decimals), each
@@ -92,8 +101,9 @@ the API returns it alongside every readiness figure — not only in this documen
 90 entries collapsed separation, the margin by which the correct skill stands
 above the rest, from **0.075 to 0.021** on postings. The median similarity
 between two *unrelated* skills (0.834) now sits above the operating threshold
-(0.814), and 43 pairs exceed 0.92. Course text separates better, at **0.052**,
-and still does not clear the floor.
+(0.814), and 43 pairs exceed 0.92. Course text separates better, at **0.052** on
+the placeholder descriptions and 0.043 on bare Shaqra titles, and neither clears
+the floor.
 
 **Finding — the SQL probe fails.** Five of six synonym probes pass. "Experience
 writing queries against relational databases" ranks SK16 Database management
@@ -208,10 +218,11 @@ course text is the title alone. There is no `credits` column.
 
 Item 9: a course's skills come from its hand labels where it has them, and from
 extraction otherwise. Labels are ground truth, and extraction is what gets
-measured against them. No Shaqra course is labelled yet, so every course is
-mapped by extraction on its title: 13 of 91 skills reached, at most one per
-course. The extraction parameters were measured on the placeholder catalog (F1
-0.514 against 16 labelled descriptions), not on these titles.
+measured against them. All 33 Shaqra courses are labelled (75 labels, 9 courses
+marked `NONE`), so every served mapping is a label: 39 of 91 skills reached.
+Extraction on the titles, measured against those labels, scores F1 0.373 at its
+best (`skill_centric`, threshold 0.894). It would map only a course added
+without labels.
 
 Item 10: no correction interface yet. Labelling a course in
 `labeled_courses.csv` is the correction for now: it replaces extraction for that

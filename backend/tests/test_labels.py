@@ -69,3 +69,18 @@ def test_threshold_keeps_enough_decimals_to_stay_on_its_plateau():
     assert validate.threshold_decimals(narrow) == 5
     assert round(narrow["threshold"], 5) == 0.81465
     assert validate.threshold_decimals(wide) == 4
+
+
+def test_a_text_with_no_chunks_is_reported_and_still_counted():
+    # Shaqra titles "E-business" and "Data Mining" are too short to form a
+    # chunk, and once crashed the sweep's spread report.
+    import numpy as np
+    import pytest
+    ids = ["A", "B"]
+    scored = [(np.array([[0.9, 0.2]], dtype=np.float32), {"A"}),
+              (np.zeros((0, 2), dtype=np.float32), {"B"})]
+    spread = validate.report_spread(scored, ids)
+    assert (spread["pos_mean"], spread["neg_mean"]) == (pytest.approx(0.9), pytest.approx(0.2))
+    tp, fp, fn = validate.prf(lambda s, i: validate.predict_skill_centric(s, i, 0.5),
+                              scored, ids)[:3]
+    assert (tp, fp, fn) == (1, 0, 1), "the unchunked text's label is a miss"
