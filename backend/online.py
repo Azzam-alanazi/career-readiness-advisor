@@ -11,10 +11,12 @@ unknown skill id would otherwise sit in the file and silently never be offered,
 which is the failure validate.py refuses for labels.
 
     python -m backend.online status   # what is filled in, what is still missing
-    python -m backend.online sync     # add placeholder rows for new gap skills
+    python -m backend.online sync     # match the placeholder rows to the gap skills
 
-`sync` only appends. It never edits or removes a row, so it is safe to run over
-filled-in courses after the catalog or the postings change.
+`sync` adds a placeholder for each new gap skill and drops placeholders for
+skills that stopped being gaps. A row with any course detail filled in is never
+touched, so it is safe to run after the catalog, the labels or the postings
+change.
 """
 from __future__ import annotations
 
@@ -147,25 +149,49 @@ def _rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def sync(path: Path, skill_ids: list[str]) -> list[str]:
-    """Append a placeholder row for each skill id that has no row yet. Never edits a row."""
-    have = {(r.get("skill_id") or "").strip() for r in _rows(path)}
-    new = [s for s in skill_ids if s not in have]
-    if not new:
-        return []
-    fresh = not path.exists()
-    ends_open = not fresh and not path.read_bytes().endswith(b"\n")
-    # Appending never rewrites what is there. A BOM goes only at the start of a
-    # new file, so Excel keeps reading it as UTF-8.
-    with path.open("a", encoding="utf-8-sig" if fresh else "utf-8", newline="") as f:
-        w = csv.writer(f)
-        if fresh:
-            w.writerow(COLUMNS)
-        elif ends_open:
+def _filled(row: dict[str, str]) -> bool:
+    return any((row.get(c) or "").strip() for c in COLUMNS[1:])
+
+
+def sync(path: Path, skill_ids: list[str]) -> tuple[list[str], list[str]]:
+    """
+    Match the placeholder rows to `skill_ids`: add one for each id with no row,
+    drop placeholder-only rows whose skill is no longer listed. A row with any
+    course detail filled in is never touched. Returns (added, removed).
+    """
+    wanted = set(skill_ids)
+    rows = _rows(path)
+    keep = [r for r in rows if _filled(r) or (r.get("skill_id") or "").strip() in wanted]
+    removed = [(r.get("skill_id") or "").strip() for r in rows
+               if not _filled(r) and (r.get("skill_id") or "").strip() not in wanted]
+    have = {(r.get("skill_id") or "").strip() for r in keep}
+    added = [s for s in skill_ids if s not in have]
+    if not added and not removed:
+        return [], []
+
+    if removed or not path.exists():
+        # Rewrite with the file's own columns, so nothing a person added is lost.
+        # Written in place: OneDrive refuses the delete a rename-over needs.
+        with path.open(encoding="utf-8-sig", newline="") if path.exists() else open(
+                __file__, encoding="utf-8") as probe:
+            fields = (csv.DictReader(probe).fieldnames if path.exists() else None) or list(COLUMNS)
+        with path.open("w", encoding="utf-8-sig", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(keep)
+            w.writerows({"skill_id": s} for s in added)
+        return added, removed
+
+    # Only additions: append, so filled rows keep their exact bytes. No BOM
+    # mid-file, so Excel keeps reading it as UTF-8.
+    ends_open = not path.read_bytes().endswith(b"\n")
+    with path.open("a", encoding="utf-8", newline="") as f:
+        if ends_open:
             f.write("\r\n")
-        for s in new:
+        w = csv.writer(f)
+        for s in added:
             w.writerow([s, "", "", "", ""])
-    return new
+    return added, removed
 
 
 def status(state: EngineState, path: Path) -> str:
@@ -203,8 +229,10 @@ def main(argv: list[str] | None = None) -> int:
     paths = Paths()
     state = build_state(paths)
     if args.command == "sync":
-        added = sync(paths.online_courses, gap_skills(state))
+        added, removed = sync(paths.online_courses, gap_skills(state))
         print(f"added {len(added)} placeholder row(s)" + (": " + ", ".join(added) if added else ""))
+        print(f"removed {len(removed)} placeholder row(s) for skills no longer a gap"
+              + (": " + ", ".join(removed) if removed else ""))
     print(status(state, paths.online_courses))
     return 0
 

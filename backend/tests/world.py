@@ -90,12 +90,12 @@ def make_config(taxonomy_skills: int = 4, threshold: float = 0.45,
 
 
 def write_world(root: Path, config: dict | None = None,
-                courses: list[tuple[str, str]] | None = None,
+                courses: list[tuple[str, ...]] | None = None,
                 online: list[tuple[str, ...]] | None = None) -> Paths:
     """
-    Write the fixture world. `courses` replaces the catalog; `online` writes an
-    online_courses.csv with those rows. Without it the world has no such file,
-    so no test ever reads the real one.
+    Write the fixture world. `courses` replaces the catalog, as (code, text) or
+    (code, text, labels); `online` writes an online_courses.csv with those rows.
+    Without it the world has no such file, so no test ever reads the real one.
     """
     root.mkdir(parents=True, exist_ok=True)
     (root / "taxonomy.json").write_text(
@@ -110,8 +110,8 @@ def write_world(root: Path, config: dict | None = None,
     with (root / "courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow(["id", "course_code", "lang", "course_text", "skill_ids"])
-        for i, (code, text) in enumerate(COURSES if courses is None else courses, 1):
-            w.writerow([i, code, "en", text, ""])
+        for i, (code, text, *labels) in enumerate(COURSES if courses is None else courses, 1):
+            w.writerow([i, code, "en", text, labels[0] if labels else ""])
     if online is not None:
         with (root / "online_courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
             w = csv.writer(f)

@@ -53,9 +53,10 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
             note = (f"Skill matching did not pass its validation gate (best F1 "
                     f"{v['best_f1']} against a {v['gate_min_f1']} floor). These "
                     f"figures are best-measured output, not validated output.")
-        if not v["course_mapping_validated"]:
-            note += (" Course-to-skill mapping has never been measured against "
-                     "labelled courses.")
+        by_extraction = sum(c.mapped_by == "extraction" for c in eng.courses.values())
+        if by_extraction:
+            note += (f" {by_extraction} of {len(eng.courses)} courses are mapped to "
+                     f"skills by extraction, not by hand labels.")
         return S.ValidationInfo(**v, note=note)
 
     def skill_entry(eng: EngineState, sid: str, demand: float) -> S.SkillEntry:
@@ -97,7 +98,8 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     @app.get("/courses", response_model=list[S.CourseOut])
     def courses(request: Request) -> list[S.CourseOut]:
         eng = engine(request)
-        return [S.CourseOut(code=c.code, name=c.name, skill_count=len(c.skills))
+        return [S.CourseOut(code=c.code, name=c.name, skill_count=len(c.skills),
+                            mapped_by=c.mapped_by)
                 for c in sorted(eng.courses.values(), key=lambda c: c.code)]
 
     @app.post("/profiles", response_model=S.ProfileOut, status_code=201)

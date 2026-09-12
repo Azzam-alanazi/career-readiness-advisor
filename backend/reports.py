@@ -23,10 +23,13 @@ import numpy as np
 from backend import engine
 from backend.engine import EngineState, build_state, sg
 
-# The spec's definition-of-done scenario, as run end to end in Phase 3 and by
-# app/tool/contract_check.dart.
+# The spec's definition-of-done scenario, also run by app/tool/contract_check.dart.
+# Six Shaqra IS courses a Business Analyst student has taken by the third year,
+# the nearest real counterparts of the placeholder scenario's six: programming
+# basics, an introduction, networks, systems analysis, databases, and a business
+# course.
 SCENARIO_CAREER = "Business Analyst"
-SCENARIO_COURSES = ["IS 201", "IS 210", "IS 230", "IS 240", "IS 250", "BUS 210"]
+SCENARIO_COURSES = ["CSC 202", "CIT 201", "CIT 202", "CIS 221", "CIS 302", "CIS 303"]
 
 # 0.10 to 0.50 in steps of 0.05. Rounded so 0.3 is 0.3 and not
 # 0.30000000000000004: analyze_gap compares with >=, and demand shares sit
@@ -145,6 +148,22 @@ def course_reach(state: EngineState) -> list[Reach]:
     return out
 
 
+def extraction_vs_labels(state: EngineState) -> tuple[int, int, int] | None:
+    """
+    Extraction scored against the hand labels, over the labelled courses: labels
+    are ground truth, extraction is what gets measured. None when no course is
+    labelled.
+    """
+    labelled = [c for c in state.courses.values() if c.mapped_by == "labels"]
+    if not labelled:
+        return None
+    tp = fp = fn = 0
+    for c in labelled:
+        found, truth = set(state.extracted[c.code]), set(c.skills)
+        tp, fp, fn = tp + len(found & truth), fp + len(found - truth), fn + len(truth - found)
+    return tp, fp, fn
+
+
 @dataclass(frozen=True)
 class ChunkVote:
     chunk: str
@@ -199,10 +218,10 @@ def explain_courses(state: EngineState, paths: engine.Paths | None = None,
             votes.append(ChunkVote(chunk, ids[top], score, ids[second], lead,
                                    cleared, reason))
         explained = {s for v in votes for s, _ in v.cleared}
-        if explained != set(state.courses[code].skills) or \
+        if explained != set(state.extracted[code]) or \
                 explained != set(tax.match_auto(chunks, params)):
             raise AssertionError(f"{code}: explanation {sorted(explained)} disagrees "
-                                 f"with the served map {list(state.courses[code].skills)}")
+                                 f"with extraction {list(state.extracted[code])}")
         out.append((code, votes))
     return out
 
@@ -227,7 +246,8 @@ def _matcher(state: EngineState) -> str:
     if p["method"] == "chunk_top1":
         out += f", margin {p['margin']}"
     if p["validated"]:
-        return out + ", validated on courses"
+        n = state.config.get("courses", {}).get("labeled_texts")
+        return out + f", measured on {n} labelled courses ({state.config.get('validated_on')})"
     donor = state.config.get("courses", {}).get("inherited_from")
     return out + ", never validated on courses" + (f" (inherited from {donor})" if donor else "")
 
@@ -292,15 +312,29 @@ def render_course_reach(state: EngineState) -> str:
         ("named by a single posting, in any career", lambda r: r.most_postings() == 1),
         ("named by no posting in any career", lambda r: r.most_postings() == 0),
     ]
+    labelled = [c for c in state.courses.values() if c.mapped_by == "labels"]
+    scored = extraction_vs_labels(state)
+    if scored is None:
+        measured = "No course is labelled, so extraction cannot be measured against labels."
+    else:
+        tp, fp, fn = scored
+        p = tp / (tp + fp) if tp + fp else 0.0
+        r = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * p * r / (p + r) if p + r else 0.0
+        measured = (f"Extraction against the labels, over the {len(labelled)} labelled "
+                    f"courses: TP {tp}, FP {fp}, FN {fn}; precision {p:.2f}, recall "
+                    f"{r:.2f}, F1 {f1:.3f}.")
     out = [
         f"## Course reach: {len(reached)} of {len(reach)} skills reachable "
         f"from {len(state.courses)} catalog courses",
-        f"Course matching: {_matcher(state)}.",
+        f"Course mapping: {len(labelled)} of {len(state.courses)} courses hand-labelled; "
+        f"the rest by extraction ({_matcher(state)}).",
+        measured,
         "",
         "### By course",
         "",
-        _table(["course", "name", "skills", "reaches"],
-               [[code, c.name, len(c.skills),
+        _table(["course", "name", "mapped by", "skills", "reaches"],
+               [[code, c.name, c.mapped_by, len(c.skills),
                  ", ".join(skill(s)["en"] for s in c.skills) or "nothing"]
                 for code, c in state.courses.items()]),
         "",
@@ -334,9 +368,10 @@ def render_explain(state: EngineState) -> str:
            f"Course matching: {_matcher(state)}. Under it, {rule}.", ""]
     for code, votes in explained:
         course = state.courses[code]
-        got = ", ".join(f"{s} {name(s)}" for s in course.skills) or "nothing"
+        found = state.extracted[code]
+        got = ", ".join(f"{s} {name(s)}" for s in found) or "nothing"
         out.append(f"**{code} {course.name}** ({len(votes)} chunks, "
-                   f"{len(course.skills)} skills): {got}")
+                   f"extraction finds {len(found)}): {got}")
         for v in votes:
             text = v.chunk if len(v.chunk) <= 70 else v.chunk[:67] + "..."
             if centric and v.voted:
@@ -350,6 +385,11 @@ def render_explain(state: EngineState) -> str:
         out.append("")
 
     all_votes = [v for _, votes in explained for v in votes]
+    silent = [code for code, votes in explained if not votes]
+    out.append(f"Courses whose text gives no chunk at all: {len(silent)}"
+               + (f" ({', '.join(silent)})" if silent else "")
+               + ". split_chunks drops pieces under 15 characters, and splits on hyphens.")
+    out.append("")
     if centric:
         per_chunk = [len(v.cleared) for v in all_votes]
         out.append(f"Chunks: {len(all_votes)}. Clearing no skill: "

@@ -83,18 +83,21 @@ def test_gap_skills_are_the_demanded_skills_no_university_course_teaches(tmp_pat
                                   embedder)) == ["CM"]
 
 
-def test_sync_appends_placeholders_and_never_touches_a_row(tmp_path):
+def test_sync_matches_placeholders_to_the_gaps_and_never_touches_a_filled_row(tmp_path):
     path = tmp_path / "online.csv"
-    assert sync(path, ["CM", "PY"]) == ["CM", "PY"]              # creates the file
+    assert sync(path, ["CM", "PY"]) == (["CM", "PY"], [])       # creates the file
     filled = path.read_text(encoding="utf-8-sig").replace(
         "CM,,,,", "CM,Example Academy,Speaking,https://example.com/s,yes")
     path.write_text(filled, encoding="utf-8-sig")
 
-    assert sync(path, ["CM", "PY", "SQ"]) == ["SQ"]
-    assert sync(path, ["CM", "PY", "SQ"]) == []
+    assert sync(path, ["CM", "PY", "SQ"]) == (["SQ"], [])
+    assert sync(path, ["CM", "PY", "SQ"]) == ([], [])
+    # Neither CM nor PY is a gap any more. PY's placeholder goes; CM's row has a
+    # course filled in, so it stays.
+    assert sync(path, ["SQ"]) == ([], ["PY"])
     catalog = load_online_courses(path, {"CM", "PY", "SQ"})
     assert [(c.title, c.skills) for c in catalog.courses] == [("Speaking", ("CM",))]
-    assert catalog.placeholders == 2
+    assert catalog.placeholders == 1
 
 
 # ---- the loader fails loudly ------------------------------------------------------

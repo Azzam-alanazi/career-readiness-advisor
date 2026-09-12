@@ -1,17 +1,34 @@
-﻿id,course_code,lang,course_text,skill_ids
-1,IS 201,en,"Introduction to Information Systems. Role of information systems in organizations, hardware and software fundamentals, and the use of information technology to support business operations and decision making.",NONE
-2,IS 210,en,"Programming Fundamentals. Problem solving and algorithm design using Python. Variables, control structures, functions, lists and file handling, with an emphasis on structured program development.",SK24;SK25;SK84
-3,IS 220,en,"Object-Oriented Programming. Classes, objects, inheritance and polymorphism using Java. Exception handling, collections, and the design of maintainable object-oriented applications.",SK24;SK40;SK91
-4,IS 230,en,"Database Management Systems. Relational database design, entity-relationship modeling, normalization, and writing SQL queries for data definition, manipulation and reporting.",SK15;SK16;SK17;SK83
-5,IS 240,en,"Systems Analysis and Design. Requirements elicitation and documentation, feasibility study, structured and object-oriented analysis, use cases, and system specification for information systems projects.",SK01;SK02;SK05;SK08
-6,IS 250,en,"Data Communications and Computer Networks. Network topologies, the TCP/IP protocol stack, routing and switching, wireless networks, and network configuration and troubleshooting.",SK48;SK49
-7,IS 260,en,"Information Security Management. Threats and vulnerabilities, cryptography basics, access control, risk assessment, security policies, and protecting organizational information assets from intrusion.",SK65;SK66;SK68
-8,IS 310,en,"Business Intelligence and Data Analytics. Data warehousing, ETL processes, OLAP, and building interactive dashboards and visual reports with Power BI to support management decision making.",SK13;SK14;SK18;SK21;SK83
-9,IS 320,en,"Enterprise Resource Planning Systems. Integrated business processes across finance, procurement and logistics using SAP and Oracle ERP, including configuration, implementation and change management.",SK69;SK70;SK71;SK72;SK73
-10,IS 330,en,"Web Application Development. Client-side and server-side development, HTML, CSS and JavaScript, database-backed web applications, and deployment of interactive web systems.",SK28;SK30;SK31;SK34;SK35
-11,IS 340,en,"IT Project Management. Project scope, work breakdown structures, scheduling and budgeting, risk management, agile and waterfall methodologies, and leading project teams to delivery.",SK09;SK10;SK87
-12,IS 350,en,"Business Process Management. Modeling and analyzing business processes using BPMN, workflow design, process improvement and automation of organizational procedures.",SK03;SK04
-13,ACCT 201,en,"Principles of Financial Accounting. The accounting cycle, journal entries, ledgers and trial balance, and the preparation of income statements and balance sheets under accepted accounting standards.",SK77
-14,MKT 301,en,"Digital Marketing. Social media campaign planning, search engine optimization, content marketing, email campaigns, and measuring digital campaign performance and audience engagement.",NONE
-15,HRM 301,en,"Human Resource Management. Recruitment and selection, job analysis, training and development, performance appraisal, compensation, and employee relations within organizations.",SK80
-16,BUS 210,en,"Business Communication. Professional writing, presentation delivery, meeting facilitation, teamwork and collaboration, and communicating technical information to non-specialist audiences.",SK07;SK85;SK87
+﻿id,course_code,course_title,track,lang,course_text,skill_ids
+1,CIT 201,Introduction to Database Systems,college,en,Introduction to Database Systems. ,
+2,CIT 202,Computer Networks (1),college,en,Computer Networks (1). ,
+3,CIT 403,Operating Systems,college,en,Operating Systems. ,
+4,CSC 202,Basics of Programming and Algorithms,college,en,Basics of Programming and Algorithms. ,
+5,CSC 212,Programming Language I,college,en,Programming Language I. ,
+6,CSC 213,Programming Language II,college,en,Programming Language II. ,
+9,CIS 221,System Analysis and Design,college,en,System Analysis and Design. ,
+10,CIS 307,Data Structure,college,en,Data Structure. ,
+12,MATH 210,Principles of Probabilities and Statistics,college,en,Principles of Probabilities and Statistics. ,
+15,CIS 301,Advance Systems Analysis and Design,core,en,Advance Systems Analysis and Design. ,
+16,CIS 302,Database Management Systems,core,en,Database Management Systems. ,
+17,CIS 303,Basic of Management and Business,core,en,Basic of Management and Business. ,
+18,CIS 306,Information Security,core,en,Information Security. ,
+19,CIS 400,Applications Programming,core,en,Applications Programming. ,
+20,CIS 402,Health Information Systems,core,en,Health Information Systems. ,
+21,CIS 403,Organization Skills,core,en,Organization Skills. ,
+22,CIS 404,Distributed Systems,core,en,Distributed Systems. ,
+23,CIS 405,Operations Management,core,en,Operations Management. ,
+24,CIS 407,Enterprise Resources Planning Systems,core,en,Enterprise Resources Planning Systems. ,
+26,CIS 409,E-business,core,en,E-business. ,
+27,CIS 501,Decision Support Systems,core,en,Decision Support Systems. ,
+28,CIS 502,Knowledge Management,core,en,Knowledge Management. ,
+29,CIS 505,Data Mining,core,en,Data Mining. ,
+30,CIS 516,Project Management in Information Systems,core,en,Project Management in Information Systems. ,
+31,CSC 304,Web Programming,core,en,Web Programming. ,
+32,CIT 402,Human Computer Interactions,core,en,Human Computer Interactions. ,
+33,CIT 506,Computer Ethics,core,en,Computer Ethics. ,
+37,CIS 504,Data Visualization,elective_analytics,en,Data Visualization. ,
+38,CIS 507,Data Analysis in Digital Marketing,elective_analytics,en,Data Analysis in Digital Marketing. ,
+39,CIS 508,Business Intelligence,elective_analytics,en,Business Intelligence. ,
+40,CIS 509,Business Analytics,elective_analytics,en,Business Analytics. ,
+46,CIS 515,Introduction to E-commerce,elective_ecommerce,en,Introduction to E-commerce. ,
+47,CIS 517,Business Computer Languages,elective_ecommerce,en,Business Computer Languages. ,

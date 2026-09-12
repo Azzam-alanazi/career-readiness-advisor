@@ -12,9 +12,13 @@ decision, and says so in the data. `/health`, every gap response and every
 recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
 
-Course-to-skill mapping has been measured too, on 16 hand-labelled courses, and
-also falls short, at F1 0.514. `best_f1` in the block is the posting figure,
-0.504, which is also the gate figure because it is the lower of the two.
+Course-to-skill extraction was measured too, on 16 hand-labelled placeholder
+courses, and also falls short, at F1 0.514. The catalog is now the real Shaqra IS
+catalog, titles only and not yet labelled, so every course is mapped by
+extraction on text the measurement never covered. The block says so:
+`course_mapping_validated` stays false until every course is hand-labelled.
+`best_f1` is the posting figure, 0.504, which is also the gate figure because it
+is the lower of the two.
 
 ## Run
 
@@ -38,7 +42,7 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 |---|---|---|
 | GET | `/health` | model, counts, online courses filled in and still waiting, cache status, validation |
 | GET | `/careers` | careers with their posting counts |
-| GET | `/courses` | catalog: code, name, number of skills mapped |
+| GET | `/courses` | catalog: code, official title, number of skills mapped, and whether they come from hand labels or extraction |
 | POST | `/profiles` | create a student profile — `career`, `completed_courses` (codes), optional `major` |
 | GET | `/profiles/{id}` | the stored profile |
 | GET | `/profiles/{id}/gap` | readiness %, covered skills, missing skills ranked by demand |
@@ -50,6 +54,11 @@ because the catalog is.
 
 ## Design decisions
 
+- **Hand labels first.** A course's skills come from its labels in
+  `labeled_courses.csv` wherever it has them; extraction maps only the
+  unlabelled courses, and still runs on every course so it can be measured
+  against the labels. An unknown skill id in a label stops startup. Labels are
+  read on every start, so relabelling needs a restart, not a rebuild.
 - **Nothing is embedded per request.** Students pick courses from the catalog,
   so the model is needed only to build profiles, never to answer a request
   (spec item 12).
@@ -75,7 +84,7 @@ because the catalog is.
 python -m pytest
 ```
 
-55 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+60 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -84,8 +93,9 @@ ranking; bilingual names; rejection of unknown careers, courses and profiles;
 profiles surviving a restart; the model loading once and never per request; a
 warm restart skipping the model entirely; cache invalidation on a config change;
 startup refusing a stale config or a bad online-courses file before any model
-work; online courses offered only where no university course teaches the skill;
-and the reports below.
+work; hand labels overriding extraction, and relabelling without a rebuild;
+online courses offered only where no university course teaches the skill; and
+the reports below.
 
 ## Online courses
 
@@ -113,8 +123,10 @@ python -m backend.online sync
 ```
 
 `status` shows how many gap skills have an online course filled in. `sync`
-appends a placeholder row for each gap skill that has none, for after the course
-catalog or the postings change, and never edits or removes a row.
+matches the placeholder rows to the current gap skills, for after the catalog,
+the labels or the postings change: it adds a row for each new gap skill and
+drops placeholders for skills that stopped being gaps. A row with a course
+filled in is never touched.
 
 ## Reports
 
@@ -138,7 +150,8 @@ python -m backend.reports course-reach --explain
   `--explain` loads the model and shows, chunk by chunk, what each sentence gave
   its course — every skill at or over the threshold under `skill_centric`, at
   most one vote under `chunk_top1` — or why it gave nothing; it raises if that
-  account disagrees with the served map.
+  account disagrees with the extraction the engine cached. Where courses are
+  hand-labelled, `course-reach` also scores extraction against the labels.
 
 Results, dated, are in `../skillgap/CHANGELOG.md`.
 

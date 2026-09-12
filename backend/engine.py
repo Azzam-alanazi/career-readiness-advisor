@@ -13,9 +13,12 @@ unchanged inputs skips extraction and never loads the model. Any change produces
 a new key, so a stale profile cannot be served -- the same rule StaleConfigError
 enforces for matching parameters.
 
-Online courses sit outside that cache. Nothing about them is embedded, so they
-are read from their hand-curated CSV on every start: a change needs a restart,
-not a rebuild.
+Course-to-skill mapping reads the hand labels in labeled_courses.csv wherever a
+course has them: labels are ground truth. Extraction maps only the unlabelled
+courses, and still runs on every course so it can be measured against the
+labels. Labels and online courses sit outside the cache -- nothing about them is
+embedded -- so they are read on every start: a change needs a restart, not a
+rebuild.
 
 Chunking matches validate.py exactly: extraction runs on posting_text as stored,
 " | " separators included, because that is the text the matching parameters were
@@ -38,6 +41,7 @@ if str(ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(ENGINE_DIR))
 
 import skillgap as sg  # noqa: E402  (needs the path insert above)
+from validate import NO_SKILLS, SKILL_SEP  # noqa: E402  the label format validate.py measures against
 
 from .online import OnlineCatalog, OnlineCourse, load_online_courses  # noqa: E402
 
@@ -61,6 +65,11 @@ class Course:
     code: str
     name: str
     skills: tuple[str, ...]
+    mapped_by: str = "extraction"          # "labels" where the course is hand-labelled
+
+
+class CourseLabelsError(ValueError):
+    """labeled_courses.csv has labels the service cannot serve."""
 
 
 @dataclass(frozen=True)
@@ -85,7 +94,8 @@ class SkillNames:
 class EngineState:
     skills: dict[str, dict[str, str]]        # id -> {en, ar, category}
     profiles: dict[str, sg.CareerProfile]    # career -> demand profile
-    courses: dict[str, Course]               # course code -> course
+    courses: dict[str, Course]               # course code -> served mapping
+    extracted: dict[str, tuple[str, ...]]    # course code -> what extraction found
     online: OnlineCatalog                    # hand-curated, never embedded
     posting_params: dict[str, Any]
     course_params: dict[str, Any]
@@ -157,7 +167,11 @@ class EngineState:
             "gate_passed": bool(self.posting_params["gate_passed"]),
             "best_f1": self.posting_params.get("best_f1"),
             "gate_min_f1": self.config.get("gate_min_f1"),
-            "course_mapping_validated": bool(self.course_params["validated"]),
+            # Hand labels are ground truth, so the course mapping counts as
+            # checked only when every course is labelled. Extraction, however its
+            # parameters measured, is an estimate for each course it maps.
+            "course_mapping_validated": bool(self.courses) and all(
+                c.mapped_by == "labels" for c in self.courses.values()),
         }
 
 
@@ -166,10 +180,41 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def _course_name(text: str) -> str:
-    """Catalog entries lead with the title: 'Database Management Systems. ...'."""
-    head = text.split(". ", 1)[0].strip()
-    return head or text[:60].strip()
+def _course_name(row: dict[str, str]) -> str:
+    """The official title where the catalog has one, else the text before '. '."""
+    title = (row.get("course_title") or "").strip()
+    if title:
+        return title
+    head = row["course_text"].split(". ", 1)[0].strip()
+    return head or row["course_text"][:60].strip()
+
+
+def _course_labels(rows: list[dict[str, str]], valid_ids: set[str],
+                   path: Path) -> dict[str, tuple[str, ...]]:
+    """
+    Hand labels by course code, in the format validate.py measures against: SK
+    ids separated by ';', NONE for "labelled, teaches none of them", blank for
+    "not labelled yet". An unknown id stops startup, as it stops validate.py.
+    """
+    labels: dict[str, tuple[str, ...]] = {}
+    problems = []
+    for lineno, row in enumerate(rows, start=2):
+        raw = (row.get("skill_ids") or "").strip()
+        if not raw:
+            continue
+        ids = (set() if raw.upper() == NO_SKILLS
+               else {s.strip() for s in raw.split(SKILL_SEP) if s.strip()})
+        unknown = sorted(ids - valid_ids)
+        if unknown:
+            problems.append(f"  line {lineno} ({row['course_code']}): "
+                            f"unknown skill_id(s) {unknown}")
+            continue
+        labels[row["course_code"]] = tuple(sorted(ids))
+    if problems:
+        raise CourseLabelsError(
+            f"{path} has labels that are not in the taxonomy:\n" + "\n".join(problems)
+            + "\n\nSkill ids are the SK codes in skillgap/TAXONOMY_REFERENCE.md.")
+    return labels
 
 
 def _cache_key(paths: Paths, postings: list[dict], course_rows: list[dict],
@@ -178,8 +223,8 @@ def _cache_key(paths: Paths, postings: list[dict], course_rows: list[dict],
     h.update(f"v{CACHE_VERSION}|{model}".encode())
     for p in (paths.taxonomy, paths.config, ENGINE_DIR / "skillgap.py"):
         h.update(p.read_bytes())
-    # Only the fields extraction reads. Relabelling a posting's skill_ids does
-    # not change its demand profile, so it must not invalidate the cache.
+    # Only the fields extraction reads. Relabelling a posting or a course does
+    # not change what extraction finds, so it must not invalidate the cache.
     for r in postings:
         h.update(f"\x1f{r['id']}\x1f{r['career']}\x1f{r['posting_text']}".encode())
     for r in course_rows:
@@ -197,12 +242,12 @@ def _load_cache(path: Path, key: str):
     profiles = {c: sg.CareerProfile(career=c, posting_count=v["posting_count"],
                                     demand=v["demand"])
                 for c, v in data["profiles"].items()}
-    courses = {code: Course(code, v["name"], tuple(v["skills"]))
-               for code, v in data["courses"].items()}
-    return profiles, courses
+    extracted = {code: tuple(v["skills"]) for code, v in data["courses"].items()}
+    return profiles, extracted
 
 
-def _save_cache(path: Path, key: str, profiles: dict, courses: dict) -> None:
+def _save_cache(path: Path, key: str, profiles: dict,
+                extracted: dict[str, tuple[str, ...]], names: dict[str, str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     # Written directly rather than via temp-and-rename: OneDrive refuses the
     # delete a rename-over needs. A torn write just fails to parse next time
@@ -211,18 +256,18 @@ def _save_cache(path: Path, key: str, profiles: dict, courses: dict) -> None:
         "key": key,
         "profiles": {c: {"posting_count": p.posting_count, "demand": p.demand}
                      for c, p in profiles.items()},
-        "courses": {code: {"name": c.name, "skills": list(c.skills)}
-                    for code, c in courses.items()},
+        "courses": {code: {"name": names[code], "skills": list(skills)}
+                    for code, skills in extracted.items()},
     }, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def build_state(paths: Paths | None = None,
                 embedder_factory: Callable[[str], Any] | None = None) -> EngineState:
     """
-    Build everything the API serves. Raises StaleConfigError if config.json was
-    swept against a different taxonomy -- better no service than one applying
-    parameters measured against another label set -- and OnlineCoursesError if
-    online_courses.csv has rows it cannot serve. Both fail before any model work.
+    Build everything the API serves. Fails before any model work on a config
+    swept against a different taxonomy (StaleConfigError), on course labels or
+    online courses naming skills the taxonomy lacks (CourseLabelsError,
+    OnlineCoursesError): better no service than one quietly serving around them.
     """
     paths = paths or Paths()
     config = json.loads(paths.config.read_text(encoding="utf-8"))
@@ -235,13 +280,15 @@ def build_state(paths: Paths | None = None,
     online = load_online_courses(paths.online_courses, set(skills))
     postings = _read_csv(paths.postings)
     course_rows = _read_csv(paths.courses)
+    labels = _course_labels(course_rows, set(skills), paths.courses)
+    names = {r["course_code"]: _course_name(r) for r in course_rows}
 
     key = _cache_key(paths, postings, course_rows, model)
     cache_file = paths.cache_dir / f"engine-{key[:20]}.json"
     cached = _load_cache(cache_file, key)
 
     if cached is not None:
-        profiles, courses = cached
+        profiles, extracted = cached
         from_cache = True
     else:
         embedder = (embedder_factory or sg.Embedder)(model)
@@ -253,16 +300,19 @@ def build_state(paths: Paths | None = None,
         profiles = {career: sg.build_career_profile(career, texts, tax, posting_params)
                     for career, texts in sorted(by_career.items())}
 
-        courses = {}
-        for r in course_rows:
-            found = sg.skills_from_courses([r["course_text"].strip()], tax, course_params)
-            courses[r["course_code"]] = Course(
-                r["course_code"], _course_name(r["course_text"]), tuple(sorted(found)))
-
-        _save_cache(cache_file, key, profiles, courses)
+        extracted = {
+            r["course_code"]: tuple(sorted(sg.skills_from_courses(
+                [r["course_text"].strip()], tax, course_params)))
+            for r in course_rows}
+        _save_cache(cache_file, key, profiles, extracted, names)
         from_cache = False
 
-    return EngineState(skills=skills, profiles=profiles, courses=courses, online=online,
+    courses = {code: (Course(code, names[code], labels[code], "labels") if code in labels
+                      else Course(code, names[code], extracted[code]))
+               for code in names}
+
+    return EngineState(skills=skills, profiles=profiles, courses=courses,
+                       extracted=extracted, online=online,
                        posting_params=posting_params, course_params=course_params,
                        config=config, model=model, cache_key=key,
                        built_from_cache=from_cache)

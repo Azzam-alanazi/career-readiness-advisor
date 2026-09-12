@@ -1,0 +1,16 @@
+﻿id,course_code,course_title,track,basis,reason
+7,CNE 306,Digital Logic Design,college,named in the request,Hardware logic design. No taxonomy skill covers it and no collected posting asks for it.
+8,CNE 401,Computer Architecture and Organization,college,judgement,"Hardware design theory, like Digital Logic Design, and no collected posting asks for it. The nearest skill, Hardware maintenance, is hands-on support work."
+11,MATH 207,Discrete Mathematics,college,named in the request,"Pure mathematics. No taxonomy skill is mathematical, and no collected posting names discrete mathematics."
+13,MATH 221,Calculus,college,named in the request,"Pure mathematics. No taxonomy skill is mathematical, and no collected posting names calculus."
+14,MATH 246,Linear Algebra,college,named in the request,"Pure mathematics. No taxonomy skill is mathematical, and no collected posting names linear algebra."
+25,CIS 408,Geographic Information Systems,core,judgement,"GIS, the subject of the dropped elective track, but in the core track, so dropped on judgement rather than by name. Same evidence: no GIS skill in the taxonomy; one posting lists GIS tools."
+34,CIS 593,Field Training,core,judgement,No fixed content: what field training teaches depends on the placement.
+35,CIS 591,Graduation Project (1),core,judgement,"No fixed content: what a graduation project teaches depends on the project, so the catalog cannot say which skills a student gains."
+36,CIS 592,Graduation Project (2),core,judgement,"No fixed content: what a graduation project teaches depends on the project, so the catalog cannot say which skills a student gains."
+41,CIS 510,Location Aware Systems,elective_gis,named in the request,"GIS elective track. The taxonomy has no GIS skill, so no course can close a GIS gap; one Data Analyst posting (38) lists GIS tools as a nice-to-have, which the engine cannot see either."
+42,CIS 511,GIS Applications in the Natural Environment,elective_gis,named in the request,"GIS elective track. The taxonomy has no GIS skill, so no course can close a GIS gap; one Data Analyst posting (38) lists GIS tools as a nice-to-have, which the engine cannot see either."
+43,CIS 512,Remote Sensing in Earth Sciences,elective_gis,named in the request,"GIS elective track. The taxonomy has no GIS skill, so no course can close a GIS gap; one Data Analyst posting (38) lists GIS tools as a nice-to-have, which the engine cannot see either."
+44,CIS 513,GIS Modeling and Analyzing,elective_gis,named in the request,"GIS elective track. The taxonomy has no GIS skill, so no course can close a GIS gap; one Data Analyst posting (38) lists GIS tools as a nice-to-have, which the engine cannot see either."
+45,CIS 514,The Economics of Information,elective_ecommerce,judgement,"Economics appears in two Data Analyst postings only as an accepted degree field, never as a skill, and the taxonomy has no economics skill."
+48,CIS 518,Blockchain and Money,elective_ecommerce,judgement,"No taxonomy skill covers blockchain or digital money, and no collected posting mentions either."

@@ -28,7 +28,8 @@ import 'package:career_readiness/features/profile/domain/profile_draft.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:http/http.dart' as http;
 
-const sixCourses = ['IS 201', 'IS 210', 'IS 230', 'IS 240', 'IS 250', 'BUS 210'];
+// Six real Shaqra IS courses, the same scenario as backend/reports.py.
+const sixCourses = ['CSC 202', 'CIT 201', 'CIT 202', 'CIS 221', 'CIS 302', 'CIS 303'];
 
 var failures = 0;
 

@@ -4,6 +4,186 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-12 — The real Shaqra catalog, titles only; labels first
+
+The placeholder catalog is replaced by the real Shaqra IS catalog: official codes
+and titles, no descriptions. Course-to-skill mapping now reads hand labels
+wherever a course has them, and falls back to extraction only for unlabelled
+courses. No Shaqra course is labelled yet.
+
+### The catalog — 33 of 48 courses
+
+`labeled_courses_shaqra.csv` holds all 48 courses as supplied, with code, title
+and track. `labeled_courses.csv`, which the engine and `validate.py` read, now
+holds the 33 that could plausibly close a skill gap in the five careers.
+`labeled_courses_excluded.csv` records the other 15, each with its reason and
+whether the request named it or it was a judgement. The placeholder catalog and
+its 16 hand labels, which the 2026-09-11 course measurement used, are in
+`archive/labeled_courses_placeholder.csv`.
+
+- **Dropped as instructed (8):** MATH 207 Discrete Mathematics, MATH 221
+  Calculus and MATH 246 Linear Algebra (pure maths); CNE 306 Digital Logic
+  Design; CIS 510–513, the GIS elective track. The file has no Physics course,
+  so there was none to drop.
+- **Dropped on judgement (7):**
+  - CIS 408 Geographic Information Systems: GIS, but in the core track, so not
+    covered by "the elective track";
+  - CNE 401 Computer Architecture and Organization: hardware design theory, like
+    Digital Logic Design;
+  - CIS 591 and CIS 592 Graduation Project (1) and (2), and CIS 593 Field
+    Training: no fixed content, since what they teach depends on the project or
+    placement;
+  - CIS 514 The Economics of Information;
+  - CIS 518 Blockchain and Money.
+- **Checked against the 27 postings before dropping.**
+  - No posting names calculus, linear algebra, discrete mathematics, logic
+    design, computer architecture or blockchain.
+  - Two name economics, only as an accepted degree field.
+  - One Data Analyst posting (38) lists GIS tools as a nice-to-have. The
+    taxonomy has no GIS skill, so the engine could not credit GIS from any course
+    either way. If GIS matters it needs a taxonomy entry, as Java did.
+- **Kept on the evidence.**
+  - CIS 402 Health Information Systems was on the drop list as sector-specific,
+    until the check found IT Support posting 34 (Nihon Kohden) integrating
+    medical devices with hospital information systems.
+  - CIT 506 Computer Ethics stays because privacy and data protection appear in
+    two postings.
+  - The two e-commerce courses stay because e-commerce appears in two postings.
+
+### Labels first
+
+A course's skills come from its labels in `labeled_courses.csv` wherever it has
+them, in the format `validate.py` measures against: SK ids separated by `;`,
+`NONE` for "teaches none of them", blank for "not labelled".
+
+- **Labels are ground truth.** Extraction maps only the unlabelled courses. It
+  still runs on every course, so `course-reach` can score it against the labels
+  once any course is labelled.
+- **An unknown skill id in a label stops startup,** before any model work.
+- **Relabelling needs a restart, not a rebuild,** because labels sit outside the
+  extraction cache.
+- **`/courses` now says how each course is mapped,** by labels or by extraction.
+
+**`course_mapping_validated` now means "every course is hand-labelled".** It used
+to report whether the extraction parameters had been measured. They were, on the
+placeholder catalog, but on the Shaqra titles they are unmeasured. So the flag is
+false, the app shows its "courses unchecked" caveat again, and the API note reads
+"33 of 33 courses are mapped to skills by extraction, not by hand labels". The
+flag turns true when the last course is labelled.
+
+**None of the 16 existing labels carried over.** They are on placeholder
+courses whose codes and texts do not exist in the real catalog. Matching them to
+Shaqra courses by title would mean writing labels for courses that were never
+labelled.
+
+### Course reach on titles alone
+
+| | placeholder catalog, descriptions | Shaqra catalog, titles only |
+|---|---|---|
+| courses | 16 | 33 |
+| skills reached | 26 (15 before the course measurement) | **13** |
+| skills per course | 0 to 4 | 1 for 31 courses, 0 for 2 |
+| of the 41 skills the placeholder labels used | 20 | 11 |
+| extraction scored against labels | F1 0.514 | cannot be measured: no labels |
+
+**Title-only text is a data limitation, not a method failure.** The same
+extraction, at the same parameters, scored F1 0.514 on the placeholder
+descriptions. A title gives it one short phrase:
+
+- **One chunk per course,** so under `chunk_top1` at most one skill per course.
+  The 31 chunks the catalog produces cap it at 31 skills, and they reach 13.
+- **Some titles give nothing at all.** Titles run 10 to 42 characters, median 23.
+  CIS 409 "E-business" and CIS 505 "Data Mining" produce no chunk:
+  `split_chunks` drops pieces under 15 characters and splits on hyphens.
+- **Many single mappings are misreads.** Bare titles share generic words with
+  unrelated skill labels:
+  - Computer Networks (1) → C/C++ programming
+  - Operating Systems → ERP systems
+  - Principles of Probabilities and Statistics → C/C++ programming
+  - Organization Skills → Human resources management
+  - Distributed Systems → ERP systems
+  - Advance Systems Analysis and Design → Frontend development
+
+  Plausible ones include both database courses → Database management,
+  Information Security → IT security, Enterprise Resources Planning Systems →
+  ERP systems, Web Programming → Web application development, Data Visualization
+  → Data visualization, and Business Intelligence → Business intelligence.
+  These judgements come from inspection, not measurement: there are no labels
+  to measure against.
+
+Labels are the remedy the design already has: each labelled course replaces
+extraction outright.
+
+### The demo scenario, on real codes
+
+Business Analyst, with the nearest real counterparts of the placeholder six, in
+`backend/reports.py` and `app/tool/contract_check.dart`:
+
+- CSC 202 Basics of Programming and Algorithms
+- CIT 201 Introduction to Database Systems
+- CIT 202 Computer Networks (1)
+- CIS 221 System Analysis and Design
+- CIS 302 Database Management Systems
+- CIS 303 Basic of Management and Business
+
+The `min_demand` sweep, held at 0.15:
+
+| min_demand | skill must appear in | counted | covered | missing | closable by any course | readiness | with all 33 courses |
+|---|---|---|---|---|---|---|---|
+| 0.10–0.15 (current) | ≥ 1 of 6 postings | 36 | 1 | 35 | 2 | 3.2% | 8.1% |
+| 0.20–0.30 | ≥ 2 of 6 | 17 | 1 | 16 | 1 | 4.7% | 9.3% |
+| 0.35–0.50 | ≥ 3 of 6 | 6 | 0 | 6 | 0 | 0.0% | 0.0% |
+
+On the placeholder catalog the current row read 9.7%, with a 24.2% ceiling.
+- **The one covered skill is a misread.** Business intelligence comes from
+  "Basic of Management and Business".
+- **At 3 or more postings the catalog reaches nothing.** No Shaqra course reaches
+  any of the six skills Business Analysts ask for most.
+
+**The mechanics hold; the suggestions are not yet trustworthy.** The contract
+check passes 20 of 20, but each of the three university courses it now suggests
+first rests on a title misread:
+- CIS 515 Introduction to E-commerce, for Reporting;
+- CIT 403 Operating Systems, for ERP systems;
+- CIS 402 Health Information Systems, for ERP systems.
+
+The app shows the quality caveat beside them, and labelling the courses is what
+fixes them.
+
+### Online courses re-synced
+
+`sync` now matches the placeholder rows to the current gap skills. It adds rows
+for new gap skills and drops placeholders for skills that stopped being gaps,
+and never touches a filled row. Against the Shaqra map it added 15 and removed 3,
+leaving 65. None of the rows was filled in.
+
+Two of the removals, Frontend development and Reporting, follow title misreads
+(CIS 301 and CIS 515). Labelling those courses brings them back on the next
+`sync`.
+
+### Watch out
+
+- **Re-running `validate.py` now would bring back the `skill_centric` default.**
+  With no Shaqra course labelled, the course domain has no labelled rows, so it
+  would inherit postings' `skill_centric` parameters again. That rule scored F1
+  0.228 against the placeholder labels.
+- **`config.json` still describes the placeholder catalog.** It holds the
+  2026-09-11 course measurement, made on that catalog.
+
+### Verified
+
+- **Backend: 60 tests pass, up from 55.** The new ones cover labels replacing
+  extraction, `NONE`, relabelling without a rebuild, an unknown label refusing
+  startup before the model loads, the validation flag and note, and `sync`
+  pruning placeholders.
+- **App: `flutter analyze` is clean.** No app code changed, only the scenario in
+  `tool/contract_check.dart`.
+- **Against the live backend on the Shaqra catalog:** `/health` shows 33
+  courses, 65 placeholders and `course_mapping_validated: false`, and the
+  contract check passes 20 of 20.
+
+---
+
 ## 2026-09-12 — Online courses for skills no university course teaches
 
 A new recommendation source. For each missing skill the API returns a university

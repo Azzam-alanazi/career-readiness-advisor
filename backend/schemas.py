@@ -9,7 +9,8 @@ class ValidationInfo(BaseModel):
     gate_passed: bool
     best_f1: float | None
     gate_min_f1: float | None
-    course_mapping_validated: bool
+    course_mapping_validated: bool = Field(
+        description="True only when every course's skills come from hand labels")
     note: str
 
 
@@ -22,6 +23,8 @@ class CourseOut(BaseModel):
     code: str
     name: str
     skill_count: int
+    mapped_by: Literal["labels", "extraction"] = Field(
+        description="Hand labels where the course has them, extraction otherwise")
 
 
 class ProfileIn(BaseModel):

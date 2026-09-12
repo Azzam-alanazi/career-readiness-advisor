@@ -199,14 +199,23 @@ Arabic regardless of which language the underlying posting was written in.
 10. Hand-correction interface for bad mappings — thin catalog descriptions
     produce thin mappings, and this needs a human in the loop
 
-### Status: item 9 measured 2026-09-11
+### Status: the real catalog, 2026-09-12
 
-Course-to-skill mapping runs through the same extraction path with its own
-measured parameters: `chunk_top1`, threshold 0.81465, margin 0.00, F1 0.514
-against 16 hand-labelled courses (44 labels). The catalog reaches 26 of 91
-skills, 20 of them among the 41 the labels contain; the other 21 labelled
-skills are reached by no course. Item 8's `credits` column and item 10's
-correction interface are not started.
+Item 8: the catalog is the real Shaqra IS catalog, official codes and titles: 33
+of its 48 courses, with the 15 left out recorded, each with its reason, in
+`skillgap/labeled_courses_excluded.csv`. Descriptions are not available, so the
+course text is the title alone. There is no `credits` column.
+
+Item 9: a course's skills come from its hand labels where it has them, and from
+extraction otherwise. Labels are ground truth, and extraction is what gets
+measured against them. No Shaqra course is labelled yet, so every course is
+mapped by extraction on its title: 13 of 91 skills reached, at most one per
+course. The extraction parameters were measured on the placeholder catalog (F1
+0.514 against 16 labelled descriptions), not on these titles.
+
+Item 10: no correction interface yet. Labelling a course in
+`labeled_courses.csv` is the correction for now: it replaces extraction for that
+course on the next start.
 
 ## Phase 3 — API
 11. FastAPI service exposing: list careers, submit student profile, get gap
