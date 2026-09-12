@@ -21,6 +21,7 @@ def test_health_carries_the_failed_gate(client):
     body = client.get("/health").json()
     assert body["status"] == "ok"
     assert (body["taxonomy_skills"], body["careers"], body["courses"]) == (4, 2, 4)
+    assert (body["online_courses"], body["online_placeholders"]) == (0, 0)
     v = body["validation"]
     assert v["gate_passed"] is False
     assert (v["best_f1"], v["gate_min_f1"]) == (0.503, 0.6)
@@ -118,11 +119,13 @@ def test_skills_carry_both_languages(client):
 
 def test_recommendations_close_highest_value_gaps_first(client):
     pid = create(client, "Developer", [])
-    recs = client.get(f"/profiles/{pid}/recommendations").json()["recommendations"]
-    assert [(r["code"], [s["id"] for s in r["closes"]]) for r in recs] == [
-        ("IS210", ["PY"]), ("IS230", ["SQ"])]
+    body = client.get(f"/profiles/{pid}/recommendations").json()
+    recs = body["recommendations"]
+    assert [(r["source"], r["code"], [s["id"] for s in r["closes"]]) for r in recs] == [
+        ("university", "IS210", ["PY"]), ("university", "IS230", ["SQ"])]
     assert recs[0]["value"] > recs[1]["value"]
     assert recs[0]["closes"][0]["ar"] == "برمجة بايثون"
+    assert body["uncovered"] == []
 
 
 def test_recommendation_limit(client):

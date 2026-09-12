@@ -10,7 +10,10 @@ best F1 0.503 against a 0.60 floor. The app says so on the readiness and the
 suggestions screens, in the student's language and with the real numbers,
 built from the `validation` block the API attaches to every response.
 Suggested courses are labelled as suggestions, not verdicts — it is the first
-thing on that screen.
+thing on that screen. University and online courses are shown apart, and every
+card says whether it counts toward the degree: a university course does, an
+online course does not. Online courses appear only for skills no university
+course teaches.
 
 ## Run
 
@@ -58,7 +61,7 @@ lib/
     onboarding/         careers and course catalog, the onboarding form
     profile/            profile draft and saved profile, current-profile state
     gap/                readiness report and screen
-    recommendations/    suggested courses and screen
+    recommendations/    suggested courses by source, and the screen
       each one:  data/  domain/  presentation/
   l10n/                 app_en.arb, app_ar.arb, and the generated classes
 ```
@@ -90,10 +93,11 @@ postings.
 flutter test
 ```
 
-19 tests, no device needed:
+20 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
-  a readiness of exactly 0), skill names by language, the draft's wire format
+  a readiness of exactly 0), skill names by language, the draft's wire format,
+  suggestions by source, and an unknown source rejected rather than guessed
 - **API client** — Arabic decoded correctly from a response with no charset,
   non-2xx and unreachable-server errors, JSON on POST
 - **onboarding controller** — a career is required, courses toggle, courses are
@@ -102,6 +106,9 @@ flutter test
   suggestions; right-to-left checked by layout (the warning icon moves to the
   right of its heading), not just by the direction flag; an unreachable
   backend with a working retry; a failed save; start over
+- **university and online courses** — each card says whether it counts toward
+  the degree, in both languages; the university course comes first; a gap with
+  neither is listed, not dropped; a web address stays left to right in Arabic
 
 The widget tests run against fakes shaped like the backend's JSON. To check the
 models against the real, running backend instead — the spec's definition-of-done

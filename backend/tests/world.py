@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 
 from backend.engine import Paths
+from backend.online import COLUMNS as ONLINE_COLUMNS
 
 
 class FakeEmbedder:
@@ -88,7 +89,14 @@ def make_config(taxonomy_skills: int = 4, threshold: float = 0.45,
     }
 
 
-def write_world(root: Path, config: dict | None = None) -> Paths:
+def write_world(root: Path, config: dict | None = None,
+                courses: list[tuple[str, str]] | None = None,
+                online: list[tuple[str, ...]] | None = None) -> Paths:
+    """
+    Write the fixture world. `courses` replaces the catalog; `online` writes an
+    online_courses.csv with those rows. Without it the world has no such file,
+    so no test ever reads the real one.
+    """
     root.mkdir(parents=True, exist_ok=True)
     (root / "taxonomy.json").write_text(
         json.dumps({"skills": SKILLS}, ensure_ascii=False), encoding="utf-8")
@@ -102,8 +110,14 @@ def write_world(root: Path, config: dict | None = None) -> Paths:
     with (root / "courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow(["id", "course_code", "lang", "course_text", "skill_ids"])
-        for i, (code, text) in enumerate(COURSES, 1):
+        for i, (code, text) in enumerate(COURSES if courses is None else courses, 1):
             w.writerow([i, code, "en", text, ""])
+    if online is not None:
+        with (root / "online_courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(ONLINE_COLUMNS)
+            w.writerows(online)
     return Paths(taxonomy=root / "taxonomy.json", config=root / "config.json",
                  postings=root / "postings.csv", courses=root / "courses.csv",
+                 online_courses=root / "online_courses.csv",
                  cache_dir=root / "cache")

@@ -63,15 +63,27 @@ const gapJson = <String, dynamic>{
       'demand': 0.5,
       'demand_percent': 50,
     },
+    {
+      'id': 'SK07',
+      'en': 'Workshop facilitation',
+      'ar': 'تيسير ورش العمل',
+      'category': 'business_analysis',
+      'demand': 0.3333,
+      'demand_percent': 33,
+    },
   ],
   'validation': validationJson,
 };
 
+// One of each: a catalog course for the skill the university teaches, an online
+// course for one it does not, and a skill with neither. The online course is a
+// placeholder, not a real listing.
 const recsJson = <String, dynamic>{
   'profile_id': 'p1',
   'career': 'Business Analyst',
   'recommendations': [
     {
+      'source': 'university',
       'code': 'IS 350',
       'name': 'Business Process Management',
       'value': 0.5,
@@ -83,6 +95,30 @@ const recsJson = <String, dynamic>{
           'demand_percent': 50,
         },
       ],
+    },
+    {
+      'source': 'online',
+      'provider': 'Example Academy',
+      'title': 'Writing functional specifications',
+      'url': 'https://example.com/functional-specs',
+      'is_free': true,
+      'value': 0.8333,
+      'closes': [
+        {
+          'id': 'SK05',
+          'en': 'Functional specifications',
+          'ar': 'المواصفات الوظيفية',
+          'demand_percent': 83,
+        },
+      ],
+    },
+  ],
+  'uncovered': [
+    {
+      'id': 'SK07',
+      'en': 'Workshop facilitation',
+      'ar': 'تيسير ورش العمل',
+      'demand_percent': 33,
     },
   ],
   'validation': validationJson,
@@ -131,6 +167,6 @@ class FakeGapRepository implements GapRepository {
 
 class FakeRecommendationsRepository implements RecommendationsRepository {
   @override
-  Future<RecommendationsReport> fetch(String profileId, {int limit = 3}) async =>
+  Future<RecommendationsReport> fetch(String profileId) async =>
       RecommendationsReport.fromJson(recsJson);
 }

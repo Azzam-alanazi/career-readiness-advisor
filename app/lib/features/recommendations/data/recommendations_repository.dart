@@ -7,11 +7,13 @@ class RecommendationsRepository {
 
   final ApiClient _api;
 
-  /// Three by default: the spec's definition of done asks for three courses.
-  Future<RecommendationsReport> fetch(String profileId, {int limit = 3}) async =>
+  /// Every suggestion, not a top three: each missing skill gets a university
+  /// course, an online course, or a place in `uncovered`, and the screen shows
+  /// all of them.
+  Future<RecommendationsReport> fetch(String profileId) async =>
       RecommendationsReport.fromJson(
-        await _api.get('/profiles/${Uri.encodeComponent(profileId)}'
-            '/recommendations?limit=$limit') as Json,
+        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/recommendations')
+            as Json,
       );
 }
 

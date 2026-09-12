@@ -52,6 +52,8 @@ class _Suggestions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final university = report.university;
+    final online = report.online;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -59,15 +61,33 @@ class _Suggestions extends StatelessWidget {
         const _SuggestionNotice(),
         const SizedBox(height: 12),
         QualityBanner(validation: report.validation),
-        const SizedBox(height: 8),
-        if (report.recommendations.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text(l.noRecommendations, textAlign: TextAlign.center),
-          )
+
+        // University courses count toward the degree, so they come first.
+        _SourceHeader(
+          icon: Icons.school_outlined,
+          title: l.universityCoursesTitle(university.length),
+          note: l.universityCoursesNote,
+        ),
+        if (university.isEmpty)
+          _EmptyNote(l.noRecommendations)
         else
-          for (final (i, recommendation) in report.recommendations.indexed)
-            _CourseCard(rank: i + 1, recommendation: recommendation),
+          for (final (i, course) in university.indexed)
+            _UniversityCard(rank: i + 1, course: course),
+
+        _SourceHeader(
+          icon: Icons.public,
+          title: l.onlineCoursesTitle(online.length),
+          note: l.onlineCoursesNote,
+        ),
+        if (online.isEmpty)
+          _EmptyNote(l.noOnlineCourses)
+        else
+          for (final course in online) _OnlineCard(course: course),
+
+        if (report.uncovered.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _UncoveredCard(skills: report.uncovered),
+        ],
       ],
     );
   }
@@ -106,11 +126,101 @@ class _SuggestionNotice extends StatelessWidget {
   }
 }
 
-class _CourseCard extends StatelessWidget {
-  const _CourseCard({required this.rank, required this.recommendation});
+class _SourceHeader extends StatelessWidget {
+  const _SourceHeader({required this.icon, required this.title, required this.note});
+
+  final IconData icon;
+  final String title;
+  final String note;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: text.titleMedium),
+                Text(note, style: text.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyNote extends StatelessWidget {
+  const _EmptyNote(this.message);
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Text(message),
+      );
+}
+
+/// Whether a course counts toward the degree, on every card, so a card read on
+/// its own still says so.
+class _DegreeBadge extends StatelessWidget {
+  const _DegreeBadge({required this.counts});
+
+  final bool counts;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Chip(
+      avatar: Icon(counts ? Icons.check_circle_outline : Icons.remove_circle_outline,
+          size: 18),
+      label: Text(counts ? l.countsTowardDegree : l.notTowardDegree),
+      backgroundColor: counts ? scheme.primaryContainer : scheme.surfaceContainerHighest,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+}
+
+class _SkillChips extends StatelessWidget {
+  const _SkillChips(this.skills);
+
+  final List<SkillRef> skills;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        for (final skill in skills)
+          Chip(
+            label: Text(
+              '${skill.nameFor(lang)} · '
+              '${l.demandShare(formatPercent(skill.demandPercent / 100, lang))}',
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _UniversityCard extends StatelessWidget {
+  const _UniversityCard({required this.rank, required this.course});
 
   final int rank;
-  final Recommendation recommendation;
+  final UniversityRecommendation course;
 
   @override
   Widget build(BuildContext context) {
@@ -129,27 +239,104 @@ class _CourseCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(recommendation.name, style: text.titleMedium),
-                  Text(recommendation.code, style: text.bodySmall),
+                  Text(course.name, style: text.titleMedium),
+                  Text(course.code, style: text.bodySmall),
+                  const SizedBox(height: 8),
+                  const _DegreeBadge(counts: true),
                   const SizedBox(height: 8),
                   Text(l.couldHelpWith, style: text.labelMedium),
                   const SizedBox(height: 4),
+                  _SkillChips(course.closes),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnlineCard extends StatelessWidget {
+  const _OnlineCard({required this.course});
+
+  final OnlineRecommendation course;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CircleAvatar(radius: 16, child: Icon(Icons.public, size: 18)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(course.title, style: theme.textTheme.titleMedium),
+                  Text(course.provider, style: theme.textTheme.bodySmall),
+                  const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
                     children: [
-                      for (final skill in recommendation.closes)
-                        Chip(
-                          label: Text(
-                            '${skill.nameFor(lang)} · '
-                            '${l.demandShare(formatPercent(skill.demandPercent / 100, lang))}',
-                          ),
-                        ),
+                      const _DegreeBadge(counts: false),
+                      Chip(
+                        label: Text(course.isFree ? l.free : l.paid),
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  // A web address reads left to right in either language.
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: SelectableText(
+                      course.url,
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.primary),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(l.couldHelpWith, style: theme.textTheme.labelMedium),
+                  const SizedBox(height: 4),
+                  _SkillChips(course.closes),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UncoveredCard extends StatelessWidget {
+  const _UncoveredCard({required this.skills});
+
+  final List<SkillRef> skills;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.uncoveredTitle(skills.length), style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(l.uncoveredBody),
+            const SizedBox(height: 8),
+            _SkillChips(skills),
           ],
         ),
       ),

@@ -5,8 +5,10 @@
 // The widget tests run against fakes shaped like the backend's JSON. Those
 // fakes were written by hand, so they cannot catch the backend drifting away
 // from them. This runs the spec's definition-of-done scenario -- Business
-// Analyst, six completed courses, readiness, three suggestions -- against the
-// live API through the app's own models, and fails loudly on any mismatch.
+// Analyst, six completed courses, readiness, three university suggestions, and
+// every missing skill accounted for by a university course, an online course or
+// neither -- against the live API through the app's own models, and fails
+// loudly on any mismatch.
 //
 // With the backend running on localhost:8000:
 //
@@ -97,16 +99,36 @@ Future<void> main(List<String> args) async {
         'best_f1=${gap.validation.bestF1}, floor=${gap.validation.gateMinF1}');
 
     final recs = RecommendationsReport.fromJson(await get(
-        '/profiles/${profile.id}/recommendations?limit=3') as Map<String, dynamic>);
+        '/profiles/${profile.id}/recommendations') as Map<String, dynamic>);
     print('\nsuggestions');
-    check(recs.recommendations.length <= 3, '${recs.recommendations.length} suggested');
     final missingIds = {for (final s in gap.missing) s.id};
-    for (final r in recs.recommendations) {
+    final university = recs.university;
+    final online = recs.online;
+    check(university.length >= 3, '${university.length} university courses, '
+        'the top three for the definition of done:');
+    for (final r in university.take(3)) {
       check(r.closes.every((s) => missingIds.contains(s.id)),
           '${r.code} ${r.name}: closes ${r.closes.map((s) => s.en).join(', ')}');
     }
-    check(recs.recommendations.every((r) => !sixCourses.contains(r.code)),
+    check(recs.recommendations.every((r) => r.closes.every((s) => missingIds.contains(s.id))),
+        'every suggestion closes only missing skills');
+    check(university.every((r) => !sixCourses.contains(r.code)),
         'no completed course is suggested');
+    bool rankedByValue(List<Recommendation> rs) =>
+        [for (var i = 1; i < rs.length; i++) rs[i].value <= rs[i - 1].value].every((ok) => ok);
+    check(rankedByValue(university) && rankedByValue(online),
+        'each source ranked by the demand it closes');
+    final byUniversity = {for (final r in university) ...r.closes.map((s) => s.id)};
+    final byOnline = {for (final r in online) ...r.closes.map((s) => s.id)};
+    final uncovered = {for (final s in recs.uncovered) s.id};
+    check(byUniversity.intersection(byOnline).isEmpty,
+        'no online course for a skill a university course teaches');
+    check(byUniversity.union(byOnline).union(uncovered).containsAll(missingIds) &&
+            uncovered.intersection(byUniversity.union(byOnline)).isEmpty,
+        'every missing skill accounted for: ${byUniversity.length} by a university course, '
+        '${byOnline.length} by an online course, ${uncovered.length} with neither yet');
+    check(online.every((r) => r.url.startsWith('http')),
+        '${online.length} online courses, each with a web address');
     check(!recs.validation.gatePassed, 'quality flag present on suggestions too');
   } on Object catch (e) {
     print('\nFAIL  $e');

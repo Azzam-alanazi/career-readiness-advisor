@@ -91,7 +91,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get suggestionBody =>
-      'رُتّبت هذه المقررات بحسب مقدار الطلب في سوق العمل الذي تشير أوصافها إلى أنها قد تغطيه. اعتبرها نقطة انطلاق للنقاش مع مرشدك الأكاديمي، لا قرارًا ولا ضمانًا.';
+      'رُتّبت المقررات بحسب مقدار الطلب في سوق العمل الذي قد تساعدك على تغطيته. اعتبرها نقطة انطلاق للنقاش مع مرشدك الأكاديمي، لا قرارًا ولا ضمانًا.';
 
   @override
   String get couldHelpWith => 'قد يساعد في';
@@ -102,6 +102,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get startOver => 'ابدأ من جديد';
+
+  @override
+  String universityCoursesTitle(int count) {
+    return 'مقررات جامعية ($count)';
+  }
+
+  @override
+  String get universityCoursesNote =>
+      'من دليل مقررات جامعتك، وتُحتسب ضمن متطلبات التخرج.';
+
+  @override
+  String onlineCoursesTitle(int count) {
+    return 'دورات عبر الإنترنت ($count)';
+  }
+
+  @override
+  String get onlineCoursesNote =>
+      'لمهارات لا يغطيها أي مقرر جامعي، ولا تُحتسب ضمن متطلبات التخرج.';
+
+  @override
+  String get countsTowardDegree => 'يُحتسب ضمن متطلبات التخرج';
+
+  @override
+  String get notTowardDegree => 'لا تُحتسب ضمن متطلبات التخرج';
+
+  @override
+  String get free => 'مجانية';
+
+  @override
+  String get paid => 'مدفوعة';
+
+  @override
+  String get noOnlineCourses =>
+      'لم تُدرج بعد دورات عبر الإنترنت للمهارات التي لا تغطيها مقررات جامعتك.';
+
+  @override
+  String uncoveredTitle(int count) {
+    return 'لا يوجد مقرر مدرج بعد ($count)';
+  }
+
+  @override
+  String get uncoveredBody =>
+      'لا يغطي أي مقرر جامعي هذه المهارات، ولم تُدرج لها دورات عبر الإنترنت بعد.';
 
   @override
   String get qualityTitle => 'تقديرات، وليست نتائج موثّقة';

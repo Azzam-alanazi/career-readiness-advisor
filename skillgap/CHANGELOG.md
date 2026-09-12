@@ -4,6 +4,95 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-12 — Online courses for skills no university course teaches
+
+A new recommendation source. For each missing skill the API returns a university
+course if the catalog teaches it, otherwise an online course, and marks which:
+`source: "university"` or `"online"`. The app shows the two apart and says on
+every card whether it counts toward the degree. The online courses themselves
+are the user's to fill in; none are listed yet.
+
+### `skillgap/online_courses.csv` — 53 rows to fill
+
+Columns `skill_id, provider, course_title, url, is_free`, pre-populated with
+skill ids only. The rows are the skills that count as a gap in at least one
+career, at the engine's `min_demand` of 0.15, and that no university course
+teaches: 53. Of the 76 skills that are a gap somewhere, the catalog teaches 23,
+and a skill the catalog teaches always gets the university course, so an online
+row for it would never be shown. 25 of the 53 are named by two or more postings
+in some career, led by Functional specifications (Business Analyst 5 of 6), CI/CD
+(Software Developer 4 of 5) and User acceptance testing (Business Analyst 4 of
+6); 28 by a single posting.
+
+The set follows the current course map, which will change when the real Shaqra
+catalog descriptions arrive. `python -m backend.online sync` then appends rows
+for newly uncovered skills without touching filled ones, and `status` names any
+filled row whose skill a university course has since taken over.
+
+### The recommendation rule
+
+- A missing skill a catalog course teaches gets that course. An online course is
+  offered only for a skill no catalog course teaches, even if the file lists one
+  for a taught skill.
+- Items are grouped by course, university courses by code and online courses by
+  URL, so a course closing several missing skills appears once. Each list is
+  ranked by the demand it closes, university first.
+- A missing skill with neither is returned in `uncovered`, not dropped. Every
+  missing skill lands in exactly one of the three.
+- `limit` is now optional and caps each list; without it everything is returned.
+  The old default of three would have left a missing skill taught only by a
+  fourth course with nothing, which the rule forbids. The spec's three courses
+  are the top three of the university list.
+
+### The loader fails loudly
+
+`online_courses.csv` is read at startup, before any model work, like the
+stale-config check. An unknown skill id, a partly filled row, a web address that
+is not http(s), an `is_free` that is not yes or no (true/false and 1/0 are also
+accepted), a missing column, or one URL listed with two different descriptions
+stops the service, with every problem and its line number in one message. A row
+with only its skill id is a placeholder and is skipped; no file at all means no
+online courses. Nothing about online courses is embedded, so changing the file
+needs a restart, not a cache rebuild. `/health` reports online courses filled in
+and placeholders still waiting.
+
+### The app
+
+The suggestions screen has two sections: university courses, "These count
+toward your degree", and online courses, "These don't count toward your
+degree". Every card carries the same statement as a badge, so a card read alone
+still says it. Online cards add the provider, free or paid, and the web address,
+kept left to right in Arabic. Skills with neither appear under "No course listed
+yet". The Arabic phrases the degree as graduation requirements (متطلبات التخرج),
+which is how a Saudi student reads "counts toward your degree". The
+recommendation model is a union on `source`, and an unknown source is rejected
+rather than guessed.
+
+Web addresses are selectable text, not tappable links. Opening them would need
+the `url_launcher` package and Android intent configuration, which were not
+added.
+
+### Verified
+
+- Backend: 55 tests pass, up from 41. The 14 new ones cover the rule,
+  `uncovered`, per-list limits, the `/health` counts, `gap_skills`, append-only
+  `sync`, and every loader refusal, including startup refusing before the model
+  loads.
+- App: 20 tests pass and `flutter analyze` is clean.
+- `tool/contract_check.dart` against the live backend: 20 of 20. Business Analyst
+  with six courses gets four university courses, the top three IS 310, IS 350
+  and IS 340. No online course closes a skill a university course teaches, and
+  all 31 missing skills are accounted for: 5 by a university course, 0 by an
+  online course (none filled in yet), 26 with neither. The backend started on the
+  53-placeholder file, so the loader accepts it.
+
+### Not changed
+
+`min_demand` stays at 0.15. The Shaqra catalog is still pending:
+`labeled_courses.csv` holds the placeholder descriptions.
+
+---
+
 ## 2026-09-11 — Phase 0 closure: both domains measured, `config.json` written
 
 Phase 0 stays closed as failed and does not reopen. What changed is the record:

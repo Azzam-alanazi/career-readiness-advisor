@@ -20,23 +20,53 @@ Map<String, dynamic> _$SkillRefToJson(_SkillRef instance) => <String, dynamic>{
   'demand_percent': instance.demandPercent,
 };
 
-_Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
-    _Recommendation(
-      code: json['code'] as String,
-      name: json['name'] as String,
-      closes: (json['closes'] as List<dynamic>)
-          .map((e) => SkillRef.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      value: (json['value'] as num).toDouble(),
-    );
+UniversityRecommendation _$UniversityRecommendationFromJson(
+  Map<String, dynamic> json,
+) => UniversityRecommendation(
+  code: json['code'] as String,
+  name: json['name'] as String,
+  closes: (json['closes'] as List<dynamic>)
+      .map((e) => SkillRef.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  value: (json['value'] as num).toDouble(),
+  $type: json['source'] as String?,
+);
 
-Map<String, dynamic> _$RecommendationToJson(_Recommendation instance) =>
-    <String, dynamic>{
-      'code': instance.code,
-      'name': instance.name,
-      'closes': instance.closes.map((e) => e.toJson()).toList(),
-      'value': instance.value,
-    };
+Map<String, dynamic> _$UniversityRecommendationToJson(
+  UniversityRecommendation instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'name': instance.name,
+  'closes': instance.closes.map((e) => e.toJson()).toList(),
+  'value': instance.value,
+  'source': instance.$type,
+};
+
+OnlineRecommendation _$OnlineRecommendationFromJson(
+  Map<String, dynamic> json,
+) => OnlineRecommendation(
+  provider: json['provider'] as String,
+  title: json['title'] as String,
+  url: json['url'] as String,
+  isFree: json['is_free'] as bool,
+  closes: (json['closes'] as List<dynamic>)
+      .map((e) => SkillRef.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  value: (json['value'] as num).toDouble(),
+  $type: json['source'] as String?,
+);
+
+Map<String, dynamic> _$OnlineRecommendationToJson(
+  OnlineRecommendation instance,
+) => <String, dynamic>{
+  'provider': instance.provider,
+  'title': instance.title,
+  'url': instance.url,
+  'is_free': instance.isFree,
+  'closes': instance.closes.map((e) => e.toJson()).toList(),
+  'value': instance.value,
+  'source': instance.$type,
+};
 
 _RecommendationsReport _$RecommendationsReportFromJson(
   Map<String, dynamic> json,
@@ -45,6 +75,9 @@ _RecommendationsReport _$RecommendationsReportFromJson(
   career: json['career'] as String,
   recommendations: (json['recommendations'] as List<dynamic>)
       .map((e) => Recommendation.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  uncovered: (json['uncovered'] as List<dynamic>)
+      .map((e) => SkillRef.fromJson(e as Map<String, dynamic>))
       .toList(),
   validation: ValidationInfo.fromJson(
     json['validation'] as Map<String, dynamic>,
@@ -57,5 +90,6 @@ Map<String, dynamic> _$RecommendationsReportToJson(
   'profile_id': instance.profileId,
   'career': instance.career,
   'recommendations': instance.recommendations.map((e) => e.toJson()).toList(),
+  'uncovered': instance.uncovered.map((e) => e.toJson()).toList(),
   'validation': instance.validation.toJson(),
 };

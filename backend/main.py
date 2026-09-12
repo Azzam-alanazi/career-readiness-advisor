@@ -6,9 +6,9 @@ Run from the repo root, with the project virtualenv active:
     python -m uvicorn backend.main:app --reload
 
 Every response that reports a readiness figure carries a `validation` block.
-The matcher closed Phase 0 on a failed gate -- best F1 0.503 against a 0.60
-floor -- and that fact travels with the data it qualifies, so the app can show it
-beside the numbers instead of leaving it in a changelog.
+The matcher closed Phase 0 on a failed gate in both domains, and that fact
+travels with the data it qualifies, so the app can show it beside the numbers
+instead of leaving it in a changelog.
 """
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -29,13 +29,14 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         # All the expensive work happens here, once per process. A
-        # StaleConfigError from the engine stops startup: better no service
-        # than one applying parameters measured against another taxonomy.
+        # StaleConfigError or OnlineCoursesError from the engine stops startup:
+        # better no service than one applying parameters measured against
+        # another taxonomy, or quietly skipping courses it could not read.
         app.state.engine = state_factory()
         app.state.store = ProfileStore(db_path)
         yield
 
-    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.1.0",
+    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.2.0",
                   lifespan=lifespan)
 
     def engine(request: Request) -> EngineState:
@@ -83,6 +84,8 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         return S.HealthOut(status="ok", model=eng.model,
                            taxonomy_skills=len(eng.skills),
                            careers=len(eng.profiles), courses=len(eng.courses),
+                           online_courses=len(eng.online.courses),
+                           online_placeholders=eng.online.placeholders,
                            built_from_cache=eng.built_from_cache,
                            validation=validation(eng))
 
@@ -132,20 +135,32 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     @app.get("/profiles/{profile_id}/recommendations",
              response_model=S.RecommendationsOut)
     def recommendations(profile_id: str, request: Request,
-                        limit: int = Query(3, ge=1, le=20)) -> S.RecommendationsOut:
+                        limit: int | None = Query(
+                            None, ge=1, le=50,
+                            description="Cap on each list, university and online; "
+                                        "all when omitted")) -> S.RecommendationsOut:
         eng, prof = load_profile(request, profile_id)
         g = eng.gap(prof["career"], prof["completed_courses"])
         missing = dict(g.missing)
-        recs = []
-        for course, closes, value in eng.recommendations(
-                g, prof["completed_courses"], limit):
-            refs = [S.SkillRef(id=s, en=eng.skills[s]["en"], ar=eng.skills[s]["ar"],
+
+        def refs(ids: list[str]) -> list[S.SkillRef]:
+            return [S.SkillRef(id=s, en=eng.skills[s]["en"], ar=eng.skills[s]["ar"],
                                demand_percent=round(missing[s] * 100))
-                    for s in closes]
-            recs.append(S.RecommendationOut(code=course.code, name=course.name,
-                                            closes=refs, value=round(value, 4)))
+                    for s in ids]
+
+        found = eng.recommendations(g, prof["completed_courses"], limit)
+        recs: list[S.Recommendation] = [
+            S.UniversityRecommendation(code=c.code, name=c.name, closes=refs(closes),
+                                       value=round(value, 4))
+            for c, closes, value in found.university]
+        recs += [
+            S.OnlineRecommendation(provider=o.provider, title=o.title, url=o.url,
+                                   is_free=o.is_free, closes=refs(closes),
+                                   value=round(value, 4))
+            for o, closes, value in found.online]
         return S.RecommendationsOut(profile_id=profile_id, career=prof["career"],
                                     recommendations=recs,
+                                    uncovered=refs(found.uncovered),
                                     validation=validation(eng))
 
     return app

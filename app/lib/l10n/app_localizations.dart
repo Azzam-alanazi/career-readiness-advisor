@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestionBody.
   ///
   /// In en, this message translates to:
-  /// **'These courses are ranked by how much market demand their descriptions suggest they could cover. Treat them as a starting point for a conversation with your academic advisor, not as a decision or a guarantee.'**
+  /// **'Courses are ranked by how much market demand they could help you cover. Treat them as a starting point for a conversation with your academic advisor, not as a decision or a guarantee.'**
   String get suggestionBody;
 
   /// No description provided for @couldHelpWith.
@@ -253,6 +253,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start over'**
   String get startOver;
+
+  /// No description provided for @universityCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'University courses ({count})'**
+  String universityCoursesTitle(int count);
+
+  /// No description provided for @universityCoursesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'From your university\'s catalog. These count toward your degree.'**
+  String get universityCoursesNote;
+
+  /// No description provided for @onlineCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Online courses ({count})'**
+  String onlineCoursesTitle(int count);
+
+  /// No description provided for @onlineCoursesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For skills no university course teaches. These don\'t count toward your degree.'**
+  String get onlineCoursesNote;
+
+  /// No description provided for @countsTowardDegree.
+  ///
+  /// In en, this message translates to:
+  /// **'Counts toward your degree'**
+  String get countsTowardDegree;
+
+  /// No description provided for @notTowardDegree.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t count toward your degree'**
+  String get notTowardDegree;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
+  /// No description provided for @paid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paid;
+
+  /// No description provided for @noOnlineCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'No online course is listed yet for the skills your university doesn\'t teach.'**
+  String get noOnlineCourses;
+
+  /// No description provided for @uncoveredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No course listed yet ({count})'**
+  String uncoveredTitle(int count);
+
+  /// No description provided for @uncoveredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No university course teaches these skills, and no online course has been listed for them yet.'**
+  String get uncoveredBody;
 
   /// No description provided for @qualityTitle.
   ///

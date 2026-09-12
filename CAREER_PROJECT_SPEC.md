@@ -256,7 +256,13 @@ not a demonstration of cross-lingual matching: no Arabic text is matched
 anywhere in this flow, and every posting is English. Engine decision 2 remains
 as untested as the Phase 0 closure records.
 
-Verified headlessly by 19 tests and `flutter analyze`, and by a contract check
+Item 15's certifications side arrived on 2026-09-12 as online courses. For a
+missing skill no university course teaches, the suggestions screen offers an
+online course from `skillgap/online_courses.csv`, marked as not counting toward
+the degree; university courses are marked as counting. The file is hand-curated,
+and its 53 rows start empty.
+
+Verified headlessly by 20 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models. Not yet run on a device: this machine has no Android
 toolchain.

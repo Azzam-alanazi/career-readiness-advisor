@@ -92,7 +92,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get suggestionBody =>
-      'These courses are ranked by how much market demand their descriptions suggest they could cover. Treat them as a starting point for a conversation with your academic advisor, not as a decision or a guarantee.';
+      'Courses are ranked by how much market demand they could help you cover. Treat them as a starting point for a conversation with your academic advisor, not as a decision or a guarantee.';
 
   @override
   String get couldHelpWith => 'Could help with';
@@ -102,6 +102,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startOver => 'Start over';
+
+  @override
+  String universityCoursesTitle(int count) {
+    return 'University courses ($count)';
+  }
+
+  @override
+  String get universityCoursesNote =>
+      'From your university\'s catalog. These count toward your degree.';
+
+  @override
+  String onlineCoursesTitle(int count) {
+    return 'Online courses ($count)';
+  }
+
+  @override
+  String get onlineCoursesNote =>
+      'For skills no university course teaches. These don\'t count toward your degree.';
+
+  @override
+  String get countsTowardDegree => 'Counts toward your degree';
+
+  @override
+  String get notTowardDegree => 'Doesn\'t count toward your degree';
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get paid => 'Paid';
+
+  @override
+  String get noOnlineCourses =>
+      'No online course is listed yet for the skills your university doesn\'t teach.';
+
+  @override
+  String uncoveredTitle(int count) {
+    return 'No course listed yet ($count)';
+  }
+
+  @override
+  String get uncoveredBody =>
+      'No university course teaches these skills, and no online course has been listed for them yet.';
 
   @override
   String get qualityTitle => 'Estimates, not validated results';

@@ -9,7 +9,7 @@ void main() {
   test('a gap report parses the backend shape, quality flag included', () {
     final g = GapReport.fromJson(gapJson);
     expect(g.readinessPercent, 5);
-    expect(g.missing.map((s) => s.id), ['SK05', 'SK04']);
+    expect(g.missing.map((s) => s.id), ['SK05', 'SK04', 'SK07']);
     expect(g.validation.gatePassed, isFalse);
     expect(g.validation.bestF1, 0.503);
     expect(g.validation.gateMinF1, 0.6);
@@ -35,11 +35,33 @@ void main() {
     expect(s.nameFor('fr'), 'Functional specifications');
   });
 
-  test('recommendations parse with the skills each course closes', () {
+  test('recommendations parse by source, with what each closes', () {
     final r = RecommendationsReport.fromJson(recsJson);
-    expect(r.recommendations.single.code, 'IS 350');
-    expect(r.recommendations.single.closes.single.nameFor('ar'), 'نمذجة عمليات الأعمال');
+
+    final university = r.university.single;
+    expect((university.code, university.countsTowardDegree), ('IS 350', true));
+    expect(university.closes.single.nameFor('ar'), 'نمذجة عمليات الأعمال');
+
+    final online = r.online.single;
+    expect((online.provider, online.isFree, online.countsTowardDegree),
+        ('Example Academy', true, false));
+    expect(online.url, 'https://example.com/functional-specs');
+    expect(online.closes.single.id, 'SK05');
+
+    expect(r.uncovered.single.id, 'SK07');
     expect(r.validation.gatePassed, isFalse);
+  });
+
+  test('an unknown recommendation source is rejected, not guessed', () {
+    expect(
+      () => RecommendationsReport.fromJson({
+        ...recsJson,
+        'recommendations': [
+          {'source': 'webinar', 'closes': <dynamic>[], 'value': 0.5},
+        ],
+      }),
+      throwsA(anything),
+    );
   });
 
   test('a profile draft serialises to the backend field names', () {

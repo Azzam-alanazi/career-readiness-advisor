@@ -7,7 +7,7 @@ Requests only read the results.
 ## Status — read this first
 
 The matcher behind every figure this API returns **failed its Phase 0
-validation gate**: best F1 0.503 against a 0.60 floor. The API runs anyway, by
+validation gate**: best F1 0.504 against a 0.60 floor. The API runs anyway, by
 decision, and says so in the data. `/health`, every gap response and every
 recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
@@ -36,13 +36,13 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 
 | method | path | returns |
 |---|---|---|
-| GET | `/health` | model, counts, cache status, validation |
+| GET | `/health` | model, counts, online courses filled in and still waiting, cache status, validation |
 | GET | `/careers` | careers with their posting counts |
 | GET | `/courses` | catalog: code, name, number of skills mapped |
 | POST | `/profiles` | create a student profile — `career`, `completed_courses` (codes), optional `major` |
 | GET | `/profiles/{id}` | the stored profile |
 | GET | `/profiles/{id}/gap` | readiness %, covered skills, missing skills ranked by demand |
-| GET | `/profiles/{id}/recommendations?limit=3` | courses ranked by the demand of the gaps they close |
+| GET | `/profiles/{id}/recommendations` | for every missing skill, a university course if the catalog teaches it, otherwise an online course, each marked by `source`; skills with neither listed as `uncovered`. Optional `limit` caps each list |
 
 Unknown careers and course codes are rejected with a 422 naming the offending
 value. Skill entries carry both `en` and `ar`. Course names are English only,
@@ -75,7 +75,7 @@ because the catalog is.
 python -m pytest
 ```
 
-39 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+55 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -83,7 +83,38 @@ Covered: the failed gate reaching every response; demand-weighted readiness and
 ranking; bilingual names; rejection of unknown careers, courses and profiles;
 profiles surviving a restart; the model loading once and never per request; a
 warm restart skipping the model entirely; cache invalidation on a config change;
-startup refusing a stale config before any model work; and the reports below.
+startup refusing a stale config or a bad online-courses file before any model
+work; online courses offered only where no university course teaches the skill;
+and the reports below.
+
+## Online courses
+
+For a missing skill no catalog course teaches, the recommendations fall back to
+an online course from `../skillgap/online_courses.csv`, hand-curated, one row per
+skill and course:
+
+```
+skill_id,provider,course_title,url,is_free
+```
+
+A row with only its `skill_id` is a placeholder still waiting for a course. Every
+other row is checked at startup. An unknown skill id, a partly filled row, a web
+address that is not http(s), or an `is_free` that is not yes or no stops the
+service, listing each problem with its line number: the same refusal the label
+loader makes. Nothing about online courses is embedded, so a change needs a
+restart, not a cache rebuild.
+
+```bash
+python -m backend.online status
+```
+
+```bash
+python -m backend.online sync
+```
+
+`status` shows how many gap skills have an online course filled in. `sync`
+appends a placeholder row for each gap skill that has none, for after the course
+catalog or the postings change, and never edits or removes a row.
 
 ## Reports
 

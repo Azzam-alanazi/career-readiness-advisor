@@ -291,11 +291,34 @@ as int,
 
 }
 
+Recommendation _$RecommendationFromJson(
+  Map<String, dynamic> json
+) {
+        switch (json['source']) {
+                  case 'university':
+          return UniversityRecommendation.fromJson(
+            json
+          );
+                case 'online':
+          return OnlineRecommendation.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'source',
+  'Recommendation',
+  'Invalid union type "${json['source']}"!'
+);
+        }
+      
+}
 
 /// @nodoc
 mixin _$Recommendation {
 
- String get code; String get name; List<SkillRef> get closes;/// Total demand of the gaps this course closes; the backend ranks by it.
+ List<SkillRef> get closes;/// Total demand of the gaps this course closes; the backend ranks by it.
  double get value;
 /// Create a copy of Recommendation
 /// with the given fields replaced by the non-null parameter values.
@@ -310,20 +333,20 @@ $RecommendationCopyWith<Recommendation> get copyWith => _$RecommendationCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as Recommendation;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Recommendation&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.name, _this.name) || other.name == _this.name)&&const DeepCollectionEquality().equals(other.closes, _this.closes)&&(identical(other.value, _this.value) || other.value == _this.value));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Recommendation&&const DeepCollectionEquality().equals(other.closes, _this.closes)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Recommendation;
-  return Object.hash(runtimeType,_this.code,_this.name,const DeepCollectionEquality().hash(_this.closes),_this.value);
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.closes),_this.value);
 }
 
 @override
 String toString() {
   final _this = this as Recommendation;
-  return 'Recommendation(code: ${_this.code}, name: ${_this.name}, closes: ${_this.closes}, value: ${_this.value})';
+  return 'Recommendation(closes: ${_this.closes}, value: ${_this.value})';
 }
 
 
@@ -334,7 +357,7 @@ abstract mixin class $RecommendationCopyWith<$Res>  {
   factory $RecommendationCopyWith(Recommendation value, $Res Function(Recommendation) _then) = _$RecommendationCopyWithImpl;
 @useResult
 $Res call({
- String code, String name, List<SkillRef> closes, double value
+ List<SkillRef> closes, double value
 });
 
 
@@ -351,11 +374,9 @@ class _$RecommendationCopyWithImpl<$Res>
 
 /// Create a copy of Recommendation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? name = null,Object? closes = null,Object? value = null,}) {
-  return _then(Recommendation(
-code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,closes: null == closes ? _self.closes : closes // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? closes = null,Object? value = null,}) {
+  return _then(_self.copyWith(
+closes: null == closes ? _self.closes : closes // ignore: cast_nullable_to_non_nullable
 as List<SkillRef>,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as double,
   ));
@@ -378,11 +399,12 @@ extension RecommendationPatterns on Recommendation {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Recommendation value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UniversityRecommendation value)?  university,TResult Function( OnlineRecommendation value)?  online,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Recommendation() when $default != null:
-return $default(_that);case _:
+case UniversityRecommendation() when university != null:
+return university(_that);case OnlineRecommendation() when online != null:
+return online(_that);case _:
   return orElse();
 
 }
@@ -400,14 +422,12 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Recommendation value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UniversityRecommendation value)  university,required TResult Function( OnlineRecommendation value)  online,}){
 final _that = this;
 switch (_that) {
-case _Recommendation():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case UniversityRecommendation():
+return university(_that);case OnlineRecommendation():
+return online(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -421,11 +441,12 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Recommendation value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UniversityRecommendation value)?  university,TResult? Function( OnlineRecommendation value)?  online,}){
 final _that = this;
 switch (_that) {
-case _Recommendation() when $default != null:
-return $default(_that);case _:
+case UniversityRecommendation() when university != null:
+return university(_that);case OnlineRecommendation() when online != null:
+return online(_that);case _:
   return null;
 
 }
@@ -442,10 +463,11 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String code,  String name,  List<SkillRef> closes,  double value)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code,  String name,  List<SkillRef> closes,  double value)?  university,TResult Function( String provider,  String title,  String url,  bool isFree,  List<SkillRef> closes,  double value)?  online,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Recommendation() when $default != null:
-return $default(_that.code,_that.name,_that.closes,_that.value);case _:
+case UniversityRecommendation() when university != null:
+return university(_that.code,_that.name,_that.closes,_that.value);case OnlineRecommendation() when online != null:
+return online(_that.provider,_that.title,_that.url,_that.isFree,_that.closes,_that.value);case _:
   return orElse();
 
 }
@@ -463,13 +485,11 @@ return $default(_that.code,_that.name,_that.closes,_that.value);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String code,  String name,  List<SkillRef> closes,  double value)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code,  String name,  List<SkillRef> closes,  double value)  university,required TResult Function( String provider,  String title,  String url,  bool isFree,  List<SkillRef> closes,  double value)  online,}) {final _that = this;
 switch (_that) {
-case _Recommendation():
-return $default(_that.code,_that.name,_that.closes,_that.value);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case UniversityRecommendation():
+return university(_that.code,_that.name,_that.closes,_that.value);case OnlineRecommendation():
+return online(_that.provider,_that.title,_that.url,_that.isFree,_that.closes,_that.value);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -483,10 +503,11 @@ return $default(_that.code,_that.name,_that.closes,_that.value);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String code,  String name,  List<SkillRef> closes,  double value)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code,  String name,  List<SkillRef> closes,  double value)?  university,TResult? Function( String provider,  String title,  String url,  bool isFree,  List<SkillRef> closes,  double value)?  online,}) {final _that = this;
 switch (_that) {
-case _Recommendation() when $default != null:
-return $default(_that.code,_that.name,_that.closes,_that.value);case _:
+case UniversityRecommendation() when university != null:
+return university(_that.code,_that.name,_that.closes,_that.value);case OnlineRecommendation() when online != null:
+return online(_that.provider,_that.title,_that.url,_that.isFree,_that.closes,_that.value);case _:
   return null;
 
 }
@@ -497,12 +518,12 @@ return $default(_that.code,_that.name,_that.closes,_that.value);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _Recommendation implements Recommendation {
-  const _Recommendation({required this.code, required this.name, required  List<SkillRef> closes, required this.value}): _closes = closes;
-  factory _Recommendation.fromJson(Map<String, dynamic> json) => _$RecommendationFromJson(json);
+class UniversityRecommendation extends Recommendation {
+  const UniversityRecommendation({required this.code, required this.name, required  List<SkillRef> closes, required this.value,  String? $type}): _closes = closes,$type = $type ?? 'university',super._();
+  factory UniversityRecommendation.fromJson(Map<String, dynamic> json) => _$UniversityRecommendationFromJson(json);
 
-@override final  String code;
-@override final  String name;
+ final  String code;
+ final  String name;
  final  List<SkillRef> _closes;
 @override List<SkillRef> get closes {
   if (_closes is EqualUnmodifiableListView) return _closes;
@@ -513,20 +534,24 @@ class _Recommendation implements Recommendation {
 /// Total demand of the gaps this course closes; the backend ranks by it.
 @override final  double value;
 
+@JsonKey(name: 'source')
+final String $type;
+
+
 /// Create a copy of Recommendation
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$RecommendationCopyWith<_Recommendation> get copyWith => __$RecommendationCopyWithImpl<_Recommendation>(this, _$identity);
+$UniversityRecommendationCopyWith<UniversityRecommendation> get copyWith => _$UniversityRecommendationCopyWithImpl<UniversityRecommendation>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$RecommendationToJson(this, );
+  return _$UniversityRecommendationToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Recommendation&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.closes, _closes)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UniversityRecommendation&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.closes, _closes)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -537,15 +562,15 @@ int get hashCode {
 
 @override
 String toString() {
-    return 'Recommendation(code: $code, name: $name, closes: $closes, value: $value)';
+    return 'Recommendation.university(code: $code, name: $name, closes: $closes, value: $value)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$RecommendationCopyWith<$Res> implements $RecommendationCopyWith<$Res> {
-  factory _$RecommendationCopyWith(_Recommendation value, $Res Function(_Recommendation) _then) = __$RecommendationCopyWithImpl;
+abstract mixin class $UniversityRecommendationCopyWith<$Res> implements $RecommendationCopyWith<$Res> {
+  factory $UniversityRecommendationCopyWith(UniversityRecommendation value, $Res Function(UniversityRecommendation) _then) = _$UniversityRecommendationCopyWithImpl;
 @override @useResult
 $Res call({
  String code, String name, List<SkillRef> closes, double value
@@ -556,20 +581,111 @@ $Res call({
 
 }
 /// @nodoc
-class __$RecommendationCopyWithImpl<$Res>
-    implements _$RecommendationCopyWith<$Res> {
-  __$RecommendationCopyWithImpl(this._self, this._then);
+class _$UniversityRecommendationCopyWithImpl<$Res>
+    implements $UniversityRecommendationCopyWith<$Res> {
+  _$UniversityRecommendationCopyWithImpl(this._self, this._then);
 
-  final _Recommendation _self;
-  final $Res Function(_Recommendation) _then;
+  final UniversityRecommendation _self;
+  final $Res Function(UniversityRecommendation) _then;
 
 /// Create a copy of Recommendation
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? name = null,Object? closes = null,Object? value = null,}) {
-  return _then(_Recommendation(
+  return _then(UniversityRecommendation(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,closes: null == closes ? _self._closes : closes // ignore: cast_nullable_to_non_nullable
+as List<SkillRef>,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class OnlineRecommendation extends Recommendation {
+  const OnlineRecommendation({required this.provider, required this.title, required this.url, required this.isFree, required  List<SkillRef> closes, required this.value,  String? $type}): _closes = closes,$type = $type ?? 'online',super._();
+  factory OnlineRecommendation.fromJson(Map<String, dynamic> json) => _$OnlineRecommendationFromJson(json);
+
+ final  String provider;
+ final  String title;
+ final  String url;
+ final  bool isFree;
+ final  List<SkillRef> _closes;
+@override List<SkillRef> get closes {
+  if (_closes is EqualUnmodifiableListView) return _closes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_closes);
+}
+
+@override final  double value;
+
+@JsonKey(name: 'source')
+final String $type;
+
+
+/// Create a copy of Recommendation
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OnlineRecommendationCopyWith<OnlineRecommendation> get copyWith => _$OnlineRecommendationCopyWithImpl<OnlineRecommendation>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$OnlineRecommendationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnlineRecommendation&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url)&&(identical(other.isFree, isFree) || other.isFree == isFree)&&const DeepCollectionEquality().equals(other.closes, _closes)&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,provider,title,url,isFree,const DeepCollectionEquality().hash(_closes),value);
+}
+
+@override
+String toString() {
+    return 'Recommendation.online(provider: $provider, title: $title, url: $url, isFree: $isFree, closes: $closes, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $OnlineRecommendationCopyWith<$Res> implements $RecommendationCopyWith<$Res> {
+  factory $OnlineRecommendationCopyWith(OnlineRecommendation value, $Res Function(OnlineRecommendation) _then) = _$OnlineRecommendationCopyWithImpl;
+@override @useResult
+$Res call({
+ String provider, String title, String url, bool isFree, List<SkillRef> closes, double value
+});
+
+
+
+
+}
+/// @nodoc
+class _$OnlineRecommendationCopyWithImpl<$Res>
+    implements $OnlineRecommendationCopyWith<$Res> {
+  _$OnlineRecommendationCopyWithImpl(this._self, this._then);
+
+  final OnlineRecommendation _self;
+  final $Res Function(OnlineRecommendation) _then;
+
+/// Create a copy of Recommendation
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? provider = null,Object? title = null,Object? url = null,Object? isFree = null,Object? closes = null,Object? value = null,}) {
+  return _then(OnlineRecommendation(
+provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,isFree: null == isFree ? _self.isFree : isFree // ignore: cast_nullable_to_non_nullable
+as bool,closes: null == closes ? _self._closes : closes // ignore: cast_nullable_to_non_nullable
 as List<SkillRef>,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as double,
   ));
@@ -582,7 +698,10 @@ as double,
 /// @nodoc
 mixin _$RecommendationsReport {
 
- String get profileId; String get career; List<Recommendation> get recommendations; ValidationInfo get validation;
+ String get profileId; String get career;/// University courses first, then online ones, each ranked by value.
+ List<Recommendation> get recommendations;/// Missing skills no university course teaches and no online course is
+/// listed for yet.
+ List<SkillRef> get uncovered; ValidationInfo get validation;
 /// Create a copy of RecommendationsReport
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -596,20 +715,20 @@ $RecommendationsReportCopyWith<RecommendationsReport> get copyWith => _$Recommen
 @override
 bool operator ==(Object other) {
   final _this = this as RecommendationsReport;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecommendationsReport&&(identical(other.profileId, _this.profileId) || other.profileId == _this.profileId)&&(identical(other.career, _this.career) || other.career == _this.career)&&const DeepCollectionEquality().equals(other.recommendations, _this.recommendations)&&(identical(other.validation, _this.validation) || other.validation == _this.validation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecommendationsReport&&(identical(other.profileId, _this.profileId) || other.profileId == _this.profileId)&&(identical(other.career, _this.career) || other.career == _this.career)&&const DeepCollectionEquality().equals(other.recommendations, _this.recommendations)&&const DeepCollectionEquality().equals(other.uncovered, _this.uncovered)&&(identical(other.validation, _this.validation) || other.validation == _this.validation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as RecommendationsReport;
-  return Object.hash(runtimeType,_this.profileId,_this.career,const DeepCollectionEquality().hash(_this.recommendations),_this.validation);
+  return Object.hash(runtimeType,_this.profileId,_this.career,const DeepCollectionEquality().hash(_this.recommendations),const DeepCollectionEquality().hash(_this.uncovered),_this.validation);
 }
 
 @override
 String toString() {
   final _this = this as RecommendationsReport;
-  return 'RecommendationsReport(profileId: ${_this.profileId}, career: ${_this.career}, recommendations: ${_this.recommendations}, validation: ${_this.validation})';
+  return 'RecommendationsReport(profileId: ${_this.profileId}, career: ${_this.career}, recommendations: ${_this.recommendations}, uncovered: ${_this.uncovered}, validation: ${_this.validation})';
 }
 
 
@@ -620,7 +739,7 @@ abstract mixin class $RecommendationsReportCopyWith<$Res>  {
   factory $RecommendationsReportCopyWith(RecommendationsReport value, $Res Function(RecommendationsReport) _then) = _$RecommendationsReportCopyWithImpl;
 @useResult
 $Res call({
- String profileId, String career, List<Recommendation> recommendations, ValidationInfo validation
+ String profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
 });
 
 
@@ -637,12 +756,13 @@ class _$RecommendationsReportCopyWithImpl<$Res>
 
 /// Create a copy of RecommendationsReport
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? validation = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
   return _then(RecommendationsReport(
 profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
 as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,recommendations: null == recommendations ? _self.recommendations : recommendations // ignore: cast_nullable_to_non_nullable
-as List<Recommendation>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
+as List<Recommendation>,uncovered: null == uncovered ? _self.uncovered : uncovered // ignore: cast_nullable_to_non_nullable
+as List<SkillRef>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
 as ValidationInfo,
   ));
 }
@@ -737,10 +857,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RecommendationsReport() when $default != null:
-return $default(_that.profileId,_that.career,_that.recommendations,_that.validation);case _:
+return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
   return orElse();
 
 }
@@ -758,10 +878,10 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.validat
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  ValidationInfo validation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)  $default,) {final _that = this;
 switch (_that) {
 case _RecommendationsReport():
-return $default(_that.profileId,_that.career,_that.recommendations,_that.validation);case _:
+return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -778,10 +898,10 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.validat
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profileId,  String career,  List<Recommendation> recommendations,  ValidationInfo validation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,) {final _that = this;
 switch (_that) {
 case _RecommendationsReport() when $default != null:
-return $default(_that.profileId,_that.career,_that.recommendations,_that.validation);case _:
+return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
   return null;
 
 }
@@ -792,17 +912,30 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.validat
 /// @nodoc
 @JsonSerializable()
 
-class _RecommendationsReport implements RecommendationsReport {
-  const _RecommendationsReport({required this.profileId, required this.career, required  List<Recommendation> recommendations, required this.validation}): _recommendations = recommendations;
+class _RecommendationsReport extends RecommendationsReport {
+  const _RecommendationsReport({required this.profileId, required this.career, required  List<Recommendation> recommendations, required  List<SkillRef> uncovered, required this.validation}): _recommendations = recommendations,_uncovered = uncovered,super._();
   factory _RecommendationsReport.fromJson(Map<String, dynamic> json) => _$RecommendationsReportFromJson(json);
 
 @override final  String profileId;
 @override final  String career;
+/// University courses first, then online ones, each ranked by value.
  final  List<Recommendation> _recommendations;
+/// University courses first, then online ones, each ranked by value.
 @override List<Recommendation> get recommendations {
   if (_recommendations is EqualUnmodifiableListView) return _recommendations;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_recommendations);
+}
+
+/// Missing skills no university course teaches and no online course is
+/// listed for yet.
+ final  List<SkillRef> _uncovered;
+/// Missing skills no university course teaches and no online course is
+/// listed for yet.
+@override List<SkillRef> get uncovered {
+  if (_uncovered is EqualUnmodifiableListView) return _uncovered;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_uncovered);
 }
 
 @override final  ValidationInfo validation;
@@ -820,18 +953,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecommendationsReport&&(identical(other.profileId, profileId) || other.profileId == profileId)&&(identical(other.career, career) || other.career == career)&&const DeepCollectionEquality().equals(other.recommendations, _recommendations)&&(identical(other.validation, validation) || other.validation == validation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecommendationsReport&&(identical(other.profileId, profileId) || other.profileId == profileId)&&(identical(other.career, career) || other.career == career)&&const DeepCollectionEquality().equals(other.recommendations, _recommendations)&&const DeepCollectionEquality().equals(other.uncovered, _uncovered)&&(identical(other.validation, validation) || other.validation == validation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,profileId,career,const DeepCollectionEquality().hash(_recommendations),validation);
+    return Object.hash(runtimeType,profileId,career,const DeepCollectionEquality().hash(_recommendations),const DeepCollectionEquality().hash(_uncovered),validation);
 }
 
 @override
 String toString() {
-    return 'RecommendationsReport(profileId: $profileId, career: $career, recommendations: $recommendations, validation: $validation)';
+    return 'RecommendationsReport(profileId: $profileId, career: $career, recommendations: $recommendations, uncovered: $uncovered, validation: $validation)';
 }
 
 
@@ -842,7 +975,7 @@ abstract mixin class _$RecommendationsReportCopyWith<$Res> implements $Recommend
   factory _$RecommendationsReportCopyWith(_RecommendationsReport value, $Res Function(_RecommendationsReport) _then) = __$RecommendationsReportCopyWithImpl;
 @override @useResult
 $Res call({
- String profileId, String career, List<Recommendation> recommendations, ValidationInfo validation
+ String profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
 });
 
 
@@ -859,12 +992,13 @@ class __$RecommendationsReportCopyWithImpl<$Res>
 
 /// Create a copy of RecommendationsReport
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? validation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
   return _then(_RecommendationsReport(
 profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
 as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,recommendations: null == recommendations ? _self._recommendations : recommendations // ignore: cast_nullable_to_non_nullable
-as List<Recommendation>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
+as List<Recommendation>,uncovered: null == uncovered ? _self._uncovered : uncovered // ignore: cast_nullable_to_non_nullable
+as List<SkillRef>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
 as ValidationInfo,
   ));
 }

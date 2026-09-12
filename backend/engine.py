@@ -13,6 +13,10 @@ unchanged inputs skips extraction and never loads the model. Any change produces
 a new key, so a stale profile cannot be served -- the same rule StaleConfigError
 enforces for matching parameters.
 
+Online courses sit outside that cache. Nothing about them is embedded, so they
+are read from their hand-curated CSV on every start: a change needs a restart,
+not a rebuild.
+
 Chunking matches validate.py exactly: extraction runs on posting_text as stored,
 " | " separators included, because that is the text the matching parameters were
 measured on. Chunking it differently would apply the parameters outside the
@@ -35,6 +39,8 @@ if str(ENGINE_DIR) not in sys.path:
 
 import skillgap as sg  # noqa: E402  (needs the path insert above)
 
+from .online import OnlineCatalog, OnlineCourse, load_online_courses  # noqa: E402
+
 # Bump when the cache layout changes, so old files are ignored rather than misread.
 CACHE_VERSION = 1
 
@@ -46,6 +52,7 @@ class Paths:
     config: Path = ENGINE_DIR / "config.json"
     postings: Path = REPO / "test" / "labeled_postings.csv"
     courses: Path = ENGINE_DIR / "labeled_courses.csv"
+    online_courses: Path = ENGINE_DIR / "online_courses.csv"
     cache_dir: Path = REPO / "backend" / ".cache"
 
 
@@ -54,6 +61,14 @@ class Course:
     code: str
     name: str
     skills: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class Suggestions:
+    """For every missing skill: where to learn it, grouped by course."""
+    university: list[tuple[Course, list[str], float]]         # course, skills it closes, value
+    online: list[tuple[OnlineCourse, list[str], float]]
+    uncovered: list[str]        # missing skills neither source covers, by demand
 
 
 class SkillNames:
@@ -71,6 +86,7 @@ class EngineState:
     skills: dict[str, dict[str, str]]        # id -> {en, ar, category}
     profiles: dict[str, sg.CareerProfile]    # career -> demand profile
     courses: dict[str, Course]               # course code -> course
+    online: OnlineCatalog                    # hand-curated, never embedded
     posting_params: dict[str, Any]
     course_params: dict[str, Any]
     config: dict[str, Any]
@@ -94,20 +110,47 @@ class EngineState:
         return sg.analyze_gap(self.profiles[career], self.acquired(course_codes))
 
     def recommendations(self, gap: sg.GapResult, completed: list[str],
-                        limit: int) -> list[tuple[Course, list[str], float]]:
+                        limit: int | None = None) -> Suggestions:
+        """
+        For each missing skill: the university courses that teach it if any
+        does, otherwise the online courses listed for it. A university course
+        counts toward the degree, so it always wins; an online course is offered
+        only for a skill nothing in the catalog teaches. A missing skill neither
+        covers is returned as uncovered rather than dropped.
+
+        Both lists are grouped by course and ranked by the total demand of the
+        gaps each closes. `limit` caps each list on its own; None returns all.
+        """
+        missing = dict(gap.missing)
         done = set(completed)
         catalog = {code: list(c.skills)
                    for code, c in self.courses.items() if code not in done}
-        missing = dict(gap.missing)
-        out = []
-        for r in sg.recommend(gap, catalog, SkillNames(self.skills), limit=limit):
+        university = []
+        for r in sg.recommend(gap, catalog, SkillNames(self.skills), limit=len(catalog)):
             course = self.courses[r["course"]]
             # recommend() reports English names only; recover the ids so the
             # client can render either language.
             closes = sorted((s for s in course.skills if s in missing),
                             key=lambda s: -missing[s])
-            out.append((course, closes, r["value"]))
-        return out
+            university.append((course, closes, r["value"]))
+
+        # A missing skill is never taught by a completed course (the student
+        # would have it), so "taught by any course" means "an untaken course
+        # teaches it" and the university list above already closes it.
+        taught = {s for c in self.courses.values() for s in c.skills}
+        online = []
+        for oc in self.online.courses:
+            closes = sorted((s for s in oc.skills if s in missing and s not in taught),
+                            key=lambda s: -missing[s])
+            if closes:
+                online.append((oc, closes, round(sum(missing[s] for s in closes), 3)))
+        online.sort(key=lambda t: -t[2])          # stable: file order breaks ties
+
+        covered = {s for _, closes, _ in university + online for s in closes}
+        uncovered = [s for s, _ in gap.missing if s not in covered]
+        if limit is not None:
+            university, online = university[:limit], online[:limit]
+        return Suggestions(university, online, uncovered)
 
     def validation(self) -> dict[str, Any]:
         return {
@@ -178,7 +221,8 @@ def build_state(paths: Paths | None = None,
     """
     Build everything the API serves. Raises StaleConfigError if config.json was
     swept against a different taxonomy -- better no service than one applying
-    parameters measured against another label set.
+    parameters measured against another label set -- and OnlineCoursesError if
+    online_courses.csv has rows it cannot serve. Both fail before any model work.
     """
     paths = paths or Paths()
     config = json.loads(paths.config.read_text(encoding="utf-8"))
@@ -188,6 +232,7 @@ def build_state(paths: Paths | None = None,
 
     skills = {s["id"]: {"en": s["en"], "ar": s["ar"], "category": s["category"]}
               for s in json.loads(paths.taxonomy.read_text(encoding="utf-8"))["skills"]}
+    online = load_online_courses(paths.online_courses, set(skills))
     postings = _read_csv(paths.postings)
     course_rows = _read_csv(paths.courses)
 
@@ -217,7 +262,7 @@ def build_state(paths: Paths | None = None,
         _save_cache(cache_file, key, profiles, courses)
         from_cache = False
 
-    return EngineState(skills=skills, profiles=profiles, courses=courses,
+    return EngineState(skills=skills, profiles=profiles, courses=courses, online=online,
                        posting_params=posting_params, course_params=course_params,
                        config=config, model=model, cache_key=key,
                        built_from_cache=from_cache)

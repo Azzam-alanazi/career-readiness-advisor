@@ -91,6 +91,22 @@ void main() {
     // The "suggestions, not verdicts" notice sits above the courses it qualifies.
     expect(tester.getTopLeft(find.text('Suggestions, not verdicts')).dy,
         lessThan(tester.getTopLeft(find.text('Business Process Management')).dy));
+
+    // University and online courses are told apart, section and card alike.
+    expect(find.text('University courses (1)'), findsOneWidget);
+    expect(find.text('Online courses (1)'), findsOneWidget);
+    expect(find.text('Counts toward your degree'), findsOneWidget);
+    expect(find.text("Doesn't count toward your degree"), findsOneWidget);
+    expect(find.text('Writing functional specifications'), findsOneWidget);
+    expect(find.text('Example Academy'), findsOneWidget);
+    expect(find.text('Free'), findsOneWidget);
+    expect(find.text('Functional specifications · in 83% of postings'), findsOneWidget);
+    // The university course, which counts toward the degree, comes first.
+    expect(tester.getTopLeft(find.text('Business Process Management')).dy,
+        lessThan(tester.getTopLeft(find.text('Writing functional specifications')).dy));
+    // A gap with neither is listed, not dropped.
+    expect(find.text('No course listed yet (1)'), findsOneWidget);
+    expect(find.text('Workshop facilitation · in 33% of postings'), findsOneWidget);
   });
 
   testWidgets('Arabic: right-to-left layout, Arabic labels, caveats in Arabic', (tester) async {
@@ -127,6 +143,13 @@ void main() {
     await tester.tap(find.text('المقررات المقترحة'));
     await tester.pumpAndSettle();
     expect(find.text('اقتراحات، لا أحكام'), findsOneWidget);
+    expect(find.text('يُحتسب ضمن متطلبات التخرج'), findsOneWidget);
+    expect(find.text('لا تُحتسب ضمن متطلبات التخرج'), findsOneWidget);
+    expect(find.text('مجانية'), findsOneWidget);
+    // The web address stays left to right inside the right-to-left page.
+    final url = find.byWidgetPredicate(
+        (w) => w is SelectableText && w.data == 'https://example.com/functional-specs');
+    expect(Directionality.of(tester.element(url)), TextDirection.ltr);
   });
 
   testWidgets('An unreachable backend offers a retry that recovers', (tester) async {
