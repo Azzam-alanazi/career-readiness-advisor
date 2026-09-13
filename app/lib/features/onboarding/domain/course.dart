@@ -9,6 +9,10 @@ abstract class Course with _$Course {
     required String code,
     required String name,
     required int skillCount,
+
+    /// Skill ids the course teaches, so onboarding can show them as already
+    /// covered instead of offering them again.
+    @Default(<String>[]) List<String> skills,
   }) = _Course;
 
   factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);

@@ -50,6 +50,73 @@ class AppLocalizationsAr extends AppLocalizations {
   String get submitFailed => 'تعذّر حفظ ملفك. تحقق من الاتصال وحاول مرة أخرى.';
 
   @override
+  String get nextToSkills => 'التالي: مهارات أخرى';
+
+  @override
+  String get skillsTitle => 'مهارات أخرى';
+
+  @override
+  String get skillsIntro =>
+      'اختياري. حدّد أي مهارات اكتسبتها خارج مقرراتك: بالتعلم الذاتي أو الشهادات أو الخبرة العملية.';
+
+  @override
+  String get skillsUnverified =>
+      'هذه مهارات تذكرها بنفسك ولا يُتحقق منها، وتظهر في جاهزيتك منفصلة عن مقرراتك.';
+
+  @override
+  String get skillsSearchHint => 'ابحث عن مهارة';
+
+  @override
+  String skillsSelected(int count) {
+    return 'المختارة: $count';
+  }
+
+  @override
+  String get skillFromCourses => 'من مقرراتك';
+
+  @override
+  String get skillsNoMatch => 'لا توجد مهارة تطابق بحثك.';
+
+  @override
+  String coveredFromCoursesTitle(int count) {
+    return 'من مقرراتك ($count)';
+  }
+
+  @override
+  String coveredSelfReportedTitle(int count) {
+    return 'ذكرتها بنفسك ($count)';
+  }
+
+  @override
+  String readinessFromCoursesOnly(String percent) {
+    return 'من مقرراتك وحدها: $percent';
+  }
+
+  @override
+  String get categoryBusinessAnalysis => 'تحليل الأعمال والتنفيذ';
+
+  @override
+  String get categoryData => 'البيانات والتحليلات';
+
+  @override
+  String get categorySoftwareDevelopment => 'تطوير البرمجيات';
+
+  @override
+  String get categoryInfrastructure => 'البنية التحتية والسحابة والشبكات';
+
+  @override
+  String get categoryItSupport => 'الدعم الفني وإدارة الخدمات';
+
+  @override
+  String get categorySecurity => 'الأمن';
+
+  @override
+  String get categoryErp => 'أنظمة تخطيط موارد المؤسسات وعملياتها';
+
+  @override
+  String get categoryProfessional => 'المهارات المهنية';
+
+  @override
   String get readinessTitle => 'الجاهزية';
 
   @override

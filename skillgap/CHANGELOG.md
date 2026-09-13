@@ -4,6 +4,54 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-13 — Self-reported skills, kept apart from the course record
+
+A student profile can now carry skills held from outside coursework, such as
+self-study, certifications or work experience, beside the completed courses.
+They are taxonomy ids, ticked on a new, optional onboarding step that comes
+after course selection.
+
+### What changes, and what does not
+
+- **Acquired skills are the union** of the course skills and the self-reported
+  ones. `analyze_gap` is unchanged: it receives the union where it used to
+  receive the course skills.
+- **Each covered skill keeps its provenance,** as `source`: `courses` or
+  `self_reported`. A skill a completed course teaches counts as `courses` even
+  when the student also claims it. The course record is never shown as a claim,
+  and a claim never inflates the course figure.
+- **Both readings are reported.** `/gap` returns `readiness` from the union and
+  `readiness_from_courses` from the courses alone. It also returns
+  `covered_from_courses` and `covered_self_reported`, which partition `covered`.
+  Recommendations work from the union, so nothing is suggested for a skill the
+  student reports.
+- **Nothing measured moves.** Self-reported skills reach no course mapping,
+  extraction, validation figure, `config.json` or cache key. The gate figures
+  stand as recorded. A profile with no self-reported skills gets the same
+  figures as before, with both readings equal.
+- **Unverified, and said so once.** The app's skills step says so in one line.
+  The readiness screen shows the two sources apart, with the courses-only figure
+  beside the combined one whenever they differ.
+
+### Checked on the live backend
+
+The demo scenario (Business Analyst: CSC 202, CIT 201, CIT 202, CIS 221, CIS 302,
+CIS 303) was run once as is and once with two self-reported skills: User
+acceptance testing, the top missing skill, and Functional specifications, which
+one of the six courses already teaches.
+
+- `readiness_from_courses` stays at the scenario's 30.6% (31% on screen).
+  Combined readiness rises to 37%.
+- Functional specifications stays `courses`.
+- The two source lists partition `covered`, and agree with each skill's `source`.
+- Nothing is suggested for User acceptance testing.
+- An unknown skill id is refused with a 422.
+
+An existing `profiles.db` gains the new column in place on its next start.
+Backend tests: 61 → 72. App tests: 20 → 29.
+
+---
+
 ## 2026-09-12 — Shaqra courses labelled: labels served, extraction measured
 
 All 33 Shaqra courses are hand-labelled: 75 labels over 39 distinct skills, with 9

@@ -1,7 +1,8 @@
 # Career Readiness — Flutter app (Phase 4)
 
-Android app over the FastAPI backend in `../backend/`: onboarding, a readiness
-report, and suggested courses, in English and Arabic.
+Android app over the FastAPI backend in `../backend/`: two-step onboarding
+(completed courses, then any skills from outside them), a readiness report, and
+suggested courses, in English and Arabic.
 
 ## What the numbers are — read this first
 
@@ -14,6 +15,11 @@ thing on that screen. University and online courses are shown apart, and every
 card says whether it counts toward the degree: a university course does, an
 online course does not. Online courses appear only for skills no university
 course teaches.
+
+Skills a student reports from outside coursework are shown apart from those
+their courses teach. Whenever the two figures differ, readiness from the courses
+alone appears beside the combined figure. The skills step says once, briefly,
+that these skills are self-reported and unverified.
 
 ## Run
 
@@ -58,7 +64,7 @@ lib/
   main.dart, app.dart
   core/                 api client, locale, formatting, shared widgets
   features/
-    onboarding/         careers and course catalog, the onboarding form
+    onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
     profile/            profile draft and saved profile, current-profile state
     gap/                readiness report and screen
     recommendations/    suggested courses by source, and the screen
@@ -68,14 +74,15 @@ lib/
 
 Riverpod 3 holds state (`Notifier`, `FutureProvider`); freezed and
 json_serializable make the models. Widgets render state and call controllers —
-the business rules (what makes a draft submittable, how courses are sent,
-what start-over resets) live in `OnboardingController`, not in widgets.
+the business rules (what makes a draft submittable, how courses and skills are
+sent, what start-over resets) live in `OnboardingController`, and grouping,
+searching and course coverage of skills in `skill_groups.dart`, not in widgets.
 
 ## Arabic and right-to-left
 
 Switch language from the top bar; the whole app flips to right-to-left through
 `flutter_localizations`. Translated: every piece of UI text, the quality flag,
-the career names, and the skill names. Not translated: course names, because
+the career names, the skill category names, and the skill names. Not translated: course names, because
 the catalog is English — the onboarding screen says so.
 
 **This is bilingual display, not cross-lingual matching.** The Arabic skill
@@ -93,26 +100,35 @@ postings.
 flutter test
 ```
 
-20 tests, no device needed:
+29 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
-  a readiness of exactly 0), skill names by language, the draft's wire format,
+  a readiness of exactly 0), the gap's two sources kept apart, skill names by
+  language, the skills each course teaches, the draft's wire format,
   suggestions by source, and an unknown source rejected rather than guessed
 - **API client** — Arabic decoded correctly from a response with no charset,
   non-2xx and unreachable-server errors, JSON on POST
-- **onboarding controller** — a career is required, courses toggle, courses are
-  sent sorted, a blank major is sent as null, a failed save, start-over
-- **the full flow, in English and in Arabic** — onboarding to readiness to
-  suggestions; right-to-left checked by layout (the warning icon moves to the
-  right of its heading), not just by the direction flag; an unreachable
-  backend with a working retry; a failed save; start over
+- **onboarding controller** — a career is required, courses and skills toggle,
+  both are sent sorted, nothing is ticked to start, a blank major is sent as
+  null, a failed save, start-over clearing everything
+- **skill groups** — categories in taxonomy order, search in either language,
+  the skills the chosen courses teach
+- **the full flow, in English and in Arabic** — courses, then other skills, then
+  readiness, then suggestions. On the skills step nothing starts ticked, skills
+  the courses teach are marked and cannot be ticked, search narrows the list, and
+  the unverified note appears once. Readiness is split by source, with the
+  courses-only figure. A tick survives a course being added and dropped again.
+  Right-to-left is checked by layout (the warning icon moves to the right of its
+  heading), not just by the direction flag. Also: an unreachable backend with a
+  working retry, a failed save, and start over
 - **university and online courses** — each card says whether it counts toward
   the degree, in both languages; the university course comes first; a gap with
   neither is listed, not dropped; a web address stays left to right in Arabic
 
 The widget tests run against fakes shaped like the backend's JSON. To check the
 models against the real, running backend instead — the spec's definition-of-done
-scenario, Business Analyst with six courses — start the backend and run:
+scenario, Business Analyst with six courses, then the same with two
+self-reported skills — start the backend and run:
 
 ```bash
 dart run tool/contract_check.dart
@@ -120,7 +136,7 @@ dart run tool/contract_check.dart
 
 ## Not verified on a device
 
-This machine has no Android toolchain, no Visual Studio and no Chrome, so the
-app has not been launched on a phone, an emulator or a desktop window.
-Everything above is verified headlessly — `flutter test`, `flutter analyze`,
-and the contract check against the live backend.
+The Android toolchain is now installed and a debug APK builds
+(`flutter build apk --debug`). These checks have not launched the app on a
+phone or an emulator. Everything above is verified headlessly: `flutter test`,
+`flutter analyze`, and the contract check against the live backend.

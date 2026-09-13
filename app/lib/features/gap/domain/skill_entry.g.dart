@@ -13,6 +13,7 @@ _SkillEntry _$SkillEntryFromJson(Map<String, dynamic> json) => _SkillEntry(
   category: json['category'] as String,
   demand: (json['demand'] as num).toDouble(),
   demandPercent: (json['demand_percent'] as num).toInt(),
+  source: json['source'] as String?,
 );
 
 Map<String, dynamic> _$SkillEntryToJson(_SkillEntry instance) =>
@@ -23,4 +24,5 @@ Map<String, dynamic> _$SkillEntryToJson(_SkillEntry instance) =>
       'category': instance.category,
       'demand': instance.demand,
       'demand_percent': instance.demandPercent,
+      'source': instance.source,
     };

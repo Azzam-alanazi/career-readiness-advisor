@@ -1,4 +1,6 @@
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
+import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:career_readiness/features/profile/domain/profile_draft.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,12 +10,21 @@ import 'fakes.dart';
 void main() {
   test('a gap report parses the backend shape, quality flag included', () {
     final g = GapReport.fromJson(gapJson);
-    expect(g.readinessPercent, 5);
+    expect(g.readinessPercent, 10);
     expect(g.missing.map((s) => s.id), ['SK05', 'SK04', 'SK07']);
     expect(g.validation.gatePassed, isFalse);
     expect(g.validation.bestF1, 0.503);
     expect(g.validation.gateMinF1, 0.6);
     expect(g.validation.courseMappingValidated, isFalse);
+  });
+
+  test('a gap report keeps the two sources apart', () {
+    final g = GapReport.fromJson(gapJson);
+    expect((g.readinessFromCourses, g.readinessFromCoursesPercent), (0.0526, 5));
+    expect(g.covered.map((s) => (s.id, s.source)), [('SK02', 'courses'), ('SK85', 'self_reported')]);
+    expect(g.coveredFromCourses.single.id, 'SK02');
+    expect(g.coveredSelfReported.single.id, 'SK85');
+    expect(g.missing.first.source, isNull, reason: 'a missing skill has no source');
   });
 
   test('a readiness of exactly zero still parses', () {
@@ -22,9 +33,13 @@ void main() {
       ...gapJson,
       'readiness': 0,
       'readiness_percent': 0,
+      'readiness_from_courses': 0,
+      'readiness_from_courses_percent': 0,
       'covered': <dynamic>[],
+      'covered_from_courses': <dynamic>[],
+      'covered_self_reported': <dynamic>[],
     });
-    expect(g.readiness, 0.0);
+    expect((g.readiness, g.readinessFromCourses), (0.0, 0.0));
     expect(g.covered, isEmpty);
   });
 
@@ -33,6 +48,13 @@ void main() {
     expect(s.nameFor('ar'), 'المواصفات الوظيفية');
     expect(s.nameFor('en'), 'Functional specifications');
     expect(s.nameFor('fr'), 'Functional specifications');
+  });
+
+  test('courses carry the skills they teach, and taxonomy skills parse', () {
+    expect(Course.fromJson(coursesJson.first).skills, ['SK16', 'SK17']);
+    expect(Course.fromJson({'code': 'X 1', 'name': 'X', 'skill_count': 0}).skills, isEmpty);
+    final skill = Skill.fromJson(skillsJson.last);
+    expect((skill.id, skill.category, skill.nameFor('ar')), ('SK85', 'professional', 'مهارات التواصل'));
   });
 
   test('recommendations parse by source, with what each closes', () {
@@ -65,10 +87,15 @@ void main() {
   });
 
   test('a profile draft serialises to the backend field names', () {
-    const draft = ProfileDraft(career: 'Business Analyst', completedCourses: ['IS 230']);
+    const draft = ProfileDraft(
+      career: 'Business Analyst',
+      completedCourses: ['IS 230'],
+      selfReportedSkills: ['SK85'],
+    );
     expect(draft.toJson(), {
       'career': 'Business Analyst',
       'completed_courses': ['IS 230'],
+      'self_reported_skills': ['SK85'],
       'major': null,
     });
   });

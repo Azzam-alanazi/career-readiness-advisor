@@ -282,10 +282,28 @@ online course from `skillgap/online_courses.csv`, marked as not counting toward
 the degree; university courses are marked as counting. The file is hand-curated,
 and its 53 rows start empty.
 
-Verified headlessly by 20 tests and `flutter analyze`, and by a contract check
+Self-reported skills arrived on 2026-09-13 as an optional second onboarding
+step, after course selection. Beside their completed courses, students can tick
+taxonomy skills they hold from outside coursework: self-study, certifications,
+work experience. The list is searchable, grouped by taxonomy category, and starts
+with nothing ticked. Skills the chosen courses already teach are marked as such
+and cannot be ticked. Acquired skills are the union of the two sources, and each
+covered skill keeps its provenance. Where a course teaches a skill the student
+also claims, the course gets the credit. The gap response gives readiness on both
+sources and on the courses alone, and splits covered skills into
+`covered_from_courses` and `covered_self_reported`. The readiness screen shows
+them apart. Whenever the two figures differ, it gives the courses-only figure
+beside the combined one, so a student defending the figure to an employer knows
+which part the academic record supports. Self-reported skills are unverified. The
+skills step says so once, and no other screen repeats it. They touch no mapping,
+validation figure or cache. They are one student's word, and count only in that
+student's readiness.
+
+Verified headlessly by 29 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
-app's own models. Not yet run on a device: this machine has no Android
-toolchain.
+app's own models, then repeats it with self-reported skills. The Android
+toolchain is now installed and a debug APK builds. These checks have not
+launched the app on a device or an emulator.
 
 ## Conventions
 - Feature-first: `lib/features/{onboarding,profile,gap,recommendations}/`

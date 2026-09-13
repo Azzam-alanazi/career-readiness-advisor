@@ -9,6 +9,9 @@ abstract class ProfileDraft with _$ProfileDraft {
   const factory ProfileDraft({
     required String career,
     required List<String> completedCourses,
+
+    /// Skill ids held from outside coursework. Unverified.
+    @Default(<String>[]) List<String> selfReportedSkills,
     String? major,
   }) = _ProfileDraft;
 

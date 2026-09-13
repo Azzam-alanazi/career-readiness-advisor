@@ -10,6 +10,10 @@ abstract class OnboardingState with _$OnboardingState {
     @Default('') String major,
     String? career,
     @Default(<String>{}) Set<String> courses,
+
+    /// Skill ids the student holds from outside coursework. Unverified, and
+    /// empty until they tick one.
+    @Default(<String>{}) Set<String> selfReported,
     @Default(false) bool submitting,
     Object? error,
 
@@ -18,7 +22,7 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(0) int revision,
   }) = _OnboardingState;
 
-  /// A career is the one thing the backend cannot do without. Zero courses is
-  /// a valid answer: it means readiness starts at 0%.
+  /// A career is the one thing the backend cannot do without. Zero courses and
+  /// zero self-reported skills are valid answers.
   bool get canSubmit => career != null && !submitting;
 }

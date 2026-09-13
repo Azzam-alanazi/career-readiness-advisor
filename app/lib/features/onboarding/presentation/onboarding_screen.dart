@@ -2,15 +2,16 @@ import 'package:career_readiness/core/l10n/career_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
-import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Onboarding, first step: major, target career and completed courses.
 class OnboardingScreen extends ConsumerWidget {
   const OnboardingScreen({super.key});
 
@@ -31,7 +32,7 @@ class OnboardingScreen extends ConsumerWidget {
           data: (courses) => _Form(careers: careers, courses: courses),
         ),
       ),
-      bottomNavigationBar: const _SubmitBar(),
+      bottomNavigationBar: const _NextBar(),
     );
   }
 }
@@ -99,50 +100,29 @@ class _Form extends ConsumerWidget {
   }
 }
 
-class _SubmitBar extends ConsumerWidget {
-  const _SubmitBar();
+class _NextBar extends ConsumerWidget {
+  const _NextBar();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final state = ref.watch(onboardingControllerProvider);
+    final hasCareer =
+        ref.watch(onboardingControllerProvider.select((s) => s.career != null));
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (state.error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  l.submitFailed,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: state.canSubmit ? () => _submit(context, ref) : null,
-                child: state.submitting
-                    ? const SizedBox.square(
-                        dimension: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(l.submit),
-              ),
-            ),
-          ],
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: hasCareer
+                ? () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(builder: (_) => const SkillsScreen()),
+                    )
+                : null,
+            child: Text(l.nextToSkills),
+          ),
         ),
       ),
-    );
-  }
-
-  Future<void> _submit(BuildContext context, WidgetRef ref) async {
-    final id = await ref.read(onboardingControllerProvider.notifier).submit();
-    if (id == null || !context.mounted) return;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => ReadinessScreen(profileId: id)),
     );
   }
 }

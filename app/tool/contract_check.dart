@@ -23,6 +23,8 @@ import 'dart:io';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/skill.dart';
+import 'package:career_readiness/features/onboarding/domain/skill_groups.dart';
 import 'package:career_readiness/features/profile/domain/profile.dart';
 import 'package:career_readiness/features/profile/domain/profile_draft.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
@@ -131,6 +133,76 @@ Future<void> main(List<String> args) async {
     check(online.every((r) => r.url.startsWith('http')),
         '${online.length} online courses, each with a web address');
     check(!recs.validation.gatePassed, 'quality flag present on suggestions too');
+
+    // Self-reported skills: the taxonomy the skills step offers, then the same
+    // six courses plus two claimed skills -- the top missing one, and one a
+    // course already teaches, which must still count as the course's.
+    final taxonomy = (await get('/skills') as List)
+        .map((j) => Skill.fromJson(j as Map<String, dynamic>))
+        .toList();
+    final taxonomyIds = {for (final s in taxonomy) s.id};
+    print('\ntaxonomy');
+    check(taxonomy.every((s) => hasArabic(s.ar) && categoryOrder.contains(s.category)),
+        '${taxonomy.length} skills, each with an Arabic label and a known category');
+    check(courses.every((c) => c.skills.every(taxonomyIds.contains)),
+        'every course skill is a taxonomy skill');
+    check(gap.coveredSelfReported.isEmpty &&
+            gap.readinessFromCourses == gap.readiness &&
+            gap.covered.every((s) => s.source == 'courses'),
+        'with no self-reported skills, both readings agree');
+
+    final unknown = await client.post(
+      Uri.parse('$base/profiles'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode(ProfileDraft(
+        career: 'Business Analyst',
+        completedCourses: sixCourses,
+        selfReportedSkills: const ['SK999'],
+      ).toJson()),
+    );
+    check(unknown.statusCode == 422, 'an unknown skill id is refused (HTTP ${unknown.statusCode})');
+
+    final claimed = gap.missing.first;
+    final alreadyTaught = gap.coveredFromCourses.first;
+    final selfDraft = ProfileDraft(
+      career: 'Business Analyst',
+      completedCourses: sixCourses,
+      major: 'Information Systems',
+      selfReportedSkills: [claimed.id, alreadyTaught.id],
+    );
+    final selfProfile = Profile.fromJson(decode(await client.post(
+      Uri.parse('$base/profiles'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode(selfDraft.toJson()),
+    )) as Map<String, dynamic>);
+    print('\nself-reported');
+    check(selfProfile.selfReportedSkills.toSet().containsAll([claimed.id, alreadyTaught.id]),
+        'stored: ${claimed.en} and ${alreadyTaught.en}');
+
+    final selfGap = GapReport.fromJson(
+        await get('/profiles/${selfProfile.id}/gap') as Map<String, dynamic>);
+    check(selfGap.coveredSelfReported.map((s) => s.id).toList().toString() ==
+            [claimed.id].toString(),
+        '${claimed.en} counts as self-reported');
+    check(selfGap.covered.firstWhere((s) => s.id == alreadyTaught.id).source == 'courses',
+        '${alreadyTaught.en} stays "courses": a course outranks a claim');
+    check(selfGap.readinessFromCourses == gap.readiness,
+        'courses-only readiness unchanged (${selfGap.readinessFromCoursesPercent}%)');
+    check(selfGap.readiness > gap.readiness,
+        'combined readiness rises: ${gap.readinessPercent}% -> ${selfGap.readinessPercent}%');
+    final fromCourses = {for (final s in selfGap.coveredFromCourses) s.id};
+    final selfReported = {for (final s in selfGap.coveredSelfReported) s.id};
+    check(fromCourses.intersection(selfReported).isEmpty &&
+            fromCourses.union(selfReported).length == selfGap.covered.length &&
+            selfGap.covered.every((s) =>
+                (s.source == 'courses' ? fromCourses : selfReported).contains(s.id)),
+        'the two source lists partition covered, and agree with each skill\'s source');
+
+    final selfRecs = RecommendationsReport.fromJson(await get(
+        '/profiles/${selfProfile.id}/recommendations') as Map<String, dynamic>);
+    check(selfRecs.recommendations.every((r) => r.closes.every((s) => s.id != claimed.id)) &&
+            selfRecs.uncovered.every((s) => s.id != claimed.id),
+        'nothing is suggested for a skill the student already reports');
   } on Object catch (e) {
     print('\nFAIL  $e');
     failures++;

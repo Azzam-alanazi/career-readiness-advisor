@@ -51,6 +51,73 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your profile could not be saved. Check the connection and try again.';
 
   @override
+  String get nextToSkills => 'Next: other skills';
+
+  @override
+  String get skillsTitle => 'Other skills';
+
+  @override
+  String get skillsIntro =>
+      'Optional. Tick any skills you have from outside your courses: self-study, certifications or work experience.';
+
+  @override
+  String get skillsUnverified =>
+      'These are self-reported and unverified. Your readiness shows them apart from your courses.';
+
+  @override
+  String get skillsSearchHint => 'Search skills';
+
+  @override
+  String skillsSelected(int count) {
+    return 'Selected: $count';
+  }
+
+  @override
+  String get skillFromCourses => 'From your courses';
+
+  @override
+  String get skillsNoMatch => 'No skill matches your search.';
+
+  @override
+  String coveredFromCoursesTitle(int count) {
+    return 'From your courses ($count)';
+  }
+
+  @override
+  String coveredSelfReportedTitle(int count) {
+    return 'Self-reported ($count)';
+  }
+
+  @override
+  String readinessFromCoursesOnly(String percent) {
+    return 'From your courses alone: $percent';
+  }
+
+  @override
+  String get categoryBusinessAnalysis => 'Business analysis and delivery';
+
+  @override
+  String get categoryData => 'Data and analytics';
+
+  @override
+  String get categorySoftwareDevelopment => 'Software development';
+
+  @override
+  String get categoryInfrastructure => 'Infrastructure, cloud and networks';
+
+  @override
+  String get categoryItSupport => 'IT support and service management';
+
+  @override
+  String get categorySecurity => 'Security';
+
+  @override
+  String get categoryErp => 'ERP and enterprise processes';
+
+  @override
+  String get categoryProfessional => 'Professional skills';
+
+  @override
   String get readinessTitle => 'Readiness';
 
   @override

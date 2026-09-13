@@ -5,6 +5,7 @@ import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
+import 'package:career_readiness/features/gap/domain/skill_entry.dart';
 import 'package:career_readiness/features/gap/presentation/gap_providers.dart';
 import 'package:career_readiness/features/recommendations/presentation/recommendations_screen.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
@@ -56,6 +57,7 @@ class _Report extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
+    final text = Theme.of(context).textTheme;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -63,25 +65,38 @@ class _Report extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           l.readinessFor(careerName(l, report.career)),
-          style: Theme.of(context).textTheme.titleLarge,
+          style: text.titleLarge,
         ),
         const SizedBox(height: 8),
-        _ScoreCard(readiness: report.readiness),
+        _ScoreCard(report: report),
         SectionHeader(l.coveredTitle(report.covered.length)),
         if (report.covered.isEmpty)
           Text(l.noneCovered)
-        else
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final skill in report.covered)
-                Chip(
-                  avatar: const Icon(Icons.check, size: 18),
-                  label: Text(skill.nameFor(lang)),
-                ),
-            ],
-          ),
+        else ...[
+          // Where each skill came from, so the academic-record claim stays
+          // separate from the student's own.
+          if (report.coveredFromCourses.isNotEmpty) ...[
+            Text(l.coveredFromCoursesTitle(report.coveredFromCourses.length),
+                style: text.labelLarge),
+            const SizedBox(height: 4),
+            _SkillChips(
+              skills: report.coveredFromCourses,
+              icon: Icons.school_outlined,
+              lang: lang,
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (report.coveredSelfReported.isNotEmpty) ...[
+            Text(l.coveredSelfReportedTitle(report.coveredSelfReported.length),
+                style: text.labelLarge),
+            const SizedBox(height: 4),
+            _SkillChips(
+              skills: report.coveredSelfReported,
+              icon: Icons.person_outline,
+              lang: lang,
+            ),
+          ],
+        ],
         SectionHeader(l.missingTitle(report.missing.length)),
         for (final skill in report.missing)
           _DemandRow(name: skill.nameFor(lang), demand: skill.demand),
@@ -91,9 +106,9 @@ class _Report extends StatelessWidget {
 }
 
 class _ScoreCard extends StatelessWidget {
-  const _ScoreCard({required this.readiness});
+  const _ScoreCard({required this.report});
 
-  final double readiness;
+  final GapReport report;
 
   @override
   Widget build(BuildContext context) {
@@ -106,12 +121,22 @@ class _ScoreCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(formatPercent(readiness, lang), style: text.displayMedium),
+            Text(formatPercent(report.readiness, lang), style: text.displayMedium),
             const SizedBox(height: 8),
             LinearProgressIndicator(
-              value: readiness.clamp(0.0, 1.0).toDouble(),
+              value: report.readiness.clamp(0.0, 1.0).toDouble(),
               minHeight: 8,
             ),
+            // The academic record on its own, whenever self-reported skills
+            // make the two differ.
+            if (report.coveredSelfReported.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                l.readinessFromCoursesOnly(
+                    formatPercent(report.readinessFromCourses, lang)),
+                style: text.bodyMedium,
+              ),
+            ],
             const SizedBox(height: 8),
             Text(l.readinessExplained, style: text.bodySmall),
           ],
@@ -119,6 +144,27 @@ class _ScoreCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SkillChips extends StatelessWidget {
+  const _SkillChips({required this.skills, required this.icon, required this.lang});
+
+  final List<SkillEntry> skills;
+  final IconData icon;
+  final String lang;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final skill in skills)
+            Chip(
+              avatar: Icon(icon, size: 18),
+              label: Text(skill.nameFor(lang)),
+            ),
+        ],
+      );
 }
 
 class _DemandRow extends StatelessWidget {

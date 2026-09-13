@@ -36,6 +36,27 @@ void main() {
     expect(container.read(onboardingControllerProvider).courses, {'IS 230'});
   });
 
+  test('no skill starts ticked; toggling a skill twice removes it', () {
+    expect(container.read(onboardingControllerProvider).selfReported, isEmpty);
+    controller()
+      ..toggleSkill('SK85')
+      ..toggleSkill('SK17')
+      ..toggleSkill('SK17');
+    expect(container.read(onboardingControllerProvider).selfReported, {'SK85'});
+  });
+
+  test('submit sends self-reported skills sorted, beside the courses', () async {
+    controller()
+      ..selectCareer('Business Analyst')
+      ..toggleCourse('IS 230')
+      ..toggleSkill('SK85')
+      ..toggleSkill('SK04');
+
+    await controller().submit();
+    expect(profiles.lastDraft!.completedCourses, ['IS 230']);
+    expect(profiles.lastDraft!.selfReportedSkills, ['SK04', 'SK85']);
+  });
+
   test('submit sends sorted courses, drops a blank major, sets the profile', () async {
     controller()
       ..setMajor('   ')
@@ -45,6 +66,7 @@ void main() {
 
     expect(await controller().submit(), 'p1');
     expect(profiles.lastDraft!.completedCourses, ['IS 230', 'IS 240']);
+    expect(profiles.lastDraft!.selfReportedSkills, isEmpty, reason: 'skills are optional');
     expect(profiles.lastDraft!.major, isNull);
     expect(container.read(currentProfileProvider), 'p1');
     expect(container.read(onboardingControllerProvider).submitting, isFalse);
@@ -63,7 +85,8 @@ void main() {
   test('reset clears the draft and the current profile', () async {
     controller()
       ..selectCareer('Business Analyst')
-      ..toggleCourse('IS 230');
+      ..toggleCourse('IS 230')
+      ..toggleSkill('SK85');
     await controller().submit();
     final revision = container.read(onboardingControllerProvider).revision;
 
@@ -72,6 +95,7 @@ void main() {
     final state = container.read(onboardingControllerProvider);
     expect(state.career, isNull);
     expect(state.courses, isEmpty);
+    expect(state.selfReported, isEmpty);
     expect(state.revision, revision + 1);
     expect(container.read(currentProfileProvider), isNull);
   });

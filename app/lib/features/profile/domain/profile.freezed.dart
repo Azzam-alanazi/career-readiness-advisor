@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Profile {
 
- String get id; String get career; String? get major; List<String> get completedCourses; String get createdAt;
+ String get id; String get career; String? get major; List<String> get completedCourses; List<String> get selfReportedSkills; String get createdAt;
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $ProfileCopyWith<Profile> get copyWith => _$ProfileCopyWithImpl<Profile>(this as
 @override
 bool operator ==(Object other) {
   final _this = this as Profile;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.major, _this.major) || other.major == _this.major)&&const DeepCollectionEquality().equals(other.completedCourses, _this.completedCourses)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.major, _this.major) || other.major == _this.major)&&const DeepCollectionEquality().equals(other.completedCourses, _this.completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _this.selfReportedSkills)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Profile;
-  return Object.hash(runtimeType,_this.id,_this.career,_this.major,const DeepCollectionEquality().hash(_this.completedCourses),_this.createdAt);
+  return Object.hash(runtimeType,_this.id,_this.career,_this.major,const DeepCollectionEquality().hash(_this.completedCourses),const DeepCollectionEquality().hash(_this.selfReportedSkills),_this.createdAt);
 }
 
 @override
 String toString() {
   final _this = this as Profile;
-  return 'Profile(id: ${_this.id}, career: ${_this.career}, major: ${_this.major}, completedCourses: ${_this.completedCourses}, createdAt: ${_this.createdAt})';
+  return 'Profile(id: ${_this.id}, career: ${_this.career}, major: ${_this.major}, completedCourses: ${_this.completedCourses}, selfReportedSkills: ${_this.selfReportedSkills}, createdAt: ${_this.createdAt})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $ProfileCopyWith<$Res>  {
   factory $ProfileCopyWith(Profile value, $Res Function(Profile) _then) = _$ProfileCopyWithImpl;
 @useResult
 $Res call({
- String id, String career, String? major, List<String> completedCourses, String createdAt
+ String id, String career, String? major, List<String> completedCourses, List<String> selfReportedSkills, String createdAt
 });
 
 
@@ -71,12 +71,13 @@ class _$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? career = null,Object? major = freezed,Object? completedCourses = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? career = null,Object? major = freezed,Object? completedCourses = null,Object? selfReportedSkills = null,Object? createdAt = null,}) {
   return _then(Profile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String?,completedCourses: null == completedCourses ? _self.completedCourses : completedCourses // ignore: cast_nullable_to_non_nullable
+as List<String>,selfReportedSkills: null == selfReportedSkills ? _self.selfReportedSkills : selfReportedSkills // ignore: cast_nullable_to_non_nullable
 as List<String>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String career,  String? major,  List<String> completedCourses,  String createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String career,  String? major,  List<String> completedCourses,  List<String> selfReportedSkills,  String createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.createdAt);case _:
+return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.selfReportedSkills,_that.createdAt);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String career,  String? major,  List<String> completedCourses,  String createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String career,  String? major,  List<String> completedCourses,  List<String> selfReportedSkills,  String createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Profile():
-return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.createdAt);case _:
+return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.selfReportedSkills,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String career,  String? major,  List<String> completedCourses,  String createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String career,  String? major,  List<String> completedCourses,  List<String> selfReportedSkills,  String createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.createdAt);case _:
+return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.selfReportedSkills,_that.createdAt);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.id,_that.career,_that.major,_that.completedCourses,_that.c
 @JsonSerializable()
 
 class _Profile implements Profile {
-  const _Profile({required this.id, required this.career, this.major, required  List<String> completedCourses, required this.createdAt}): _completedCourses = completedCourses;
+  const _Profile({required this.id, required this.career, this.major, required  List<String> completedCourses,  List<String> selfReportedSkills = const <String>[], required this.createdAt}): _completedCourses = completedCourses,_selfReportedSkills = selfReportedSkills;
   factory _Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 
 @override final  String id;
@@ -230,6 +231,13 @@ class _Profile implements Profile {
   if (_completedCourses is EqualUnmodifiableListView) return _completedCourses;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_completedCourses);
+}
+
+ final  List<String> _selfReportedSkills;
+@override@JsonKey() List<String> get selfReportedSkills {
+  if (_selfReportedSkills is EqualUnmodifiableListView) return _selfReportedSkills;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selfReportedSkills);
 }
 
 @override final  String createdAt;
@@ -247,18 +255,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.career, career) || other.career == career)&&(identical(other.major, major) || other.major == major)&&const DeepCollectionEquality().equals(other.completedCourses, _completedCourses)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.career, career) || other.career == career)&&(identical(other.major, major) || other.major == major)&&const DeepCollectionEquality().equals(other.completedCourses, _completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _selfReportedSkills)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,career,major,const DeepCollectionEquality().hash(_completedCourses),createdAt);
+    return Object.hash(runtimeType,id,career,major,const DeepCollectionEquality().hash(_completedCourses),const DeepCollectionEquality().hash(_selfReportedSkills),createdAt);
 }
 
 @override
 String toString() {
-    return 'Profile(id: $id, career: $career, major: $major, completedCourses: $completedCourses, createdAt: $createdAt)';
+    return 'Profile(id: $id, career: $career, major: $major, completedCourses: $completedCourses, selfReportedSkills: $selfReportedSkills, createdAt: $createdAt)';
 }
 
 
@@ -269,7 +277,7 @@ abstract mixin class _$ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   factory _$ProfileCopyWith(_Profile value, $Res Function(_Profile) _then) = __$ProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String career, String? major, List<String> completedCourses, String createdAt
+ String id, String career, String? major, List<String> completedCourses, List<String> selfReportedSkills, String createdAt
 });
 
 
@@ -286,12 +294,13 @@ class __$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? career = null,Object? major = freezed,Object? completedCourses = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? career = null,Object? major = freezed,Object? completedCourses = null,Object? selfReportedSkills = null,Object? createdAt = null,}) {
   return _then(_Profile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String?,completedCourses: null == completedCourses ? _self._completedCourses : completedCourses // ignore: cast_nullable_to_non_nullable
+as List<String>,selfReportedSkills: null == selfReportedSkills ? _self._selfReportedSkills : selfReportedSkills // ignore: cast_nullable_to_non_nullable
 as List<String>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));

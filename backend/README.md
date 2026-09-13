@@ -43,14 +43,15 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 |---|---|---|
 | GET | `/health` | model, counts, online courses filled in and still waiting, cache status, validation |
 | GET | `/careers` | careers with their posting counts |
-| GET | `/courses` | catalog: code, official title, number of skills mapped, and whether they come from hand labels or extraction |
-| POST | `/profiles` | create a student profile — `career`, `completed_courses` (codes), optional `major` |
+| GET | `/courses` | catalog: code, official title, the skill ids it teaches and how many, and whether they come from hand labels or extraction |
+| GET | `/skills` | the taxonomy, in its order: id, English and Arabic names, category. These are the skills a student can self-report |
+| POST | `/profiles` | create a student profile: `career`, `completed_courses` (codes), optional `major`, optional `self_reported_skills` (taxonomy ids) |
 | GET | `/profiles/{id}` | the stored profile |
-| GET | `/profiles/{id}/gap` | readiness %, covered skills, missing skills ranked by demand |
+| GET | `/profiles/{id}/gap` | readiness % from all acquired skills and `readiness_from_courses` from the courses alone; covered skills, each with its `source`, also split into `covered_from_courses` and `covered_self_reported`; missing skills ranked by demand |
 | GET | `/profiles/{id}/recommendations` | for every missing skill, a university course if the catalog teaches it, otherwise an online course, each marked by `source`; skills with neither listed as `uncovered`. Optional `limit` caps each list |
 
-Unknown careers and course codes are rejected with a 422 naming the offending
-value. Skill entries carry both `en` and `ar`. Course names are English only,
+Unknown careers, course codes and skill ids are rejected with a 422 naming the
+offending value. Skill entries carry both `en` and `ar`. Course names are English only,
 because the catalog is.
 
 ## Design decisions
@@ -73,8 +74,17 @@ because the catalog is.
 - **Chunking matches `validate.py`.** Extraction runs on the stored posting text,
   `" | "` separators included, because that is the text the parameters were
   measured on.
+- **Self-reported skills stay apart from the academic record.** A profile may
+  list taxonomy skills the student holds from outside coursework. They join the
+  course skills for readiness. Every covered skill carries its `source`, either
+  `courses` or `self_reported`, and a course outranks a claim for the same skill.
+  `readiness_from_courses` keeps the academic-record figure visible beside the
+  combined one. Self-reported skills are unverified, so they reach nothing else:
+  no mapping, validation figure or cache key. A stored skill that later leaves
+  the taxonomy is ignored rather than failing the profile.
 - **SQLite with a TRUNCATE journal.** The repo sits in OneDrive, which can refuse
-  the journal deletes SQLite's default mode relies on.
+  the journal deletes SQLite's default mode relies on. A profiles table from
+  before self-reported skills gains the column in place on the next start.
 - **Engine defaults pass through untouched.** `analyze_gap`'s `min_demand=0.15`
   has never been validated. The API uses it as-is rather than burying a second
   unvalidated number in the service layer.
@@ -85,7 +95,7 @@ because the catalog is.
 python -m pytest
 ```
 
-61 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+72 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -95,8 +105,10 @@ profiles surviving a restart; the model loading once and never per request; a
 warm restart skipping the model entirely; cache invalidation on a config change;
 startup refusing a stale config or a bad online-courses file before any model
 work; hand labels overriding extraction, and relabelling without a rebuild;
-online courses offered only where no university course teaches the skill; and
-the reports below.
+online courses offered only where no university course teaches the skill;
+self-reported skills stored deduplicated, validated, counted in readiness but
+reported apart, with a course outranking a claim for the same skill; an old
+profiles table migrated in place; and the reports below.
 
 ## Online courses
 

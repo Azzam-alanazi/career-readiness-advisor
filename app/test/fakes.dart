@@ -3,6 +3,7 @@ import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:career_readiness/features/profile/data/profile_repository.dart';
 import 'package:career_readiness/features/profile/domain/profile.dart';
 import 'package:career_readiness/features/profile/domain/profile_draft.dart';
@@ -26,26 +27,90 @@ const careersJson = <Map<String, dynamic>>[
 ];
 
 const coursesJson = <Map<String, dynamic>>[
-  {'code': 'IS 230', 'name': 'Database Management Systems', 'skill_count': 1},
-  {'code': 'IS 240', 'name': 'Systems Analysis and Design', 'skill_count': 1},
-  {'code': 'IS 350', 'name': 'Business Process Management', 'skill_count': 1},
+  {
+    'code': 'IS 230',
+    'name': 'Database Management Systems',
+    'skill_count': 2,
+    'skills': ['SK16', 'SK17'],
+  },
+  {
+    'code': 'IS 240',
+    'name': 'Systems Analysis and Design',
+    'skill_count': 1,
+    'skills': ['SK02'],
+  },
+  {
+    'code': 'IS 350',
+    'name': 'Business Process Management',
+    'skill_count': 1,
+    'skills': ['SK04'],
+  },
 ];
 
+// Taxonomy order, as GET /skills returns it.
+const skillsJson = <Map<String, dynamic>>[
+  {
+    'id': 'SK02',
+    'en': 'Requirements elicitation',
+    'ar': 'استخلاص المتطلبات من أصحاب المصلحة',
+    'category': 'business_analysis',
+  },
+  {
+    'id': 'SK04',
+    'en': 'Business process modelling',
+    'ar': 'نمذجة عمليات الأعمال',
+    'category': 'business_analysis',
+  },
+  {
+    'id': 'SK05',
+    'en': 'Functional specifications',
+    'ar': 'المواصفات الوظيفية',
+    'category': 'business_analysis',
+  },
+  {'id': 'SK16', 'en': 'Database management', 'ar': 'إدارة قواعد البيانات', 'category': 'data'},
+  {'id': 'SK17', 'en': 'SQL', 'ar': 'لغة الاستعلام الهيكلية SQL', 'category': 'data'},
+  {
+    'id': 'SK25',
+    'en': 'Python programming',
+    'ar': 'برمجة بايثون',
+    'category': 'software_development',
+  },
+  {'id': 'SK85', 'en': 'Communication', 'ar': 'مهارات التواصل', 'category': 'professional'},
+];
+
+const _requirementsElicitation = <String, dynamic>{
+  'id': 'SK02',
+  'en': 'Requirements elicitation',
+  'ar': 'استخلاص المتطلبات من أصحاب المصلحة',
+  'category': 'business_analysis',
+  'demand': 0.5,
+  'demand_percent': 50,
+};
+
+const _communication = <String, dynamic>{
+  'id': 'SK85',
+  'en': 'Communication',
+  'ar': 'مهارات التواصل',
+  'category': 'professional',
+  'demand': 0.1667,
+  'demand_percent': 17,
+};
+
+// One skill from a course, one self-reported, so both halves of the readiness
+// screen have something to show.
 const gapJson = <String, dynamic>{
   'profile_id': 'p1',
   'career': 'Business Analyst',
-  'readiness': 0.0526,
-  'readiness_percent': 5,
+  'readiness': 0.0968,
+  'readiness_percent': 10,
+  'readiness_from_courses': 0.0526,
+  'readiness_from_courses_percent': 5,
   'covered': [
-    {
-      'id': 'SK02',
-      'en': 'Requirements elicitation',
-      'ar': 'استخلاص المتطلبات من أصحاب المصلحة',
-      'category': 'business_analysis',
-      'demand': 0.5,
-      'demand_percent': 50,
-    },
+    {..._requirementsElicitation, 'source': 'courses'},
+    {..._communication, 'source': 'self_reported'},
   ],
+  'covered_from_courses': [_requirementsElicitation],
+  'covered_self_reported': [_communication],
   'missing': [
     {
       'id': 'SK05',
@@ -135,6 +200,9 @@ class FakeCatalogRepository implements CatalogRepository {
 
   @override
   Future<List<Course>> courses() async => coursesJson.map(Course.fromJson).toList();
+
+  @override
+  Future<List<Skill>> skills() async => skillsJson.map(Skill.fromJson).toList();
 }
 
 class FakeProfileRepository implements ProfileRepository {
@@ -150,6 +218,7 @@ class FakeProfileRepository implements ProfileRepository {
       career: draft.career,
       major: draft.major,
       completedCourses: draft.completedCourses,
+      selfReportedSkills: draft.selfReportedSkills,
       createdAt: '2026-09-10T00:00:00+00:00',
     );
   }

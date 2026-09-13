@@ -170,6 +170,120 @@ abstract class AppLocalizations {
   /// **'Your profile could not be saved. Check the connection and try again.'**
   String get submitFailed;
 
+  /// No description provided for @nextToSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: other skills'**
+  String get nextToSkills;
+
+  /// No description provided for @skillsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Other skills'**
+  String get skillsTitle;
+
+  /// No description provided for @skillsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Tick any skills you have from outside your courses: self-study, certifications or work experience.'**
+  String get skillsIntro;
+
+  /// No description provided for @skillsUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'These are self-reported and unverified. Your readiness shows them apart from your courses.'**
+  String get skillsUnverified;
+
+  /// No description provided for @skillsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search skills'**
+  String get skillsSearchHint;
+
+  /// No description provided for @skillsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {count}'**
+  String skillsSelected(int count);
+
+  /// No description provided for @skillFromCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'From your courses'**
+  String get skillFromCourses;
+
+  /// No description provided for @skillsNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No skill matches your search.'**
+  String get skillsNoMatch;
+
+  /// No description provided for @coveredFromCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'From your courses ({count})'**
+  String coveredFromCoursesTitle(int count);
+
+  /// No description provided for @coveredSelfReportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-reported ({count})'**
+  String coveredSelfReportedTitle(int count);
+
+  /// No description provided for @readinessFromCoursesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'From your courses alone: {percent}'**
+  String readinessFromCoursesOnly(String percent);
+
+  /// No description provided for @categoryBusinessAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Business analysis and delivery'**
+  String get categoryBusinessAnalysis;
+
+  /// No description provided for @categoryData.
+  ///
+  /// In en, this message translates to:
+  /// **'Data and analytics'**
+  String get categoryData;
+
+  /// No description provided for @categorySoftwareDevelopment.
+  ///
+  /// In en, this message translates to:
+  /// **'Software development'**
+  String get categorySoftwareDevelopment;
+
+  /// No description provided for @categoryInfrastructure.
+  ///
+  /// In en, this message translates to:
+  /// **'Infrastructure, cloud and networks'**
+  String get categoryInfrastructure;
+
+  /// No description provided for @categoryItSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'IT support and service management'**
+  String get categoryItSupport;
+
+  /// No description provided for @categorySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get categorySecurity;
+
+  /// No description provided for @categoryErp.
+  ///
+  /// In en, this message translates to:
+  /// **'ERP and enterprise processes'**
+  String get categoryErp;
+
+  /// No description provided for @categoryProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional skills'**
+  String get categoryProfessional;
+
   /// No description provided for @readinessTitle.
   ///
   /// In en, this message translates to:

@@ -16,6 +16,11 @@ abstract class SkillEntry with _$SkillEntry {
     /// Share of this career's postings that ask for the skill, 0 to 1.
     required double demand,
     required int demandPercent,
+
+    /// For a skill the student has: "courses" or "self_reported". A skill a
+    /// completed course teaches is "courses" even if also self-reported.
+    /// Absent for a missing skill.
+    String? source,
   }) = _SkillEntry;
 
   factory SkillEntry.fromJson(Map<String, dynamic> json) =>

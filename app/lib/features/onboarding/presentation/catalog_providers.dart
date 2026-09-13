@@ -1,6 +1,7 @@
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final careersProvider = FutureProvider<List<Career>>(
@@ -9,4 +10,8 @@ final careersProvider = FutureProvider<List<Career>>(
 
 final coursesProvider = FutureProvider<List<Course>>(
   (ref) => ref.watch(catalogRepositoryProvider).courses(),
+);
+
+final skillsProvider = FutureProvider<List<Skill>>(
+  (ref) => ref.watch(catalogRepositoryProvider).skills(),
 );

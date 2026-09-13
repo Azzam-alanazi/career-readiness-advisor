@@ -20,6 +20,11 @@ labels. Labels and online courses sit outside the cache -- nothing about them is
 embedded -- so they are read on every start: a change needs a restart, not a
 rebuild.
 
+A student's skills are the union of what their completed courses teach and what
+they report holding from outside coursework. The two are kept apart all the way
+to the response, so the academic-record claim is never blurred with an
+unverified one.
+
 Chunking matches validate.py exactly: extraction runs on posting_text as stored,
 " | " separators included, because that is the text the matching parameters were
 measured on. Chunking it differently would apply the parameters outside the
@@ -80,6 +85,19 @@ class Suggestions:
     uncovered: list[str]        # missing skills neither source covers, by demand
 
 
+@dataclass(frozen=True)
+class SourcedGap:
+    """A gap that knows where each covered skill came from."""
+    combined: sg.GapResult               # courses and self-reported skills together
+    from_courses: sg.GapResult           # the academic record alone
+    course_skills: frozenset[str]        # everything the completed courses teach
+
+    def source(self, skill_id: str) -> str:
+        # The academic record wins: a skill a completed course teaches counts as
+        # "courses" even when the student also reported it.
+        return "courses" if skill_id in self.course_skills else "self_reported"
+
+
 class SkillNames:
     """The one method sg.recommend() needs from a Taxonomy, without the model."""
 
@@ -113,11 +131,20 @@ class EngineState:
             out |= set(self.courses[code].skills)
         return out
 
-    def gap(self, career: str, course_codes: list[str]) -> sg.GapResult:
+    def gap(self, career: str, course_codes: list[str],
+            self_reported: list[str] | tuple = ()) -> sg.GapResult:
         # min_demand stays at the engine default (0.15). That value has never
         # been validated -- see CHANGELOG -- and changing it here would hide the
         # fact behind an API layer.
-        return sg.analyze_gap(self.profiles[career], self.acquired(course_codes))
+        acquired = self.acquired(course_codes) | set(self_reported)
+        return sg.analyze_gap(self.profiles[career], acquired)
+
+    def gap_by_source(self, career: str, course_codes: list[str],
+                      self_reported: list[str] | tuple) -> SourcedGap:
+        """The gap with both sources counted, and again with the courses alone."""
+        return SourcedGap(combined=self.gap(career, course_codes, self_reported),
+                          from_courses=self.gap(career, course_codes),
+                          course_skills=frozenset(self.acquired(course_codes)))
 
     def recommendations(self, gap: sg.GapResult, completed: list[str],
                         limit: int | None = None) -> Suggestions:

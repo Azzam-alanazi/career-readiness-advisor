@@ -19,8 +19,17 @@ class OnboardingController extends Notifier<OnboardingState> {
     state = state.copyWith(courses: courses);
   }
 
+  void toggleSkill(String id) {
+    final skills = {...state.selfReported};
+    if (!skills.remove(id)) skills.add(id);
+    state = state.copyWith(selfReported: skills);
+  }
+
   /// Saves the profile and makes it current. Returns the new profile id, or
   /// null on failure -- the error stays in state for the screen to show.
+  ///
+  /// Self-reported skills go as ticked. If one is also taught by a chosen
+  /// course, the backend credits it to the course: the academic record wins.
   Future<String?> submit() async {
     if (!state.canSubmit) return null;
     state = state.copyWith(submitting: true, error: null);
@@ -30,6 +39,7 @@ class OnboardingController extends Notifier<OnboardingState> {
             ProfileDraft(
               career: state.career!,
               completedCourses: state.courses.toList()..sort(),
+              selfReportedSkills: state.selfReported.toList()..sort(),
               // A blank field means "not given", not a major called "".
               major: major.isEmpty ? null : major,
             ),

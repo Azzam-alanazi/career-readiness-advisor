@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OnboardingState {
 
- String get major; String? get career; Set<String> get courses; bool get submitting; Object? get error;/// Bumped on reset, so the screen can rebuild fields that keep their own
+ String get major; String? get career; Set<String> get courses;/// Skill ids the student holds from outside coursework. Unverified, and
+/// empty until they tick one.
+ Set<String> get selfReported; bool get submitting; Object? get error;/// Bumped on reset, so the screen can rebuild fields that keep their own
 /// text (the major) instead of showing a value the draft no longer holds.
  int get revision;
 /// Create a copy of OnboardingState
@@ -29,20 +31,20 @@ $OnboardingStateCopyWith<OnboardingState> get copyWith => _$OnboardingStateCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as OnboardingState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingState&&(identical(other.major, _this.major) || other.major == _this.major)&&(identical(other.career, _this.career) || other.career == _this.career)&&const DeepCollectionEquality().equals(other.courses, _this.courses)&&(identical(other.submitting, _this.submitting) || other.submitting == _this.submitting)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.revision, _this.revision) || other.revision == _this.revision));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingState&&(identical(other.major, _this.major) || other.major == _this.major)&&(identical(other.career, _this.career) || other.career == _this.career)&&const DeepCollectionEquality().equals(other.courses, _this.courses)&&const DeepCollectionEquality().equals(other.selfReported, _this.selfReported)&&(identical(other.submitting, _this.submitting) || other.submitting == _this.submitting)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.revision, _this.revision) || other.revision == _this.revision));
 }
 
 
 @override
 int get hashCode {
   final _this = this as OnboardingState;
-  return Object.hash(runtimeType,_this.major,_this.career,const DeepCollectionEquality().hash(_this.courses),_this.submitting,const DeepCollectionEquality().hash(_this.error),_this.revision);
+  return Object.hash(runtimeType,_this.major,_this.career,const DeepCollectionEquality().hash(_this.courses),const DeepCollectionEquality().hash(_this.selfReported),_this.submitting,const DeepCollectionEquality().hash(_this.error),_this.revision);
 }
 
 @override
 String toString() {
   final _this = this as OnboardingState;
-  return 'OnboardingState(major: ${_this.major}, career: ${_this.career}, courses: ${_this.courses}, submitting: ${_this.submitting}, error: ${_this.error}, revision: ${_this.revision})';
+  return 'OnboardingState(major: ${_this.major}, career: ${_this.career}, courses: ${_this.courses}, selfReported: ${_this.selfReported}, submitting: ${_this.submitting}, error: ${_this.error}, revision: ${_this.revision})';
 }
 
 
@@ -53,7 +55,7 @@ abstract mixin class $OnboardingStateCopyWith<$Res>  {
   factory $OnboardingStateCopyWith(OnboardingState value, $Res Function(OnboardingState) _then) = _$OnboardingStateCopyWithImpl;
 @useResult
 $Res call({
- String major, String? career, Set<String> courses, bool submitting, Object? error, int revision
+ String major, String? career, Set<String> courses, Set<String> selfReported, bool submitting, Object? error, int revision
 });
 
 
@@ -70,11 +72,12 @@ class _$OnboardingStateCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? major = null,Object? career = freezed,Object? courses = null,Object? submitting = null,Object? error = freezed,Object? revision = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? major = null,Object? career = freezed,Object? courses = null,Object? selfReported = null,Object? submitting = null,Object? error = freezed,Object? revision = null,}) {
   return _then(OnboardingState(
 major: null == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String,career: freezed == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String?,courses: null == courses ? _self.courses : courses // ignore: cast_nullable_to_non_nullable
+as Set<String>,selfReported: null == selfReported ? _self.selfReported : selfReported // ignore: cast_nullable_to_non_nullable
 as Set<String>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error ,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,
@@ -162,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String major,  String? career,  Set<String> courses,  bool submitting,  Object? error,  int revision)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String major,  String? career,  Set<String> courses,  Set<String> selfReported,  bool submitting,  Object? error,  int revision)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
-return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.error,_that.revision);case _:
+return $default(_that.major,_that.career,_that.courses,_that.selfReported,_that.submitting,_that.error,_that.revision);case _:
   return orElse();
 
 }
@@ -183,10 +186,10 @@ return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.er
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String major,  String? career,  Set<String> courses,  bool submitting,  Object? error,  int revision)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String major,  String? career,  Set<String> courses,  Set<String> selfReported,  bool submitting,  Object? error,  int revision)  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState():
-return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.error,_that.revision);case _:
+return $default(_that.major,_that.career,_that.courses,_that.selfReported,_that.submitting,_that.error,_that.revision);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +206,10 @@ return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.er
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String major,  String? career,  Set<String> courses,  bool submitting,  Object? error,  int revision)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String major,  String? career,  Set<String> courses,  Set<String> selfReported,  bool submitting,  Object? error,  int revision)?  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
-return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.error,_that.revision);case _:
+return $default(_that.major,_that.career,_that.courses,_that.selfReported,_that.submitting,_that.error,_that.revision);case _:
   return null;
 
 }
@@ -218,7 +221,7 @@ return $default(_that.major,_that.career,_that.courses,_that.submitting,_that.er
 
 
 class _OnboardingState extends OnboardingState {
-  const _OnboardingState({this.major = '', this.career,  Set<String> courses = const <String>{}, this.submitting = false, this.error, this.revision = 0}): _courses = courses,super._();
+  const _OnboardingState({this.major = '', this.career,  Set<String> courses = const <String>{},  Set<String> selfReported = const <String>{}, this.submitting = false, this.error, this.revision = 0}): _courses = courses,_selfReported = selfReported,super._();
   
 
 @override@JsonKey() final  String major;
@@ -228,6 +231,17 @@ class _OnboardingState extends OnboardingState {
   if (_courses is EqualUnmodifiableSetView) return _courses;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_courses);
+}
+
+/// Skill ids the student holds from outside coursework. Unverified, and
+/// empty until they tick one.
+ final  Set<String> _selfReported;
+/// Skill ids the student holds from outside coursework. Unverified, and
+/// empty until they tick one.
+@override@JsonKey() Set<String> get selfReported {
+  if (_selfReported is EqualUnmodifiableSetView) return _selfReported;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_selfReported);
 }
 
 @override@JsonKey() final  bool submitting;
@@ -246,18 +260,18 @@ _$OnboardingStateCopyWith<_OnboardingState> get copyWith => __$OnboardingStateCo
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingState&&(identical(other.major, major) || other.major == major)&&(identical(other.career, career) || other.career == career)&&const DeepCollectionEquality().equals(other.courses, _courses)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.revision, revision) || other.revision == revision));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingState&&(identical(other.major, major) || other.major == major)&&(identical(other.career, career) || other.career == career)&&const DeepCollectionEquality().equals(other.courses, _courses)&&const DeepCollectionEquality().equals(other.selfReported, _selfReported)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.revision, revision) || other.revision == revision));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,major,career,const DeepCollectionEquality().hash(_courses),submitting,const DeepCollectionEquality().hash(error),revision);
+    return Object.hash(runtimeType,major,career,const DeepCollectionEquality().hash(_courses),const DeepCollectionEquality().hash(_selfReported),submitting,const DeepCollectionEquality().hash(error),revision);
 }
 
 @override
 String toString() {
-    return 'OnboardingState(major: $major, career: $career, courses: $courses, submitting: $submitting, error: $error, revision: $revision)';
+    return 'OnboardingState(major: $major, career: $career, courses: $courses, selfReported: $selfReported, submitting: $submitting, error: $error, revision: $revision)';
 }
 
 
@@ -268,7 +282,7 @@ abstract mixin class _$OnboardingStateCopyWith<$Res> implements $OnboardingState
   factory _$OnboardingStateCopyWith(_OnboardingState value, $Res Function(_OnboardingState) _then) = __$OnboardingStateCopyWithImpl;
 @override @useResult
 $Res call({
- String major, String? career, Set<String> courses, bool submitting, Object? error, int revision
+ String major, String? career, Set<String> courses, Set<String> selfReported, bool submitting, Object? error, int revision
 });
 
 
@@ -285,11 +299,12 @@ class __$OnboardingStateCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? major = null,Object? career = freezed,Object? courses = null,Object? submitting = null,Object? error = freezed,Object? revision = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? major = null,Object? career = freezed,Object? courses = null,Object? selfReported = null,Object? submitting = null,Object? error = freezed,Object? revision = null,}) {
   return _then(_OnboardingState(
 major: null == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String,career: freezed == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String?,courses: null == courses ? _self._courses : courses // ignore: cast_nullable_to_non_nullable
+as Set<String>,selfReported: null == selfReported ? _self._selfReported : selfReported // ignore: cast_nullable_to_non_nullable
 as Set<String>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error ,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,

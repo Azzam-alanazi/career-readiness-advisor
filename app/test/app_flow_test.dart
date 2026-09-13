@@ -4,6 +4,7 @@ import 'package:career_readiness/features/gap/data/gap_repository.dart';
 import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
 import 'package:career_readiness/features/profile/data/profile_repository.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +41,22 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
 
 Finder button(String label) => find.widgetWithText(FilledButton, label);
 
+Finder skillBoxes() => find.descendant(
+    of: find.byType(SkillsScreen), matching: find.byType(CheckboxListTile));
+
+CheckboxListTile skillBox(WidgetTester tester, String name) =>
+    tester.widget<CheckboxListTile>(find.widgetWithText(CheckboxListTile, name));
+
+const unverified =
+    'These are self-reported and unverified. Your readiness shows them apart from your courses.';
+
 void main() {
-  testWidgets('English: onboarding, then readiness, then suggestions', (tester) async {
+  testWidgets('English: courses, other skills, readiness, then suggestions', (tester) async {
     final w = _World();
     await _pumpApp(tester, w);
 
     expect(find.text('Your profile'), findsOneWidget);
-    expect(tester.widget<FilledButton>(button('See my readiness')).onPressed, isNull,
+    expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull,
         reason: 'no career chosen yet');
 
     await tester.enterText(find.byType(TextFormField), '  Information Systems ');
@@ -56,19 +66,69 @@ void main() {
     await tester.pump();
     expect(find.text('Completed courses (2 selected)'), findsOneWidget);
 
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+
+    // The skills step: optional, grouped by category, nothing ticked, and the
+    // unverified note said once.
+    expect(find.text('Other skills'), findsOneWidget);
+    expect(find.text(unverified), findsOneWidget);
+    expect(find.text('Business analysis and delivery'), findsOneWidget);
+    expect(find.text('Professional skills'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('Business analysis and delivery')).dy,
+        lessThan(tester.getTopLeft(find.text('Professional skills')).dy));
+    expect(find.text('Selected: 0'), findsOneWidget);
+    expect(tester.widgetList<CheckboxListTile>(skillBoxes()).map((b) => b.value),
+        everyElement(isFalse));
+
+    // What the two courses teach is marked, not offered again.
+    expect(find.text('From your courses'), findsNWidgets(3));
+    expect(find.widgetWithText(CheckboxListTile, 'SQL'), findsNothing);
+    expect(skillBoxes(), findsNWidgets(4));
+    await tester.tap(find.text('SQL'));
+    await tester.pump();
+    expect(find.text('Selected: 0'), findsOneWidget, reason: 'a course skill cannot be ticked');
+
+    // Search narrows the list, in place.
+    await tester.enterText(find.byKey(const Key('skill-search')), 'zzz');
+    await tester.pump();
+    expect(find.text('No skill matches your search.'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('skill-search')), 'commun');
+    await tester.pump();
+    expect(find.text('SQL'), findsNothing);
+    expect(find.text('Data and analytics'), findsNothing);
+    expect(find.text('Professional skills'), findsOneWidget);
+
+    await tester.tap(find.text('Communication'));
+    await tester.pump();
+    expect(skillBox(tester, 'Communication').value, isTrue);
+    expect(find.text('Selected: 1'), findsOneWidget);
+
     await tester.tap(button('See my readiness'));
     await tester.pumpAndSettle();
 
     final draft = w.profiles.lastDraft!;
     expect(draft.career, 'Business Analyst');
     expect(draft.completedCourses, ['IS 230', 'IS 240']);
+    expect(draft.selfReportedSkills, ['SK85']);
     expect(draft.major, 'Information Systems');
     expect(w.gap.requested, ['p1']);
 
-    // Readiness: the score, what is covered, and what is missing by demand.
+    // Readiness: the combined score, the courses-only reading, and where each
+    // covered skill came from.
     expect(find.text('Readiness for Business Analyst'), findsOneWidget);
-    expect(find.text('5%'), findsOneWidget);
-    expect(find.text('Requirements elicitation'), findsOneWidget);
+    expect(find.text('10%'), findsOneWidget);
+    expect(find.text('From your courses alone: 5%'), findsOneWidget);
+    expect(find.text('Skills you have (2)'), findsOneWidget);
+    expect(find.text('From your courses (1)'), findsOneWidget);
+    expect(find.text('Self-reported (1)'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('Requirements elicitation')).dy,
+        lessThan(tester.getTopLeft(find.text('Self-reported (1)')).dy));
+    expect(tester.getTopLeft(find.text('Self-reported (1)')).dy,
+        lessThan(tester.getTopLeft(find.text('Communication')).dy));
+    expect(find.text(unverified), findsNothing, reason: 'said once, on the skills step');
+
+    // Missing skills by demand.
     expect(find.text('in 83% of postings'), findsOneWidget);
     expect(tester.getTopLeft(find.text('Functional specifications')).dy,
         lessThan(tester.getTopLeft(find.text('Business process modelling')).dy));
@@ -109,6 +169,39 @@ void main() {
     expect(find.text('Workshop facilitation · in 33% of postings'), findsOneWidget);
   });
 
+  testWidgets('A skill a newly chosen course teaches is marked, and a tick survives',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+
+    await tester.tap(find.text('Business Analyst'));
+    await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Business process modelling'));
+    await tester.pump();
+    expect(find.text('Selected: 1'), findsOneWidget);
+
+    // Back to the courses: IS 350 teaches that skill.
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Business Process Management'));
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(CheckboxListTile, 'Business process modelling'), findsNothing);
+    expect(find.text('From your courses'), findsOneWidget);
+    expect(find.text('Selected: 0'), findsOneWidget);
+
+    // Drop the course again and the student's own tick is still there.
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Business Process Management'));
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    expect(skillBox(tester, 'Business process modelling').value, isTrue);
+    expect(find.text('Selected: 1'), findsOneWidget);
+  });
+
   testWidgets('Arabic: right-to-left layout, Arabic labels, caveats in Arabic', (tester) async {
     final w = _World();
     await _pumpApp(tester, w);
@@ -125,6 +218,17 @@ void main() {
 
     await tester.tap(find.text('محلل أعمال'));
     await tester.pump();
+    await tester.tap(button('التالي: مهارات أخرى'));
+    await tester.pumpAndSettle();
+
+    // The skills step, in Arabic: category headers and skill names alike.
+    expect(Directionality.of(tester.element(find.byType(SkillsScreen))), TextDirection.rtl);
+    expect(find.text('مهارات أخرى'), findsOneWidget);
+    expect(find.text('تحليل الأعمال والتنفيذ'), findsOneWidget);
+    expect(find.text('مهارات التواصل'), findsOneWidget);
+    expect(find.text('Communication'), findsNothing);
+    expect(find.textContaining('لا يُتحقق منها'), findsOneWidget);
+
     await tester.tap(button('اعرض جاهزيتي'));
     await tester.pumpAndSettle();
 
@@ -132,6 +236,9 @@ void main() {
     expect(find.text('الجاهزية لمهنة محلل أعمال'), findsOneWidget);
     expect(find.text('المواصفات الوظيفية'), findsOneWidget);
     expect(find.text('Functional specifications'), findsNothing);
+    expect(find.text('من مقرراتك (1)'), findsOneWidget);
+    expect(find.text('ذكرتها بنفسك (1)'), findsOneWidget);
+    expect(find.textContaining('من مقرراتك وحدها'), findsOneWidget);
 
     // Right-to-left is real layout, not just a flag: the warning icon now sits
     // to the right of the heading it introduces.
@@ -164,16 +271,19 @@ void main() {
     expect(find.text('Business Analyst'), findsOneWidget);
   });
 
-  testWidgets('A failed save keeps the student on onboarding and says so', (tester) async {
+  testWidgets('A failed save keeps the student on the skills step and says so', (tester) async {
     final w = _World()..profiles.failWith = const ApiException('boom', statusCode: 500);
     await _pumpApp(tester, w);
 
     await tester.tap(find.text('Business Analyst'));
     await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
     await tester.tap(button('See my readiness'));
     await tester.pumpAndSettle();
 
     expect(find.byType(ReadinessScreen), findsNothing);
+    expect(find.byType(SkillsScreen), findsOneWidget);
     expect(find.text('Your profile could not be saved. Check the connection and try again.'),
         findsOneWidget);
   });
@@ -185,6 +295,9 @@ void main() {
     await tester.enterText(find.byType(TextFormField), 'Information Systems');
     await tester.tap(find.text('Business Analyst'));
     await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Communication'));
     await tester.tap(button('See my readiness'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Suggested courses'));
@@ -195,6 +308,13 @@ void main() {
 
     expect(find.byType(OnboardingScreen), findsOneWidget);
     expect(find.text('Information Systems'), findsNothing, reason: 'the major field is rebuilt empty');
-    expect(tester.widget<FilledButton>(button('See my readiness')).onPressed, isNull);
+    expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull);
+
+    // The skills step starts blank too.
+    await tester.tap(find.text('Business Analyst'));
+    await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    expect(find.text('Selected: 0'), findsOneWidget);
   });
 }
