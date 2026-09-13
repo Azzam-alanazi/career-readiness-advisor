@@ -280,7 +280,10 @@ Item 15's certifications side arrived on 2026-09-12 as online courses. For a
 missing skill no university course teaches, the suggestions screen offers an
 online course from `skillgap/online_courses.csv`, marked as not counting toward
 the degree; university courses are marked as counting. The file is hand-curated,
-and its 53 rows start empty.
+and its 53 rows started empty. It was filled in on 2026-09-13: 43 rows over 24
+courses, one row for every skill some career counts as a gap that no university
+course teaches. A sweep of every career through the API leaves no missing skill
+without either a university or an online course.
 
 Self-reported skills arrived on 2026-09-13 as an optional second onboarding
 step, after course selection. Beside their completed courses, students can tick

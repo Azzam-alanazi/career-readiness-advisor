@@ -1,44 +1,44 @@
 ﻿skill_id,provider,course_title,url,is_free
-SK06,,,,
-SK07,,,,
-SK11,,,,
-SK12,,,,
-SK19,,,,
-SK20,,,,
-SK23,,,,
-SK29,,,,
-SK33,,,,
-SK35,,,,
-SK37,,,,
-SK38,,,,
-SK39,,,,
-SK41,,,,
-SK42,,,,
-SK43,,,,
-SK44,,,,
-SK45,,,,
-SK51,,,,
-SK52,,,,
-SK54,,,,
-SK55,,,,
-SK56,,,,
-SK57,,,,
-SK61,,,,
-SK62,,,,
-SK69,,,,
-SK72,,,,
-SK76,,,,
-SK78,,,,
-SK79,,,,
-SK86,,,,
-SK88,,,,
-SK89,,,,
-SK25,,,,
-SK36,,,,
-SK53,,,,
-SK64,,,,
-SK77,,,,
-SK85,,,,
-SK34,,,,
-SK58,,,,
-SK80,,,,
+SK06,Coursera,Managing Stakeholders: Influencing for Project Success,https://www.coursera.org/learn/managing-stakeholders-influencing-for-project-success,no
+SK07,Uxcel,Workshop Facilitation,https://uxcel.com/courses/workshop-facilitation,no
+SK11,Coursera,Software Testing and Automation Specialization,https://www.coursera.org/specializations/software-testing-automation/,no
+SK12,Coursera,Software Testing and Automation Specialization,https://www.coursera.org/specializations/software-testing-automation/,no
+SK19,Microsoft Learn,Build an end-to-end data governance and master data management stack,https://learn.microsoft.com/en-us/training/modules/building-end-to-end-data-governance-master-data-stack-with-microsoft-purview-cluedin/,yes
+SK20,Microsoft Learn,Migrate SQL Server workloads to Azure SQL,https://learn.microsoft.com/en-us/training/paths/migrate-sql-workloads-azure/,yes
+SK23,Microsoft Learn,Introduction to AI concepts,https://learn.microsoft.com/en-us/training/modules/get-started-ai-fundamentals/,yes
+SK29,freeCodeCamp,JavaScript Algorithms and Data Structures Certification,https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/,yes
+SK33,freeCodeCamp,JavaScript Algorithms and Data Structures Certification,https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/,yes
+SK35,freeCodeCamp,JavaScript Algorithms and Data Structures Certification,https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/,yes
+SK37,freeCodeCamp,Responsive Web Design Certification,https://www.freecodecamp.org/learn/2022/responsive-web-design/,yes
+SK38,freeCodeCamp,Responsive Web Design Certification,https://www.freecodecamp.org/learn/2022/responsive-web-design/,yes
+SK39,freeCodeCamp,Responsive Web Design Certification,https://www.freecodecamp.org/learn/2022/responsive-web-design/,yes
+SK41,Microsoft Learn,Introduction to Cloud Infrastructure: Describe cloud concepts,https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts/,yes
+SK42,Microsoft Learn,Introduction to DevOps,https://learn.microsoft.com/en-us/training/modules/introduction-to-devops/,yes
+SK43,Microsoft Learn,Introduction to DevOps,https://learn.microsoft.com/en-us/training/modules/introduction-to-devops/,yes
+SK44,GitHub Skills,Introduction to GitHub,https://github.com/skills/introduction-to-github,yes
+SK45,Microsoft Learn,Introduction to DevOps,https://learn.microsoft.com/en-us/training/modules/introduction-to-devops/,yes
+SK51,Cisco Networking Academy,IT Essentials,https://prelogin-authoring.netacad.com/courses/os-it/it-essentials,no
+SK52,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK54,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK55,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK56,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK57,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK61,Cisco Networking Academy,IT Essentials,https://prelogin-authoring.netacad.com/courses/os-it/it-essentials,no
+SK62,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK69,LinkedIn Learning,Change Management Foundations,https://www.linkedin.com/learning/change-management-foundations-2,no
+SK72,Oracle Learning Explorer,Oracle Learning Explorer,https://learn.oracle.com/education/html/ols5/index.html,yes
+SK76,SAP Learning,Implementing SAP S/4HANA Cloud Public Edition: Sourcing and Procurement,https://learning.sap.com/courses/implementing-sap-s-4hana-cloud-public-edition-sourcing-and-procurement,yes
+SK78,SAP Learning,Implementing SAP S/4HANA Cloud Public Edition: Sourcing and Procurement,https://learning.sap.com/courses/implementing-sap-s-4hana-cloud-public-edition-sourcing-and-procurement,yes
+SK79,SAP Learning,Implementing SAP S/4HANA Cloud Public Edition: Sourcing and Procurement,https://learning.sap.com/courses/implementing-sap-s-4hana-cloud-public-edition-sourcing-and-procurement,yes
+SK86,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK88,University of Buckingham,Postgraduate Certificate in Mentoring,https://www.buckingham.ac.uk/courses/postgraduate/postgraduate-certificate-in-mentoring-fully-online/,no
+SK89,Coursera,Software Testing and Automation Specialization,https://www.coursera.org/specializations/software-testing-automation/,no
+SK25,freeCodeCamp,Scientific Computing with Python Certification,https://www.freecodecamp.org/learn/scientific-computing-with-python/,yes
+SK36,Android Developers,Android Basics with Compose,https://developer.android.com/courses/android-basics-compose/course,yes
+SK53,Coursera,Google IT Support Professional Certificate,https://www.coursera.org/professional-certificates/google-it-support,no
+SK64,Microsoft Learn,Protect Azure resources with Azure Backup,https://learn.microsoft.com/en-us/training/modules/protect-azure-resources-with-azure-backup/,yes
+SK77,SAP Learning,Executing Basic ERP Processes with SAP S/4HANA,https://learning.sap.com/courses/executing-basic-erp-processes-with-sap-s-4hana,yes
+SK85,Coursera,Improving Communication Skills,https://www.coursera.org/learn/wharton-communication-skills,no
+SK34,freeCodeCamp,JavaScript Algorithms and Data Structures Certification,https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/,yes
+SK58,PeopleCert,ITIL 4 Foundation,https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil-4-foundation-2565,no
+SK80,Coursera,Human Resource Management: HR for People Managers Specialization,https://www.coursera.org/specializations/human-resource-management,no

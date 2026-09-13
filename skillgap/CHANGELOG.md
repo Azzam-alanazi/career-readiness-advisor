@@ -4,6 +4,49 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-13 — Online courses filled in: no missing skill left without a recommendation
+
+`online_courses.csv` is filled in by hand: 43 rows, one for each skill some
+career counts as a gap (at `min_demand` 0.15) that no university course
+teaches. They cover 24 distinct courses. A course listed under several skills
+closes all of them.
+
+- **The loader accepts every row.** `python -m backend.online status` reports 43
+  gap skills, 43 with an online course, no placeholders and no missing rows. No
+  row is for a skill a university course teaches, so every row can be served.
+  `/health` reports `online_courses: 24, online_placeholders: 0`.
+- **The app's contract check holds** against the live backend. In the demo
+  scenario (Business Analyst, six courses), all 29 missing skills are accounted
+  for: 9 by a university course, 20 by an online course, and none with neither.
+- **Every career was swept through the API.** A student with no courses has the
+  widest gap their career allows. Every demanded skill is missing, so any other
+  student's missing skills are a subset of that set. For all five careers, every
+  missing skill came back with a university course or, where none teaches it,
+  an online course. None came back empty.
+
+| career | missing, with no courses | by a university course | by an online course | with neither |
+|---|---|---|---|---|
+| Business Analyst | 36 | 16 | 20 | 0 |
+| Data Analyst | 22 | 11 | 11 | 0 |
+| ERP Consultant | 26 | 12 | 14 | 0 |
+| IT Support Specialist | 30 | 11 | 19 | 0 |
+| Software Developer | 44 | 17 | 27 | 0 |
+
+- A student with all 33 courses got an online course for every remaining gap
+  (20, 11, 14, 19 and 27 by career), since no university course teaches those
+  skills.
+- Across the sweep, all 43 gap skills were served an online course at least
+  once. No online course was offered for a skill a university course teaches.
+- **This holds for the current catalog, labels, postings and `min_demand`.** A
+  change to any of them can create new gap skills. `python -m backend.online
+  sync` adds placeholder rows for them, and `status` counts what is still
+  missing.
+- **Checked:** the file's format, and that every row is served. **Not checked:**
+  whether each web address resolves, or whether each course teaches the skill it
+  is listed under. Those are the curator's call.
+
+---
+
 ## 2026-09-13 — Self-reported skills, kept apart from the course record
 
 A student profile can now carry skills held from outside coursework, such as
