@@ -1,5 +1,5 @@
 import 'package:career_readiness/core/locale/locale_controller.dart';
-import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:career_readiness/home_shell.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +25,7 @@ class CareerReadinessApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       theme: ThemeData(colorSchemeSeed: const Color(0xFF00695C)),
-      home: const OnboardingScreen(),
+      home: const HomeShell(),
     );
   }
 }

@@ -17,7 +17,7 @@ from typing import Callable
 from fastapi import FastAPI, HTTPException, Query, Request
 
 from . import schemas as S
-from .engine import REPO, EngineState, build_state
+from .engine import MIN_DEMAND, REPO, EngineState, build_state
 from .store import ProfileStore
 
 DEFAULT_DB = REPO / "backend" / "data" / "profiles.sqlite3"
@@ -36,7 +36,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         app.state.store = ProfileStore(db_path)
         yield
 
-    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.3.0",
+    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.4.0",
                   lifespan=lifespan)
 
     def engine(request: Request) -> EngineState:
@@ -189,6 +189,44 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
                                     recommendations=recs,
                                     uncovered=refs(found.uncovered),
                                     validation=validation(eng))
+
+    def sample_note(eng: EngineState) -> str:
+        per = sorted(p.posting_count for p in eng.profiles.values())
+        spread = f"{per[0]}" if per[0] == per[-1] else f"{per[0]} to {per[-1]}"
+        return (f"Based on {sum(per)} job postings, {spread} per career. At this size "
+                f"the gaps are indicative: a skill one or two postings mention can "
+                f"appear or vanish with the next few. They should not drive curriculum "
+                f"decisions on their own.")
+
+    @app.get("/curriculum/gap", response_model=S.CurriculumGapOut)
+    def curriculum_gap(request: Request,
+                       career: str | None = Query(
+                           None, description="One career's view; every career's when "
+                                             "omitted")) -> S.CurriculumGapOut:
+        eng = engine(request)
+        if career is not None and career not in eng.profiles:
+            raise HTTPException(422, detail={"error": "unknown career", "career": career,
+                                             "known": [c for c, _ in eng.careers()]})
+        cg = eng.curriculum(career)
+        n = cg.posting_count
+        return S.CurriculumGapOut(
+            career=career, posting_count=n, min_demand=MIN_DEMAND,
+            demanded=len(cg.demanded), taught=len(cg.taught),
+            coverage=round(cg.coverage, 4), coverage_percent=round(cg.coverage * 100),
+            uncovered=[S.CurriculumSkill(id=s, **eng.skills[s], postings=cg.demanded[s],
+                                         demand=round(cg.demanded[s] / n, 4),
+                                         demand_percent=round(cg.demanded[s] / n * 100),
+                                         careers=list(cg.demanded_by[s]))
+                       for s in cg.uncovered],
+            not_asked=[S.TaughtSkill(id=s, **eng.skills[s], courses=list(codes))
+                       for s, codes in cg.not_asked],
+            per_career=[S.CareerCoverageOut(career=c.career, posting_count=c.posting_count,
+                                            demanded=c.demanded, taught=c.taught,
+                                            coverage=round(c.coverage, 4),
+                                            coverage_percent=round(c.coverage * 100))
+                        for c in cg.per_career],
+            sample_note=sample_note(eng),
+            validation=validation(eng))
 
     return app
 

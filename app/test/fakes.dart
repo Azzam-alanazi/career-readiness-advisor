@@ -1,3 +1,5 @@
+import 'package:career_readiness/features/curriculum/data/curriculum_repository.dart';
+import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart';
 import 'package:career_readiness/features/gap/data/gap_repository.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
@@ -188,6 +190,149 @@ const recsJson = <String, dynamic>{
   ],
   'validation': validationJson,
 };
+
+// The department view over the two careers above: 11 postings, 6 and 5.
+// Business Analyst asks for SK02, SK04, SK05, SK07 and the catalog teaches the
+// first two; Software Developer asks for SK17, SK25, SK29 and only SK17 is taught.
+const _functionalSpecs = <String, dynamic>{
+  'id': 'SK05',
+  'en': 'Functional specifications',
+  'ar': 'المواصفات الوظيفية',
+  'category': 'business_analysis',
+};
+
+const _workshops = <String, dynamic>{
+  'id': 'SK07',
+  'en': 'Workshop facilitation',
+  'ar': 'تيسير ورش العمل',
+  'category': 'business_analysis',
+};
+
+const _networks = <String, dynamic>{
+  'id': 'SK60',
+  'en': 'Network administration',
+  'ar': 'إدارة الشبكات',
+  'category': 'infrastructure',
+  'courses': ['CIT 201', 'CIT 202'],
+};
+
+const _perCareerJson = <Map<String, dynamic>>[
+  {
+    'career': 'Business Analyst',
+    'posting_count': 6,
+    'demanded': 4,
+    'taught': 2,
+    'coverage': 0.5,
+    'coverage_percent': 50,
+  },
+  {
+    'career': 'Software Developer',
+    'posting_count': 5,
+    'demanded': 3,
+    'taught': 1,
+    'coverage': 0.3333,
+    'coverage_percent': 33,
+  },
+];
+
+const curriculumAllJson = <String, dynamic>{
+  'career': null,
+  'posting_count': 11,
+  'min_demand': 0.15,
+  'demanded': 7,
+  'taught': 3,
+  'coverage': 0.4286,
+  'coverage_percent': 43,
+  'uncovered': [
+    {
+      ..._functionalSpecs,
+      'postings': 5,
+      'demand': 0.4545,
+      'demand_percent': 45,
+      'careers': ['Business Analyst'],
+    },
+    {
+      'id': 'SK25',
+      'en': 'Python programming',
+      'ar': 'برمجة بايثون',
+      'category': 'software_development',
+      'postings': 4,
+      'demand': 0.3636,
+      'demand_percent': 36,
+      'careers': ['Software Developer'],
+    },
+    {
+      ..._workshops,
+      'postings': 2,
+      'demand': 0.1818,
+      'demand_percent': 18,
+      'careers': ['Business Analyst'],
+    },
+    {
+      'id': 'SK29',
+      'en': 'JavaScript',
+      'ar': 'جافاسكريبت',
+      'category': 'software_development',
+      'postings': 1,
+      'demand': 0.0909,
+      'demand_percent': 9,
+      'careers': ['Software Developer'],
+    },
+  ],
+  'not_asked': [_networks],
+  'per_career': _perCareerJson,
+  'sample_note': 'Based on 11 job postings, 5 to 6 per career.',
+  'validation': validationJson,
+};
+
+const curriculumAnalystJson = <String, dynamic>{
+  'career': 'Business Analyst',
+  'posting_count': 6,
+  'min_demand': 0.15,
+  'demanded': 4,
+  'taught': 2,
+  'coverage': 0.5,
+  'coverage_percent': 50,
+  'uncovered': [
+    {
+      ..._functionalSpecs,
+      'postings': 5,
+      'demand': 0.8333,
+      'demand_percent': 83,
+      'careers': ['Business Analyst'],
+    },
+    {
+      ..._workshops,
+      'postings': 2,
+      'demand': 0.3333,
+      'demand_percent': 33,
+      'careers': ['Business Analyst'],
+    },
+  ],
+  'not_asked': [
+    {
+      'id': 'SK17',
+      'en': 'SQL',
+      'ar': 'لغة الاستعلام الهيكلية SQL',
+      'category': 'data',
+      'courses': ['IS 230'],
+    },
+    _networks,
+  ],
+  'per_career': _perCareerJson,
+  'sample_note': 'Based on 11 job postings, 5 to 6 per career.',
+  'validation': validationJson,
+};
+
+class FakeCurriculumRepository implements CurriculumRepository {
+  final requested = <String?>[];
+
+  @override
+  Future<CurriculumGap> fetch(String? career) async {
+    requested.add(career);
+    return CurriculumGap.fromJson(career == null ? curriculumAllJson : curriculumAnalystJson);
+  }
+}
 
 class FakeCatalogRepository implements CatalogRepository {
   Object? failWith;

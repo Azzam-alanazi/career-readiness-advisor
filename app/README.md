@@ -1,8 +1,10 @@
 # Career Readiness — Flutter app (Phase 4)
 
-Android app over the FastAPI backend in `../backend/`: two-step onboarding
-(completed courses, then any skills from outside them), a readiness report, and
-suggested courses, in English and Arabic.
+Android app over the FastAPI backend in `../backend/`, in English and Arabic.
+Two tabs serve two audiences. The student tab has two-step onboarding
+(completed courses, then any skills from outside them), a readiness report and
+suggested courses. The department tab has the curriculum-gap view: the course
+catalog against what the job postings ask for.
 
 ## What the numbers are — read this first
 
@@ -20,6 +22,11 @@ Skills a student reports from outside coursework are shown apart from those
 their courses teach. Whenever the two figures differ, readiness from the courses
 alone appears beside the combined figure. The skills step says once, briefly,
 that these skills are self-reported and unverified.
+
+The department view opens with its own caveat, using the real posting counts:
+27 postings, 5 or 6 per career. At that size its gaps are indicative, and they
+should not drive curriculum decisions on their own. The quality flag follows,
+because the demand side comes from the same matcher.
 
 ## Run
 
@@ -62,12 +69,14 @@ flutter gen-l10n
 ```
 lib/
   main.dart, app.dart
+  home_shell.dart       the two tabs, student and department, each with its own navigation stack
   core/                 api client, locale, formatting, shared widgets
   features/
     onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
     profile/            profile draft and saved profile, current-profile state
     gap/                readiness report and screen
     recommendations/    suggested courses by source, and the screen
+    curriculum/         the department's curriculum-gap view
       each one:  data/  domain/  presentation/
   l10n/                 app_en.arb, app_ar.arb, and the generated classes
 ```
@@ -100,7 +109,7 @@ postings.
 flutter test
 ```
 
-29 tests, no device needed:
+33 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -124,11 +133,18 @@ flutter test
 - **university and online courses** — each card says whether it counts toward
   the degree, in both languages; the university course comes first; a gap with
   neither is listed, not dropped; a web address stays left to right in Arabic
+- **the department view** — its own tab, fetched only when opened, with no step
+  of the student flow behind it; switching tabs keeps the student where they
+  were. The sample-size caveat, with the real counts, comes above every figure.
+  Uncovered skills are ranked by demand, with the careers asking. Coverage is
+  shown for the scope and for each career. One career can be chosen. Arabic and
+  right-to-left layout are checked too
 
 The widget tests run against fakes shaped like the backend's JSON. To check the
 models against the real, running backend instead — the spec's definition-of-done
 scenario, Business Analyst with six courses, then the same with two
-self-reported skills — start the backend and run:
+self-reported skills, then the department's curriculum view for every career —
+start the backend and run:
 
 ```bash
 dart run tool/contract_check.dart

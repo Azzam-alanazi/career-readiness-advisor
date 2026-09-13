@@ -20,6 +20,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
@@ -203,6 +204,83 @@ Future<void> main(List<String> args) async {
     check(selfRecs.recommendations.every((r) => r.closes.every((s) => s.id != claimed.id)) &&
             selfRecs.uncovered.every((s) => s.id != claimed.id),
         'nothing is suggested for a skill the student already reports');
+
+    // The department's view: the catalog against every posting, for one career
+    // or all of them, from the same profiles and course labels.
+    Future<CurriculumGap> curriculum([String? career]) async =>
+        CurriculumGap.fromJson(await get(career == null
+            ? '/curriculum/gap'
+            : '/curriculum/gap?career=${Uri.encodeComponent(career)}') as Map<String, dynamic>);
+    bool byDemand(List<CurriculumSkill> s) =>
+        [for (var i = 1; i < s.length; i++) s[i].demand <= s[i - 1].demand].every((ok) => ok);
+    String sortedCodes(Iterable<String> cs) => (cs.toList()..sort()).join(',');
+
+    final whole = await curriculum();
+    final totalPostings = careers.fold<int>(0, (n, c) => n + c.postingCount);
+    print('\ncurriculum');
+    check(whole.career == null && whole.postingCount == totalPostings,
+        'every career: ${whole.postingCount} postings, the whole sample');
+    check(whole.perCareer.map((c) => '${c.career}/${c.postingCount}').join(',') ==
+            careers.map((c) => '${c.name}/${c.postingCount}').join(','),
+        'coverage reported for each of the ${careers.length} careers, with its postings');
+    check(whole.coveragePercent == (whole.taught / whole.demanded * 100).round(),
+        'coverage ${whole.coveragePercent}%: ${whole.taught} of ${whole.demanded} '
+        'demanded skills taught');
+    check(byDemand(whole.uncovered) &&
+            whole.uncovered.every((s) => s.demandPercent == (s.postings / totalPostings * 100).round()),
+        '${whole.uncovered.length} uncovered, ranked by their share of all postings; top five: '
+        '${whole.uncovered.take(5).map((s) => '${s.en} ${s.demandPercent}%').join(', ')}');
+    final teaching = <String, List<String>>{};
+    for (final c in courses) {
+      for (final s in c.skills) {
+        teaching.putIfAbsent(s, () => []).add(c.code);
+      }
+    }
+    check(whole.uncovered.every((s) => !teaching.containsKey(s.id)),
+        'no uncovered skill is taught by any course');
+    check(
+        whole.notAsked
+            .every((s) => sortedCodes(teaching[s.id] ?? const []) == sortedCodes(s.courses)),
+        '${whole.notAsked.length} taught skills no posting asks for, each with its courses');
+
+    final unionOfCareers = <String>{};
+    for (final career in careers) {
+      final one = await curriculum(career.name);
+      final row = whole.perCareer.firstWhere((c) => c.career == career.name);
+      unionOfCareers.addAll(one.uncovered.map((s) => s.id));
+      check(one.career == career.name && one.postingCount == career.postingCount &&
+              one.coverage == row.coverage && one.demanded == row.demanded &&
+              byDemand(one.uncovered),
+          '${career.name}: ${one.coveragePercent}% (${one.taught} of ${one.demanded}), '
+          '${one.uncovered.length} uncovered, ${one.postingCount} postings');
+    }
+    check(unionOfCareers.length == whole.uncovered.length &&
+            whole.uncovered.every((s) => unionOfCareers.contains(s.id)),
+        'every-career uncovered = the union of each career\'s');
+
+    final everyCourse = Profile.fromJson(decode(await client.post(
+      Uri.parse('$base/profiles'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode(ProfileDraft(
+        career: 'Business Analyst',
+        completedCourses: [for (final c in courses) c.code],
+      ).toJson()),
+    )) as Map<String, dynamic>);
+    final stillMissing = {
+      for (final s in GapReport.fromJson(
+              await get('/profiles/${everyCourse.id}/gap') as Map<String, dynamic>)
+          .missing)
+        s.id,
+    };
+    final analyst = {for (final s in (await curriculum('Business Analyst')).uncovered) s.id};
+    check(stillMissing.length == analyst.length && stillMissing.containsAll(analyst),
+        'Business Analyst uncovered = what a student with all ${courses.length} courses '
+        'still misses (${analyst.length})');
+
+    final unknownCareer = await client.get(Uri.parse('$base/curriculum/gap?career=Astronaut'));
+    check(unknownCareer.statusCode == 422,
+        'an unknown career is refused (HTTP ${unknownCareer.statusCode})');
+    check(!whole.validation.gatePassed, 'quality flag present on the curriculum view too');
   } on Object catch (e) {
     print('\nFAIL  $e');
     failures++;

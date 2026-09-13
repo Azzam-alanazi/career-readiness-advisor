@@ -243,6 +243,101 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Try again';
 
   @override
+  String get navStudent => 'Student';
+
+  @override
+  String get navDepartment => 'Department';
+
+  @override
+  String get curriculumTitle => 'Curriculum gaps';
+
+  @override
+  String get curriculumIntro =>
+      'For the department: how the course catalog lines up with what job postings ask for.';
+
+  @override
+  String postingsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count job postings',
+      one: '1 job posting',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String curriculumSampleTitle(String postings) {
+    return 'Indicative only: $postings';
+  }
+
+  @override
+  String curriculumSampleBody(String postings, int min, int max) {
+    return 'These gaps come from $postings, $min to $max per career. At that size, a skill one or two postings mention can appear or disappear with the next few. Treat each gap as a question worth looking into, not as grounds on its own for changing the curriculum.';
+  }
+
+  @override
+  String get curriculumAllCareers => 'All careers';
+
+  @override
+  String curriculumCoverageFor(String scope) {
+    return 'Coverage: $scope';
+  }
+
+  @override
+  String curriculumCoverageLine(int taught, int demanded, String postings) {
+    return '$taught of the $demanded skills that $postings ask for are taught by at least one course.';
+  }
+
+  @override
+  String get curriculumCoverageCounting =>
+      'Each skill counts once, however many postings ask for it.';
+
+  @override
+  String curriculumUncoveredTitle(int count) {
+    return 'Asked for, not taught ($count)';
+  }
+
+  @override
+  String get curriculumUncoveredNote =>
+      'Skills the postings ask for that no course in the catalog teaches, most in demand first.';
+
+  @override
+  String get curriculumNoneUncovered =>
+      'Every skill the postings ask for is taught by at least one course.';
+
+  @override
+  String curriculumAskedIn(String careers) {
+    return 'Asked for in: $careers';
+  }
+
+  @override
+  String get curriculumByCareerTitle => 'Coverage by career';
+
+  @override
+  String curriculumCareerLine(int taught, int demanded, String postings) {
+    return '$taught of $demanded demanded skills taught · $postings';
+  }
+
+  @override
+  String curriculumNotAskedTitle(int count) {
+    return 'Taught, not asked for ($count)';
+  }
+
+  @override
+  String get curriculumNotAskedNote =>
+      'Skills the catalog teaches that no posting in this view asks for. Not asked for is not the same as not needed: a sample this small misses a lot.';
+
+  @override
+  String get curriculumNoneNotAsked =>
+      'Every skill the catalog teaches is asked for by at least one posting.';
+
+  @override
+  String curriculumTaughtIn(String courses) {
+    return 'Taught in: $courses';
+  }
+
+  @override
   String get careerBusinessAnalyst => 'Business Analyst';
 
   @override

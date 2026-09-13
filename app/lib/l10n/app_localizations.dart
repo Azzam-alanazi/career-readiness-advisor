@@ -482,6 +482,132 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get retry;
 
+  /// No description provided for @navStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get navStudent;
+
+  /// No description provided for @navDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get navDepartment;
+
+  /// No description provided for @curriculumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Curriculum gaps'**
+  String get curriculumTitle;
+
+  /// No description provided for @curriculumIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'For the department: how the course catalog lines up with what job postings ask for.'**
+  String get curriculumIntro;
+
+  /// No description provided for @postingsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 job posting} other{{count} job postings}}'**
+  String postingsCount(int count);
+
+  /// No description provided for @curriculumSampleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicative only: {postings}'**
+  String curriculumSampleTitle(String postings);
+
+  /// No description provided for @curriculumSampleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These gaps come from {postings}, {min} to {max} per career. At that size, a skill one or two postings mention can appear or disappear with the next few. Treat each gap as a question worth looking into, not as grounds on its own for changing the curriculum.'**
+  String curriculumSampleBody(String postings, int min, int max);
+
+  /// No description provided for @curriculumAllCareers.
+  ///
+  /// In en, this message translates to:
+  /// **'All careers'**
+  String get curriculumAllCareers;
+
+  /// No description provided for @curriculumCoverageFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage: {scope}'**
+  String curriculumCoverageFor(String scope);
+
+  /// No description provided for @curriculumCoverageLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{taught} of the {demanded} skills that {postings} ask for are taught by at least one course.'**
+  String curriculumCoverageLine(int taught, int demanded, String postings);
+
+  /// No description provided for @curriculumCoverageCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Each skill counts once, however many postings ask for it.'**
+  String get curriculumCoverageCounting;
+
+  /// No description provided for @curriculumUncoveredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for, not taught ({count})'**
+  String curriculumUncoveredTitle(int count);
+
+  /// No description provided for @curriculumUncoveredNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills the postings ask for that no course in the catalog teaches, most in demand first.'**
+  String get curriculumUncoveredNote;
+
+  /// No description provided for @curriculumNoneUncovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Every skill the postings ask for is taught by at least one course.'**
+  String get curriculumNoneUncovered;
+
+  /// No description provided for @curriculumAskedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for in: {careers}'**
+  String curriculumAskedIn(String careers);
+
+  /// No description provided for @curriculumByCareerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage by career'**
+  String get curriculumByCareerTitle;
+
+  /// No description provided for @curriculumCareerLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{taught} of {demanded} demanded skills taught · {postings}'**
+  String curriculumCareerLine(int taught, int demanded, String postings);
+
+  /// No description provided for @curriculumNotAskedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Taught, not asked for ({count})'**
+  String curriculumNotAskedTitle(int count);
+
+  /// No description provided for @curriculumNotAskedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills the catalog teaches that no posting in this view asks for. Not asked for is not the same as not needed: a sample this small misses a lot.'**
+  String get curriculumNotAskedNote;
+
+  /// No description provided for @curriculumNoneNotAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Every skill the catalog teaches is asked for by at least one posting.'**
+  String get curriculumNoneNotAsked;
+
+  /// No description provided for @curriculumTaughtIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Taught in: {courses}'**
+  String curriculumTaughtIn(String courses);
+
   /// No description provided for @careerBusinessAnalyst.
   ///
   /// In en, this message translates to:

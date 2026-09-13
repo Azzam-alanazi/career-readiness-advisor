@@ -142,6 +142,59 @@ class RecommendationsOut(BaseModel):
     validation: ValidationInfo
 
 
+class CurriculumSkill(BaseModel):
+    """A skill the postings ask for that no catalog course teaches."""
+    id: str
+    en: str
+    ar: str
+    category: str
+    postings: int = Field(description="Postings in scope that name it")
+    demand: float = Field(description="Share of the postings in scope that name it")
+    demand_percent: int
+    careers: list[str] = Field(description="Careers in scope that count it as demanded")
+
+
+class TaughtSkill(BaseModel):
+    """A skill the catalog teaches that no posting in scope asks for."""
+    id: str
+    en: str
+    ar: str
+    category: str
+    courses: list[str] = Field(description="Codes of the catalog courses teaching it")
+
+
+class CareerCoverageOut(BaseModel):
+    career: str
+    posting_count: int
+    demanded: int = Field(description="Skills the career's postings ask for")
+    taught: int = Field(description="Of those, the ones at least one course teaches")
+    coverage: float
+    coverage_percent: int
+
+
+class CurriculumGapOut(BaseModel):
+    """The department's view: the catalog against the postings, not one student."""
+    career: str | None = Field(description="The career asked for; null for every career")
+    posting_count: int = Field(description="Job postings behind this view")
+    min_demand: float = Field(description=(
+        "Share of a career's postings a skill needs to count as demanded: the same "
+        "threshold a student's gap uses"))
+    demanded: int = Field(description="Skills the postings in scope ask for")
+    taught: int = Field(description="Of those, the ones at least one course teaches")
+    coverage: float = Field(description=(
+        "taught / demanded. Each skill counts once, however many postings name it"))
+    coverage_percent: int
+    uncovered: list[CurriculumSkill] = Field(
+        description="Demanded skills no course teaches, most in demand first")
+    not_asked: list[TaughtSkill] = Field(
+        description="Skills the catalog teaches that no posting in scope names, in "
+                    "taxonomy order")
+    per_career: list[CareerCoverageOut] = Field(
+        description="Every career's coverage, whatever the scope")
+    sample_note: str = Field(description="How few postings these gaps rest on")
+    validation: ValidationInfo
+
+
 class HealthOut(BaseModel):
     status: str
     model: str

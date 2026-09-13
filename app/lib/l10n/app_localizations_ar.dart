@@ -243,6 +243,105 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'حاول مرة أخرى';
 
   @override
+  String get navStudent => 'الطالب';
+
+  @override
+  String get navDepartment => 'القسم';
+
+  @override
+  String get curriculumTitle => 'فجوات المنهج';
+
+  @override
+  String get curriculumIntro =>
+      'للقسم الأكاديمي: مدى توافق دليل المقررات مع ما تطلبه إعلانات الوظائف.';
+
+  @override
+  String postingsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count إعلان',
+      many: '$count إعلانًا',
+      few: '$count إعلانات',
+      two: 'إعلانان',
+      one: 'إعلان واحد',
+      zero: 'لا إعلانات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String curriculumSampleTitle(String postings) {
+    return 'مؤشرات أولية فقط: $postings';
+  }
+
+  @override
+  String curriculumSampleBody(String postings, int min, int max) {
+    return 'تستند هذه الفجوات إلى $postings، بين $min و$max لكل مهنة. وبهذا الحجم قد تظهر مهارة يذكرها إعلان أو إعلانان أو تختفي مع الإعلانات القليلة التالية. تعامل مع كل فجوة كسؤال يستحق البحث، لا كسبب كافٍ وحده لتغيير المنهج.';
+  }
+
+  @override
+  String get curriculumAllCareers => 'جميع المهن';
+
+  @override
+  String curriculumCoverageFor(String scope) {
+    return 'التغطية: $scope';
+  }
+
+  @override
+  String curriculumCoverageLine(int taught, int demanded, String postings) {
+    return '$taught من أصل $demanded مهارة تطلبها $postings يدرّسها مقرر واحد على الأقل.';
+  }
+
+  @override
+  String get curriculumCoverageCounting =>
+      'تُحتسب كل مهارة مرة واحدة مهما كان عدد الإعلانات التي تطلبها.';
+
+  @override
+  String curriculumUncoveredTitle(int count) {
+    return 'مطلوبة ولا يدرّسها أي مقرر ($count)';
+  }
+
+  @override
+  String get curriculumUncoveredNote =>
+      'مهارات تطلبها الإعلانات ولا يدرّسها أي مقرر في الدليل، الأكثر طلبًا أولًا.';
+
+  @override
+  String get curriculumNoneUncovered =>
+      'كل مهارة تطلبها الإعلانات يدرّسها مقرر واحد على الأقل.';
+
+  @override
+  String curriculumAskedIn(String careers) {
+    return 'مطلوبة في: $careers';
+  }
+
+  @override
+  String get curriculumByCareerTitle => 'التغطية حسب المهنة';
+
+  @override
+  String curriculumCareerLine(int taught, int demanded, String postings) {
+    return '$taught من $demanded مهارة مطلوبة تُدرَّس · $postings';
+  }
+
+  @override
+  String curriculumNotAskedTitle(int count) {
+    return 'يدرّسها المنهج ولا تطلبها الإعلانات ($count)';
+  }
+
+  @override
+  String get curriculumNotAskedNote =>
+      'مهارات يدرّسها الدليل ولا يطلبها أي إعلان في هذا العرض. وعدم طلبها لا يعني عدم الحاجة إليها، فعيّنة بهذا الحجم تغفل الكثير.';
+
+  @override
+  String get curriculumNoneNotAsked =>
+      'كل مهارة يدرّسها الدليل يطلبها إعلان واحد على الأقل.';
+
+  @override
+  String curriculumTaughtIn(String courses) {
+    return 'تُدرَّس في: $courses';
+  }
+
+  @override
   String get careerBusinessAnalyst => 'محلل أعمال';
 
   @override

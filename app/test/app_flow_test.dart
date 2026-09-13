@@ -1,5 +1,7 @@
 import 'package:career_readiness/app.dart';
 import 'package:career_readiness/core/api/api_client.dart';
+import 'package:career_readiness/features/curriculum/data/curriculum_repository.dart';
+import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
 import 'package:career_readiness/features/gap/data/gap_repository.dart';
 import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
@@ -18,6 +20,7 @@ class _World {
   final profiles = FakeProfileRepository();
   final gap = FakeGapRepository();
   final recommendations = FakeRecommendationsRepository();
+  final curriculum = FakeCurriculumRepository();
 }
 
 Future<void> _pumpApp(WidgetTester tester, _World w) async {
@@ -33,6 +36,7 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
       profileRepositoryProvider.overrideWithValue(w.profiles),
       gapRepositoryProvider.overrideWithValue(w.gap),
       recommendationsRepositoryProvider.overrideWithValue(w.recommendations),
+      curriculumRepositoryProvider.overrideWithValue(w.curriculum),
     ],
     child: const CareerReadinessApp(),
   ));
@@ -316,5 +320,130 @@ void main() {
     await tester.tap(button('Next: other skills'));
     await tester.pumpAndSettle();
     expect(find.text('Selected: 0'), findsOneWidget);
+  });
+
+  testWidgets('Department: its own tab, the sample caveat first, gaps ranked by demand',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    expect(w.curriculum.requested, isEmpty, reason: 'nothing is fetched until the tab opens');
+
+    await tester.tap(find.text('Department'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CurriculumScreen), findsOneWidget);
+    expect(find.text('Curriculum gaps'), findsOneWidget);
+    expect(w.curriculum.requested, [null]);
+
+    // The sample-size caveat, with the real counts, above every figure.
+    const caveat = 'Indicative only: 11 job postings';
+    expect(find.text(caveat), findsOneWidget);
+    expect(find.textContaining('11 job postings, 5 to 6 per career'), findsOneWidget);
+    expect(find.textContaining('not as grounds on its own for changing the curriculum'),
+        findsOneWidget);
+    expect(tester.getTopLeft(find.text(caveat)).dy,
+        lessThan(tester.getTopLeft(find.text('43%')).dy));
+    expect(find.text('Estimates, not validated results'), findsOneWidget);
+
+    // Coverage for every career together, counted in skills.
+    expect(find.text('Coverage: All careers'), findsOneWidget);
+    expect(find.text('43%'), findsOneWidget);
+    expect(
+        find.text('3 of the 7 skills that 11 job postings ask for '
+            'are taught by at least one course.'),
+        findsOneWidget);
+
+    // What no course teaches, most in demand first, with the careers asking.
+    expect(find.text('Asked for, not taught (4)'), findsOneWidget);
+    const ranked = [
+      'Functional specifications',
+      'Python programming',
+      'Workshop facilitation',
+      'JavaScript',
+    ];
+    for (var i = 1; i < ranked.length; i++) {
+      expect(tester.getTopLeft(find.text(ranked[i - 1])).dy,
+          lessThan(tester.getTopLeft(find.text(ranked[i])).dy));
+    }
+    expect(find.text('in 45% of postings'), findsOneWidget);
+    expect(find.text('Asked for in: Business Analyst'), findsNWidgets(2));
+    expect(find.text('Asked for in: Software Developer'), findsNWidgets(2));
+
+    // Coverage per career, and what is taught that no posting asks for.
+    expect(find.text('2 of 4 demanded skills taught · 6 job postings'), findsOneWidget);
+    expect(find.text('1 of 3 demanded skills taught · 5 job postings'), findsOneWidget);
+    expect(find.text('33%'), findsOneWidget);
+    expect(find.text('Taught, not asked for (1)'), findsOneWidget);
+    expect(find.text('Network administration'), findsOneWidget);
+    expect(find.text('Taught in: CIT 201 · CIT 202'), findsOneWidget);
+
+    // One career.
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Business Analyst'));
+    await tester.pumpAndSettle();
+    expect(w.curriculum.requested, [null, 'Business Analyst']);
+    expect(find.text('Coverage: Business Analyst'), findsOneWidget);
+    expect(find.text('50%'), findsNWidgets(2), reason: 'the card and the career row');
+    expect(find.text('Asked for, not taught (2)'), findsOneWidget);
+    expect(find.text('in 83% of postings'), findsOneWidget);
+    expect(find.textContaining('Asked for in:'), findsNothing,
+        reason: 'with one career chosen, which career asks goes without saying');
+    expect(find.text('Taught in: IS 230'), findsOneWidget);
+    expect(find.text(caveat), findsOneWidget, reason: 'the caveat stays for every scope');
+  });
+
+  testWidgets('The department tab is apart from onboarding, and each keeps its place',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+
+    await tester.tap(find.text('Business Analyst'));
+    await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SkillsScreen), findsOneWidget);
+
+    await tester.tap(find.text('Department'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CurriculumScreen), findsOneWidget);
+    expect(find.byType(SkillsScreen), findsNothing);
+    expect(find.byType(BackButton), findsNothing, reason: 'not a step in the student flow');
+
+    await tester.tap(find.text('Student'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SkillsScreen), findsOneWidget, reason: 'the student is where they left off');
+    expect(find.byType(CurriculumScreen), findsNothing);
+  });
+
+  testWidgets('Department, in Arabic: right to left, the caveat and the gaps in Arabic',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+
+    await tester.tap(find.text('Department'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('العربية'));
+    await tester.pumpAndSettle();
+
+    expect(Directionality.of(tester.element(find.byType(CurriculumScreen))), TextDirection.rtl);
+    expect(find.text('فجوات المنهج'), findsOneWidget);
+    expect(find.text('القسم'), findsOneWidget);
+    expect(find.text('الطالب'), findsOneWidget);
+
+    const caveat = 'مؤشرات أولية فقط: 11 إعلانًا';
+    expect(find.text(caveat), findsOneWidget);
+    expect(find.textContaining('لا كسبب كافٍ وحده لتغيير المنهج'), findsOneWidget);
+    // Right to left by layout: the caveat's icon sits to the right of its title.
+    expect(tester.getCenter(find.byIcon(Icons.poll_outlined)).dx,
+        greaterThan(tester.getCenter(find.text(caveat)).dx));
+
+    expect(find.text('جميع المهن'), findsOneWidget);
+    expect(find.text('المواصفات الوظيفية'), findsOneWidget);
+    expect(find.text('Functional specifications'), findsNothing);
+    expect(find.text('مطلوبة في: محلل أعمال'), findsNWidgets(2));
+    expect(find.text('6 إعلانات'), findsNothing, reason: 'the count sits inside a sentence');
+    expect(find.textContaining('· 6 إعلانات'), findsOneWidget);
+    // Course codes stay as the catalog writes them.
+    expect(find.text('تُدرَّس في: CIT 201 · CIT 202'), findsOneWidget);
+    expect(find.text('تقديرات، وليست نتائج موثّقة'), findsOneWidget);
   });
 }

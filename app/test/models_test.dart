@@ -1,3 +1,4 @@
+import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
@@ -84,6 +85,24 @@ void main() {
       }),
       throwsA(anything),
     );
+  });
+
+  test('a curriculum view parses, for every career and for one', () {
+    final all = CurriculumGap.fromJson(curriculumAllJson);
+    expect(all.career, isNull);
+    expect((all.postingCount, all.demanded, all.taught, all.coveragePercent), (11, 7, 3, 43));
+    expect(all.uncovered.map((s) => s.id), ['SK05', 'SK25', 'SK07', 'SK29']);
+    expect((all.uncovered.first.postings, all.uncovered.first.careers.single),
+        (5, 'Business Analyst'));
+    expect(all.uncovered.first.nameFor('ar'), 'المواصفات الوظيفية');
+    expect(all.notAsked.single.courses, ['CIT 201', 'CIT 202']);
+    expect(all.perCareer.map((c) => (c.career, c.postingCount, c.coveragePercent)),
+        [('Business Analyst', 6, 50), ('Software Developer', 5, 33)]);
+    expect(all.validation.gatePassed, isFalse);
+
+    expect(CurriculumGap.fromJson(curriculumAnalystJson).career, 'Business Analyst');
+    // A whole-number coverage arrives as an int.
+    expect(CurriculumGap.fromJson({...curriculumAllJson, 'coverage': 1}).coverage, 1.0);
   });
 
   test('a profile draft serialises to the backend field names', () {

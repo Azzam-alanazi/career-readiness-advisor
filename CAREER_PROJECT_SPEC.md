@@ -308,8 +308,49 @@ app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not
 launched the app on a device or an emulator.
 
+## Department view — curriculum gaps
+17. For one career or across all five: the skills postings demand that no
+    course teaches, ranked by demand; the skills the curriculum teaches that no
+    posting asks for; and coverage, the share of demanded skills taught
+18. Computed from the served course mapping (the hand labels) and the career
+    profiles already built from the 27 postings; no new data
+19. A separate screen in the app's main navigation, not part of student
+    onboarding: a different audience
+20. The sample-size caveat on that screen: at n=27 postings the gaps are
+    indicative and should not drive curriculum decisions on their own
+21. Bilingual, with working RTL
+
+### Status: BUILT 2026-09-13 — `GET /curriculum/gap`, `app/lib/features/curriculum/`
+
+Items 17–21 are implemented. A skill counts as demanded exactly when a student's
+gap would count it: at the engine's `min_demand` (0.15) in some career in scope.
+With 5 or 6 postings per career, that means any skill a single posting names. No
+skill a posting names falls below the threshold. Across careers the postings are
+pooled, so a skill's weight is its share of all 27. Coverage counts skills, not
+demand: each demanded skill counts once. For one career, the uncovered skills
+are exactly what a student who took every catalog course would still be missing.
+
+On the real data, the catalog teaches 33 of the 76 skills the postings ask for:
+43% coverage, from 37% (IT Support Specialist) to 50% (Data Analyst) by career.
+The 43 uncovered skills are the same 43 that `online_courses.csv` fills. The most
+demanded are CI/CD (10 of 27 postings), Communication (9), and Stakeholder
+management, User acceptance testing and Quality assurance (7 each). Six taught
+skills are named by no posting. Most are generic where the postings are
+specific: Programming, Data modelling and Database management are taught, while
+postings name particular languages and tools. Figures and the comparison with
+the posting hand labels are in `skillgap/CHANGELOG.md`.
+
+The app reaches the view from a bottom navigation bar, beside the student flow
+and never inside it. Each tab keeps its own navigation stack, so opening the
+department view never interrupts a half-finished onboarding. The screen opens
+with the sample-size caveat, using the real posting counts in the reader's
+language, in the same card style as the student-facing quality flag. The quality
+flag follows, because the demand side is extraction from a matcher that failed
+its gate. Verified by 80 backend tests, 33 app tests, and the contract check
+against the live backend.
+
 ## Conventions
-- Feature-first: `lib/features/{onboarding,profile,gap,recommendations}/`
+- Feature-first: `lib/features/{onboarding,profile,gap,recommendations,curriculum}/`
 - Each feature: `data/`, `domain/`, `presentation/`
 - Models via `freezed` + `json_serializable`
 - No business logic in widgets

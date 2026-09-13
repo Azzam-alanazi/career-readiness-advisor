@@ -25,6 +25,11 @@ they report holding from outside coursework. The two are kept apart all the way
 to the response, so the academic-record claim is never blurred with an
 unverified one.
 
+The department's curriculum view reads the same two things: the served course
+mapping and the career profiles. A skill counts as demanded there exactly when a
+student's gap would count it, so the two views can never disagree about what
+the postings ask for.
+
 Chunking matches validate.py exactly: extraction runs on posting_text as stored,
 " | " separators included, because that is the text the matching parameters were
 measured on. Chunking it differently would apply the parameters outside the
@@ -34,6 +39,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import inspect
 import json
 import sys
 from dataclasses import dataclass
@@ -52,6 +58,10 @@ from .online import OnlineCatalog, OnlineCourse, load_online_courses  # noqa: E4
 
 # Bump when the cache layout changes, so old files are ignored rather than misread.
 CACHE_VERSION = 1
+
+# The engine's own default, read rather than restated, so the curriculum view
+# counts a skill as demanded exactly when a student's gap does.
+MIN_DEMAND: float = inspect.signature(sg.analyze_gap).parameters["min_demand"].default
 
 
 @dataclass(frozen=True)
@@ -96,6 +106,36 @@ class SourcedGap:
         # The academic record wins: a skill a completed course teaches counts as
         # "courses" even when the student also reported it.
         return "courses" if skill_id in self.course_skills else "self_reported"
+
+
+@dataclass(frozen=True)
+class CareerCoverage:
+    """How many of one career's demanded skills some catalog course teaches."""
+    career: str
+    posting_count: int
+    demanded: int
+    taught: int
+
+    @property
+    def coverage(self) -> float:
+        return self.taught / self.demanded if self.demanded else 0.0
+
+
+@dataclass(frozen=True)
+class CurriculumGap:
+    """The catalog against the postings, for one career or every career."""
+    careers: tuple[str, ...]                      # the scope
+    posting_count: int                            # postings in the scope
+    demanded: dict[str, int]                      # demanded skill -> postings in scope naming it
+    demanded_by: dict[str, tuple[str, ...]]       # demanded skill -> careers counting it
+    taught: frozenset[str]                        # the demanded skills some course teaches
+    uncovered: list[str]                          # demanded, taught by no course; by demand
+    not_asked: list[tuple[str, tuple[str, ...]]]  # taught, named by no posting in scope; courses
+    per_career: list[CareerCoverage]              # every career, whatever the scope
+
+    @property
+    def coverage(self) -> float:
+        return len(self.taught) / len(self.demanded) if self.demanded else 0.0
 
 
 class SkillNames:
@@ -188,6 +228,62 @@ class EngineState:
         if limit is not None:
             university, online = university[:limit], online[:limit]
         return Suggestions(university, online, uncovered)
+
+    def demanded(self, career: str) -> dict[str, float]:
+        """A career's demanded skills, by demand: exactly those a student's gap counts."""
+        return dict(self.gap(career, []).missing)
+
+    def taught_by(self) -> dict[str, tuple[str, ...]]:
+        """Every skill some catalog course teaches, with those courses' codes."""
+        out: dict[str, list[str]] = {}
+        for code in sorted(self.courses):
+            for s in self.courses[code].skills:
+                out.setdefault(s, []).append(code)
+        return {s: tuple(codes) for s, codes in out.items()}
+
+    def curriculum(self, career: str | None = None) -> CurriculumGap:
+        """
+        The department's view: the catalog, as the served course mapping (the
+        hand labels), against the postings, for one career or all of them.
+
+        A skill is demanded when a student's gap would count it: at MIN_DEMAND
+        in some career in scope. Across careers the postings are pooled, so a
+        skill's weight is the share of every posting in scope that names it. A
+        taught skill is "not asked" only when no posting in scope names it at all.
+        """
+        scope = (career,) if career is not None else tuple(sorted(self.profiles))
+        taught = self.taught_by()
+        rank = {s: i for i, s in enumerate(self.skills)}
+
+        demanded_by: dict[str, list[str]] = {}
+        named: set[str] = set()
+        for c in scope:
+            named |= set(self.profiles[c].demand)
+            for s in self.demanded(c):
+                demanded_by.setdefault(s, []).append(c)
+
+        def postings_naming(skill: str) -> int:
+            # A profile's demand is count / postings, so this recovers the count.
+            return sum(round(self.profiles[c].demand.get(skill, 0.0)
+                             * self.profiles[c].posting_count) for c in scope)
+
+        demanded = {s: postings_naming(s) for s in demanded_by}
+        per_career = []
+        for c, p in sorted(self.profiles.items()):
+            d = self.demanded(c)
+            per_career.append(CareerCoverage(c, p.posting_count, len(d),
+                                             sum(s in taught for s in d)))
+        return CurriculumGap(
+            careers=scope,
+            posting_count=sum(self.profiles[c].posting_count for c in scope),
+            demanded=demanded,
+            demanded_by={s: tuple(cs) for s, cs in demanded_by.items()},
+            taught=frozenset(s for s in demanded if s in taught),
+            uncovered=sorted((s for s in demanded if s not in taught),
+                             key=lambda s: (-demanded[s], rank[s])),
+            not_asked=[(s, taught[s]) for s in sorted(taught, key=rank.__getitem__)
+                       if s not in named],
+            per_career=per_career)
 
     def validation(self) -> dict[str, Any]:
         return {

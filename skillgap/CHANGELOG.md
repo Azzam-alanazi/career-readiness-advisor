@@ -4,6 +4,92 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-13 — Department curriculum-gap view
+
+A new view for the department, not the student: the course catalog against what
+the job postings ask for, for one career or all five. It is served as `GET
+/curriculum/gap`, and the app shows it in a new Department tab. It reads only
+what was already built: the served course mapping (the hand labels) and the
+career profiles from the 27 postings.
+
+### Definitions
+
+- **Demanded:** a skill a student's gap would count, at `min_demand` 0.15 in
+  some career in scope. With 5 or 6 postings per career, that is any skill a
+  single posting names. No skill a posting names falls below the threshold.
+- **Uncovered:** demanded, and taught by no catalog course. Ranked by the share
+  of postings in scope that name it, pooled across careers. For one career, these
+  are exactly the skills a student with all 33 courses would still miss. The live
+  check confirms this for Business Analyst: 20 skills either way.
+- **Taught, not asked for:** taught by some course, and named by no posting in
+  scope.
+- **Coverage:** taught ÷ demanded, counted in skills rather than weighted by
+  demand.
+
+### Figures, from the profiles as served (extraction)
+
+| scope | postings | demanded | taught | coverage | uncovered |
+|---|---|---|---|---|---|
+| All five careers | 27 | 76 | 33 | 43% | 43 |
+| Business Analyst | 6 | 36 | 16 | 44% | 20 |
+| Data Analyst | 5 | 22 | 11 | 50% | 11 |
+| ERP Consultant | 6 | 26 | 12 | 46% | 14 |
+| IT Support Specialist | 5 | 30 | 11 | 37% | 19 |
+| Software Developer | 5 | 44 | 17 | 39% | 27 |
+
+- **Most demanded and uncovered, across all five careers:**
+  - CI/CD: 10 of 27 postings (37%)
+  - Communication: 9 (33%)
+  - Stakeholder management, User acceptance testing and Quality assurance: 7
+    each (26%)
+  - Help desk / service desk: 6 (22%)
+  - Mentoring: 5 (19%)
+- **The 43 uncovered skills** are exactly the 43 gap skills
+  `online_courses.csv` fills, as they should be.
+- **Taught, not asked for: 6 skills.**
+  - Data modelling and Database management (CIS 302, CIT 201)
+  - Programming (seven courses)
+  - JavaScript programming (CSC 304)
+  - Network administration (CIT 202)
+  - Java programming (CSC 213)
+
+  No posting names Programming, while postings do name specific languages that
+  no course teaches, by the labels: TypeScript (2 postings) and Python (1).
+
+### Against the posting hand labels
+
+The view is built from extraction, whose matcher scored F1 0.504 and failed its
+gate. 15 of the 27 postings are hand-labelled, so the labels can check the view
+only in part.
+
+- **33 of the 43 uncovered skills** are named in at least one labelled posting.
+- **The other 10 appear in no labelled posting's labels:**
+  - Mentoring (5 postings, by extraction)
+  - Accessibility, and Backup and recovery (3 each)
+  - Data migration, TypeScript programming, Backend development, and
+    Internationalization / localization (2 each)
+  - Mobile application development, Responsive web design, and IT
+    infrastructure deployment (1 each)
+
+  They may be misreads, or they may sit in the 12 unlabelled postings. This
+  check cannot tell which.
+- **Four skills the labels name, and no course teaches,** never reach the
+  extracted profiles at all:
+  - Enterprise application integration and Patch management (2 labelled
+    postings each)
+  - Remote support and Service-level management (1 each)
+- **Communication is the clearest disagreement.** 14 of the 15 labelled
+  postings name it, while extraction finds it in 9 of all 27.
+- **On the 15 labelled postings alone,** coverage would be 48% (34 of 71
+  skills), against 43% from extraction on all 27. The samples differ, so this is
+  not a like-for-like comparison.
+
+This is why the screen carries both the sample-size caveat and the quality flag.
+Backend tests: 72 → 80. App tests: 29 → 33. The contract check gains 15 checks
+on the curriculum view, all passing against the live backend.
+
+---
+
 ## 2026-09-13 — Online courses filled in: no missing skill left without a recommendation
 
 `online_courses.csv` is filled in by hand: 43 rows, one for each skill some
