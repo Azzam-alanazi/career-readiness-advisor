@@ -33,9 +33,10 @@ Four decisions in that engine that must not be quietly reversed:
 2. **No translation step.** The model is multilingual; Arabic text matches
    English skill labels directly. Still the design, and not reversed — but as
    of 2026-09-05 it is **unvalidated on the market side**: the collected
-   posting sample is 25 English, 0 Arabic (see *Sampling: language* below).
-   The claim is only evidenced on the taxonomy's Arabic labels and a single
-   Arabic posting in the earlier hand-labeled set.
+   posting sample was 25 English, 0 Arabic, and since 2026-09-14 is 51
+   English, 1 Arabic; the one Arabic posting is unlabelled (see *Sampling:
+   language* below). The claim is only evidenced on the taxonomy's Arabic
+   labels and a single Arabic posting in the earlier hand-labeled set.
 3. **Demand weighting, not counting.** Readiness is weighted by how often each
    skill appears across postings.
 4. **Submissions of new skills go in the taxonomy**, not as hardcoded keywords.
@@ -79,6 +80,13 @@ plateau 0.0002 wide, so this winner is provisional too. It is now the lower
 figure and the gate figure `config.json` records. It qualifies nothing the app
 serves while every course is labelled, because the served course skills are the
 labels themselves. The placeholder row is kept as history.
+
+**Evaluation set versus product data.** F1 is measured on the 15 hand-labelled
+postings, and on those only. Career profiles are built on every collected
+posting: 27 at first, and **52 since 2026-09-14**. The 25 added that day are
+product data, unlabelled and outside every F1 figure, and `validate.py` was not
+re-run for them. More postings change the demand weights, not the measured
+quality of the matcher.
 
 **Both winners are provisional.** The plateau is the range of thresholds that
 holds the best F1; at 0.0018 and 0.000016 wide (0.0000 at four decimals), each
@@ -165,6 +173,17 @@ topping up the set with machine labels to reach the count.
 No scraping. Postings are collected manually — that is a deliberate choice for
 legal and reliability reasons, and it is defensible in the report.
 
+### Status: 52 postings, 2026-09-14
+
+**Profiles are built on 52 postings; F1 is measured on 15.** A second collection
+added five postings per career, screened by the same rules as the first:
+Business Analyst 11, Data Analyst 10, ERP Consultant 11, IT Support Specialist
+10, Software Developer 10. The 15 hand-labelled postings remain the whole
+evaluation set, three or four per career (two for Data Analyst). The new 25 are
+unlabelled product data. At 10 or 11 postings per career, `min_demand` 0.15 now
+takes two postings to count a skill as demanded, where 5 or 6 postings let a
+single one do it. The before-and-after figures are in `skillgap/CHANGELOG.md`.
+
 ### Sampling: language
 
 **There is no language stratification requirement.** An earlier collection plan
@@ -181,6 +200,12 @@ Arabic quota would mean either discarding real English postings to rebalance,
 or sourcing Arabic ones from elsewhere and comparing across two different
 collection processes. Both distort the demand weights, which are the actual
 output of Phase 1.
+
+**Update, 2026-09-14.** The second collection brought the set to 52: 51 English,
+1 Arabic. The Arabic one (id 55) is a Data Analyst advert from a Riyadh medical
+group on Bayt.com. It is unlabelled, so it enters the Data Analyst profile
+through a matcher never measured on a real Arabic posting. It confirms the
+market finding, one Arabic posting in 52, rather than changing it.
 
 **This finding survived a corrected filter, which is what makes it worth
 stating.** The first collection screened on `job_country` alone, and that field
@@ -334,13 +359,14 @@ launched the app on a device or an emulator.
 
 Items 17–21 are implemented. A skill counts as demanded exactly when a student's
 gap would count it: at the engine's `min_demand` (0.15) in some career in scope.
-With 5 or 6 postings per career, that means any skill a single posting names. No
-skill a posting names falls below the threshold. Across careers the postings are
-pooled, so a skill's weight is its share of all 27. Coverage counts skills, not
+With 5 or 6 postings per career, that meant any skill a single posting named. At
+10 or 11 postings per career since 2026-09-14 it takes two, and a skill named by
+one posting in every career appears in neither of the view's lists. Across
+careers the postings are pooled, so a skill's weight is its share of all of them. Coverage counts skills, not
 demand: each demanded skill counts once. For one career, the uncovered skills
 are exactly what a student who took every catalog course would still be missing.
 
-On the real data, the catalog teaches 33 of the 76 skills the postings ask for:
+On the first 27 postings, the catalog taught 33 of the 76 skills they asked for:
 43% coverage, from 37% (IT Support Specialist) to 50% (Data Analyst) by career.
 The 43 uncovered skills are the same 43 that `online_courses.csv` fills. The most
 demanded are CI/CD (10 of 27 postings), Communication (9), and Stakeholder
@@ -349,6 +375,15 @@ skills are named by no posting. Most are generic where the postings are
 specific: Programming, Data modelling and Database management are taught, while
 postings name particular languages and tools. Figures and the comparison with
 the posting hand labels are in `skillgap/CHANGELOG.md`.
+
+**Rebuilt on 52 postings, 2026-09-14.** The catalog teaches 32 of the 66 skills
+the postings now ask for: 48% coverage, from 38% (IT Support Specialist) to 67%
+(Data Analyst). Most of that rise is the threshold dropping skills named by a
+single posting, not a change in the catalog. The 34 uncovered skills are led by
+CI/CD (18 of 52 postings), then Communication and Stakeholder management (14
+each). Two taught skills are named by no posting: Network administration and
+Java programming. F1 behind these figures is still the 0.504 measured on 15
+postings.
 
 The app reaches the view from a bottom navigation bar, beside the student flow
 and never inside it. Each tab keeps its own navigation stack, so opening the

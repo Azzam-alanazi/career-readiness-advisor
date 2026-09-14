@@ -12,6 +12,11 @@ decision, and says so in the data. `/health`, every gap response and every
 recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
 
+F1 is measured on the 15 hand-labelled postings. The career profiles the API
+serves are built on every collected posting: 52 since 2026-09-14, 10 or 11 per
+career. The extra postings change demand, not the measured quality of the
+matcher.
+
 Every course in the catalog, the real Shaqra IS catalog, is hand-labelled. The
 skills the API credits for a course are its labels, so the block's
 `course_mapping_validated` is true. Course extraction, measured against those
@@ -95,7 +100,8 @@ because the catalog is.
   `min_demand`, so a career's uncovered skills are what a student with every
   course would still miss. Across careers the postings are pooled. Coverage
   counts skills, not demand. `sample_note` and the `validation` block travel with
-  it: 27 postings is too few for these gaps to drive a curriculum decision on
+  it: 52 postings, 10 or 11 per career, is too few for these gaps to drive a
+  curriculum decision on
   their own.
 - **SQLite with a TRUNCATE journal.** The repo sits in OneDrive, which can refuse
   the journal deletes SQLite's default mode relies on. A profiles table from

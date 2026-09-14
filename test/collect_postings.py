@@ -18,11 +18,18 @@ Setup:
     echo ".env" >> .gitignore
 
 Run:
-    python collect_postings.py
+    python collect_postings.py             # top each career up to the target
+    python collect_postings.py --more 5    # five new postings per career
+
+--more N collects N new postings per career on top of whatever is held, under
+the same screening rules. --careers limits a run to some careers (to make up a
+shortfall), and --max-pages lets it page further when the first pages are
+mostly postings already held or already excluded.
 
 Writes posting text with skill_ids blank. Labeling is a separate manual pass.
 """
 
+import argparse
 import csv
 import json
 import os
@@ -336,8 +343,8 @@ def call_api(query: str, cursor: str | None) -> dict:
     r.raise_for_status()
 
 
-def fetch(career: str, query: str, want: int,
-          seen: set[str]) -> tuple[list[dict], int, list[tuple[dict, str]]]:
+def fetch(career: str, query: str, want: int, seen: set[str],
+          max_pages: int = 4) -> tuple[list[dict], int, list[tuple[dict, str]]]:
     """
     Page until `want` genuinely new qualifying rows land.
 
@@ -351,7 +358,7 @@ def fetch(career: str, query: str, want: int,
     os.makedirs(RAW_DIR, exist_ok=True)
     kept, rejects, skipped, cursor, page = [], [], 0, None, 0
 
-    while len(kept) < want and page < 4:
+    while len(kept) < want and page < max_pages:
         payload = call_api(query, cursor)
 
         # Cache before parsing: a parser bug shouldn't cost another request.
@@ -462,6 +469,17 @@ def append_excluded(entries: list[dict]) -> None:
 
 
 def main():
+    ap = argparse.ArgumentParser(
+        description="Collect Saudi IS postings into labeled_postings.csv (appends).")
+    ap.add_argument("--more", type=int, metavar="N",
+                    help="collect N new postings per career on top of those held, "
+                         "instead of topping each career up to TARGET_PER_CAREER")
+    ap.add_argument("--careers", nargs="+", metavar="CAREER", choices=list(CAREERS),
+                    help="only these careers (default: all five)")
+    ap.add_argument("--max-pages", type=int, default=4, metavar="P",
+                    help="result pages to read per career before stopping (default 4)")
+    args = ap.parse_args()
+
     existing, header, seen, max_id = load_existing(OUT)
     print(f"{OUT}: {len(existing)} existing row(s), "
           f"{len(seen)} known URL(s), highest id {max_id}")
@@ -491,15 +509,17 @@ def main():
     stamp = time.strftime("%Y-%m-%d")
 
     for career, query in CAREERS.items():
+        if args.careers and career not in args.careers:
+            continue
         have = held.get(career, 0)
-        want = max(0, TARGET_PER_CAREER - have)
+        want = args.more if args.more is not None else max(0, TARGET_PER_CAREER - have)
         if not want:
             print(f"{career}: {have} already held, nothing needed")
             continue
 
         print(f"{career}: have {have}, need {want} -> ", end="", flush=True)
         try:
-            jobs, skipped, rejects = fetch(career, query, want, seen)
+            jobs, skipped, rejects = fetch(career, query, want, seen, args.max_pages)
         except requests.HTTPError as e:
             print(f"FAILED ({e.response.status_code})")
             continue

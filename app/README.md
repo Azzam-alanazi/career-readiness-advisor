@@ -26,7 +26,8 @@ alone appears beside the combined figure. The skills step says once, briefly,
 that these skills are self-reported and unverified.
 
 The department view opens with its own caveat, using the real posting counts:
-27 postings, 5 or 6 per career. At that size its gaps are indicative, and they
+52 postings since 2026-09-14, 10 or 11 per career. At that size its gaps are
+indicative, and they
 should not drive curriculum decisions on their own. The quality flag follows,
 because the demand side comes from the same matcher.
 

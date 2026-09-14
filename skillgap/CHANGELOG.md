@@ -4,6 +4,155 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-14 — 25 more postings: profiles on 52, F1 still on 15
+
+**Career profiles are now built on 52 postings. F1 is still measured on 15.**
+The 15 hand-labelled postings remain the entire evaluation set. The 25 collected
+today are product data only: unlabelled, and outside every F1 figure.
+`validate.py` was not re-run and `config.json` is unchanged. So every F1 in this
+file, including the posting gate figure of 0.504, is still measured on those 15
+postings. More postings change the demand side, not the measured quality of the
+matcher.
+
+### Collection
+
+`test/collect_postings.py --more 5` collected five new postings per career in
+append mode, under the same screening rules:
+- a Saudi vacancy
+- no AI-annotation gigs
+- no remote roles sited abroad
+- no text truncated mid-clause
+- the 900-character floor
+
+The collector gained `--more`, `--careers` and `--max-pages`. The screening code
+is untouched. 25 postings were kept (ids 49–73), and none was already held. 6
+were screened out and logged with their reasons in
+`labeled_postings_excluded.csv`, which now holds 25 rows. Every raw API payload
+is cached under `test/raw_responses/`.
+
+| career | before | new | now | hand-labelled (evaluation) |
+|---|---|---|---|---|
+| Business Analyst | 6 | 5 | 11 | 4 |
+| Data Analyst | 5 | 5 | 10 | 2 |
+| ERP Consultant | 6 | 5 | 11 | 3 |
+| IT Support Specialist | 5 | 5 | 10 | 3 |
+| Software Developer | 5 | 5 | 10 | 3 |
+| **total** | **27** | **25** | **52** | **15** |
+
+- **Language:** 51 English, 1 Arabic. This is the first Arabic posting in the
+  set: id 55, a Data Analyst advert (محلل بيانات) from Dr. Sulaiman Al Habib
+  Medical Group on Bayt.com, 1,297 characters. It is unlabelled, so it feeds the
+  Data Analyst profile through a matcher that has never been measured on a real
+  Arabic posting.
+- **Sources of the 25 new postings:**
+  - LinkedIn 7
+  - BeBee 6
+  - Bayt.com 5
+  - GulfTalent 2
+  - Aramco Careers, Sabbar.com, JobLeads, Foundit and Indeed: 1 each
+
+  Bayt.com, GulfTalent, Aramco Careers, Sabbar.com and Foundit are new to the
+  set. Across all 52 postings: LinkedIn 19, BeBee 10, Bayt.com 5, Indeed 4, and
+  ten other publishers with one or two each.
+
+### `min_demand` 0.15 now needs two postings
+
+With 5 or 6 postings per career, 0.15 admitted any skill a single posting named.
+With 10 or 11 it takes two. This drives most of what follows.
+
+| career | postings | skills named, before → now | demanded at 0.15, before → now | named once, now below the threshold |
+|---|---|---|---|---|
+| Business Analyst | 6 → 11 | 36 → 49 | 36 → 26 | 23 |
+| Data Analyst | 5 → 10 | 22 → 38 | 22 → 18 | 20 |
+| ERP Consultant | 6 → 11 | 26 → 37 | 26 → 19 | 18 |
+| IT Support Specialist | 5 → 10 | 30 → 43 | 30 → 24 | 19 |
+| Software Developer | 5 → 10 | 44 → 51 | 44 → 28 | 23 |
+
+### The `min_demand` sweep: demo scenario (Business Analyst, six courses)
+
+| at `min_demand` 0.15 | before: 6 postings | now: 11 postings |
+|---|---|---|
+| skill must appear in | ≥ 1 posting | ≥ 2 postings |
+| skills counted | 36 | 26 |
+| covered / missing | 7 / 29 | 7 / 19 |
+| missing skills some course could close | 9 | 9 |
+| readiness | 30.6% | 30.8% |
+| readiness with all 33 courses | 56.5% | 62.8% |
+
+- **The seven covered skills are the same seven.** Readiness barely moves: the
+  skills that dropped out were missing ones named by a single posting.
+- **Above 0.15 the rows no longer line up with the old ones,** because each
+  value now asks for a different number of postings:
+  - 0.20–0.25 (≥ 3 of 11 postings): 38.5%
+  - 0.30–0.35 (≥ 4): 35.0%
+  - 0.40–0.45 (≥ 5): 37.5%
+  - 0.50: 100%, on the single skill left
+
+  The full table comes from `python -m backend.reports min-demand`.
+
+### Course reach
+
+The course side is unchanged. 39 of 91 skills are reachable from the 33
+hand-labelled courses, and extraction scores F1 0.373 against the labels. Only
+the per-career demand columns moved.
+- **Taught skills that no posting named before are named now:**
+  - Data modelling (Data Analyst 2/10)
+  - Database management (Data Analyst 2/10, Software Developer 1/10)
+  - Programming (Software Developer 1/10)
+  - JavaScript programming (ERP Consultant 1/11)
+- **Larger shifts:**
+  - ETL / data integration: Data Analyst 3/5 → 8/10
+  - Business intelligence: Business Analyst 2/6 → 5/11
+  - Software architecture: Software Developer 1/5 → 4/10
+  - Windows administration: IT Support Specialist 2/5 → 4/10
+
+### Curriculum gaps
+
+| scope | coverage before | coverage now | uncovered before → now |
+|---|---|---|---|
+| All five careers | 43% (33 of 76) | 48% (32 of 66) | 43 → 34 |
+| Business Analyst | 44% (16 of 36) | 62% (16 of 26) | 20 → 10 |
+| Data Analyst | 50% (11 of 22) | 67% (12 of 18) | 11 → 6 |
+| ERP Consultant | 46% (12 of 26) | 53% (10 of 19) | 14 → 9 |
+| IT Support Specialist | 37% (11 of 30) | 38% (9 of 24) | 19 → 15 |
+| Software Developer | 39% (17 of 44) | 43% (12 of 28) | 27 → 16 |
+
+- **Coverage rose mostly because the threshold now drops single-posting
+  skills, not because the catalog changed.** Half of the 43 skills uncovered
+  before were named by only one or two of the 27 postings.
+- **The same skills lead, now on firmer counts:**
+  - CI/CD: 18 of 52 postings (35%)
+  - Stakeholder management and Communication: 14 each
+  - Help desk / service desk and Quality assurance: 12 each
+  - User acceptance testing and Technical support: 11 each
+  - Mentoring 10, Software testing 9, ERP user training 8
+- **Taught, not asked for: 6 → 2** (Network administration, Java programming).
+  Postings now name the other four.
+- **A new blind spot.** 19 skills are named by some posting but fall below the
+  threshold in every career, so the curriculum view shows them in neither list:
+  5 of them taught, 14 not. With 5 or 6 postings per career this set was empty.
+  It follows from the student view's threshold, and stays consistent with it.
+  The view does not yet say how many skills it leaves out.
+
+### Online courses
+
+- **34 gap skills now, against 43.** 32 of them have an online course.
+- **Two new gap skills have no row:** SK50 Active Directory and SK60 Remote
+  support. A student missing either sees it under "No course listed yet".
+  `python -m backend.online sync` adds their placeholder rows; the file was left
+  untouched here.
+- **Eleven filled rows are no longer offered,** because their skills stopped
+  being gaps. They are kept.
+
+### Not re-run
+
+`validate.py` was not run, so `config.json` is unchanged. The posting gate figure
+(0.504 on 15 postings) and the course figures (0.373 on 33 titles) stand as
+measured. The app's sample-size caveats take their posting counts from
+`/careers`, so they update themselves.
+
+---
+
 ## 2026-09-14 — Up to three careers, compared side by side
 
 A student can now choose up to three target careers during onboarding. The

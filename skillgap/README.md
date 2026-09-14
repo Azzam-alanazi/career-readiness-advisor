@@ -18,7 +18,7 @@ results must say so.
 | Final parameters | postings `chunk_top1`, threshold 0.8140, margin 0.01, plateau 0.0018 wide; courses `skill_centric`, threshold 0.8940, plateau 0.0002 wide — both provisional |
 | Separation | postings **0.021** (0.075 on the 19-entry taxonomy); courses 0.043 on titles (0.052 on the placeholder descriptions) |
 | Taxonomy | 91 entries, `SK01`–`SK91`, English + Arabic, 8 categories — `SK91` Java programming added 2026-09-11 |
-| Postings | 27 collected, 15 hand-labelled; 19 excluded, each with a recorded reason |
+| Postings | 52 collected — profiles are built on all 52; 15 hand-labelled — F1 is measured on these 15 only; 25 excluded, each with a recorded reason |
 | Courses | 33 real Shaqra IS courses (15 of 48 excluded, each with a reason), titles only, all hand-labelled: 75 labels, 9 courses `NONE` |
 
 **Why it failed: granularity.** A 90-entry taxonomy packs neighbouring skills
@@ -90,9 +90,9 @@ focused on one requirement.
 **2. Multilingual model, no translation step.** `multilingual-e5-base` puts
 Arabic and English in one shared vector space, so an Arabic posting matches an
 English skill label directly. **Unvalidated on the market side:** the collected
-sample is 27 English postings and 0 Arabic. The evidence for this decision is
-the taxonomy's Arabic labels plus one Arabic posting in the archived starter
-set — not real Arabic market data.
+sample is 51 English postings and 1 Arabic, and the Arabic one is unlabelled.
+The evidence for this decision is the taxonomy's Arabic labels plus one Arabic
+posting in the archived starter set — not real Arabic market data.
 
 **3. Demand weighting, not counting.** A skill in 90% of postings matters more
 than one in 10%. Readiness is the demand-weighted fraction the student holds.
