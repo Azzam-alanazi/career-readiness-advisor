@@ -4,6 +4,29 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-14 — Course selection: search, tracks, level shortcuts
+
+Presentation only; nothing the engine computes changed. The course step in
+onboarding now has:
+- **Search** by code or title, ignoring case and spacing. Arabic-Indic and
+  Persian digits are read as Western ones, so a code typed on an Arabic keyboard
+  still matches.
+- **"Select all shown"** for whatever the search leaves on screen.
+- **Collapsible sections** by the catalog's track — college requirements, IS
+  core, and the analytics and e-commerce elective tracks — each with its
+  selected count.
+- **"All N-level and below" shortcuts,** with the level read from the course
+  code.
+- **A selected count that stays in view,** with a review sheet and a clear that
+  can be undone.
+
+`/courses` gains a `track` field, read from `labeled_courses.csv` on every
+start, like the labels. It sits outside the cache and outside the skill mapping,
+and a test confirms the courses keep exactly the skills they had. Backend tests:
+94 → 95. App tests: 37 → 45.
+
+---
+
 ## 2026-09-14 — Three more careers, and `min_demand`'s exclusions made visible
 
 Database Administrator, Cybersecurity Analyst and IT Project Manager join the

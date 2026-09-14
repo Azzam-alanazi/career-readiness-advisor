@@ -46,6 +46,13 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
 
 Finder button(String label) => find.widgetWithText(FilledButton, label);
 
+/// Any Material button by its label -- TextButton.icon is a subclass, which
+/// find.widgetWithText's exact type match would miss.
+ButtonStyleButton anyButton(WidgetTester tester, String label) =>
+    tester.widget<ButtonStyleButton>(find
+        .ancestor(of: find.text(label), matching: find.byWidgetPredicate((w) => w is ButtonStyleButton))
+        .first);
+
 Finder skillBoxes() => find.descendant(
     of: find.byType(SkillsScreen), matching: find.byType(CheckboxListTile));
 
@@ -465,6 +472,129 @@ void main() {
     expect(find.text('لا يدرّسها أي مقرر'), findsOneWidget);
     expect(find.textContaining('ما لا يقل عن 2 من إعلانات المهنة'), findsOneWidget);
     expect(find.text('تقديرات، وليست نتائج موثّقة'), findsOneWidget);
+  });
+
+  testWidgets('Courses: tracks, search, select all shown, level shortcuts, review and clear',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    final search = find.byKey(const Key('course-search'));
+
+    // Grouped by the catalog's tracks, in degree order, each with its count.
+    const college = 'College requirements', core = 'IS core';
+    const electives = 'Electives: business analytics';
+    expect(tester.getTopLeft(find.text(college)).dy,
+        lessThan(tester.getTopLeft(find.text(core)).dy));
+    expect(tester.getTopLeft(find.text(core)).dy,
+        lessThan(tester.getTopLeft(find.text(electives)).dy));
+    expect(find.text('0 of 1 selected'), findsOneWidget);
+    expect(find.text('0 of 2 selected'), findsNWidgets(2));
+    expect(find.text('No courses selected'), findsOneWidget);
+
+    // Search filters as you type, by code or title; empty tracks drop away.
+    await tester.enterText(search, 'is2');
+    await tester.pump();
+    expect(find.text('Database Management Systems'), findsOneWidget);
+    expect(find.text('Systems Analysis and Design'), findsOneWidget);
+    expect(find.text('Business Process Management'), findsNothing);
+    expect(find.text(college), findsNothing);
+
+    await tester.enterText(search, 'data');
+    await tester.pump();
+    expect(find.text('Database Management Systems'), findsOneWidget);
+    expect(find.text('Data Mining'), findsOneWidget);
+    expect(find.text('Systems Analysis and Design'), findsNothing);
+
+    // One tap selects every course shown.
+    await tester.tap(find.text('Select all shown (2)'));
+    await tester.pump();
+    expect(find.text('Completed courses (2 selected)'), findsOneWidget);
+    expect(find.text('2 courses selected'), findsOneWidget);
+    expect(anyButton(tester, 'Select all shown (2)').onPressed, isNull,
+        reason: 'everything shown is already chosen');
+
+    await tester.enterText(search, 'zzz');
+    await tester.pump();
+    expect(find.text('No course matches your search.'), findsOneWidget);
+    await tester.tap(find.byTooltip('Clear search'));
+    await tester.pump();
+    expect(find.text(college), findsOneWidget);
+
+    // A level shortcut adds its level and below, keeping what was chosen.
+    expect(find.text('All 300-level and below'), findsOneWidget);
+    await tester.tap(find.text('All 200-level and below'));
+    await tester.pump();
+    expect(find.text('4 courses selected'), findsOneWidget);
+    expect(find.text('1 of 1 selected'), findsOneWidget);
+    expect(find.text('2 of 2 selected'), findsOneWidget);
+    expect(find.text('1 of 2 selected'), findsOneWidget);
+
+    // Folding a track hides its courses, not its count.
+    await tester.tap(find.text(core));
+    await tester.pump();
+    expect(find.text('Systems Analysis and Design'), findsNothing);
+    expect(find.text('2 of 2 selected'), findsOneWidget);
+    await tester.tap(find.text(core));
+    await tester.pump();
+    expect(find.text('Systems Analysis and Design'), findsOneWidget);
+
+    // Review before going on: the chosen courses by track, each removable.
+    await tester.tap(find.widgetWithText(TextButton, 'Review'));
+    await tester.pumpAndSettle();
+    final sheet = find.byType(BottomSheet);
+    expect(find.descendant(of: sheet, matching: find.text('Selected courses')), findsOneWidget);
+    expect(find.descendant(of: sheet, matching: find.text(core)), findsOneWidget);
+    await tester.tap(find.descendant(
+        of: find.descendant(of: sheet, matching: find.widgetWithText(ListTile, 'Data Mining')),
+        matching: find.byType(IconButton)));
+    await tester.pump();
+    expect(find.descendant(of: sheet, matching: find.text('Data Mining')), findsNothing);
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(find.text('3 courses selected'), findsOneWidget);
+
+    // Clearing is one tap, and so is taking it back.
+    await tester.tap(find.widgetWithText(TextButton, 'Clear'));
+    await tester.pumpAndSettle(); // let the snackbar finish sliding in
+    expect(find.text('No courses selected'), findsOneWidget);
+    expect(find.text('Selection cleared.'), findsOneWidget);
+    await tester.tap(find.text('Undo'));
+    await tester.pumpAndSettle();
+    expect(find.text('3 courses selected'), findsOneWidget);
+    expect(find.text('Completed courses (3 selected)'), findsOneWidget);
+  });
+
+  testWidgets('Courses in Arabic: tracks in Arabic, right to left, and search takes Arabic digits',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    await tester.tap(find.text('العربية'));
+    await tester.pumpAndSettle();
+    final search = find.byKey(const Key('course-search'));
+
+    expect(find.text('متطلبات الكلية'), findsOneWidget);
+    expect(find.text('المقررات الأساسية للتخصص'), findsOneWidget);
+    expect(find.text('مقررات اختيارية: تحليلات الأعمال'), findsOneWidget);
+    expect(find.text('كل المستوى 200 وما دونه'), findsOneWidget);
+    expect(find.text('لم تختر أي مقرر'), findsOneWidget);
+    // Right to left: the search icon sits at the field's right-hand end.
+    expect(tester.getCenter(find.descendant(of: search, matching: find.byIcon(Icons.search))).dx,
+        greaterThan(tester.getCenter(search).dx));
+
+    // A code typed on an Arabic keyboard, in Arabic-Indic digits.
+    await tester.enterText(search, '٢٣٠');
+    await tester.pump();
+    expect(find.text('Database Management Systems'), findsOneWidget);
+    expect(find.text('Systems Analysis and Design'), findsNothing);
+    await tester.tap(find.text('اختر كل المعروض (1)'));
+    await tester.pump();
+    expect(find.text('مقرر واحد مختار'), findsOneWidget);
+
+    // Latin letters still search in the Arabic interface.
+    await tester.enterText(search, 'data');
+    await tester.pump();
+    expect(find.text('Data Mining'), findsOneWidget);
+    expect(find.text('Principles of Probabilities and Statistics'), findsNothing);
   });
 
   testWidgets('Two careers side by side: the closest is marked, and a tap opens its details',

@@ -49,7 +49,7 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 |---|---|---|
 | GET | `/health` | model, counts, online courses filled in and still waiting, cache status, validation |
 | GET | `/careers` | careers with their posting counts |
-| GET | `/courses` | catalog: code, official title, the skill ids it teaches and how many, and whether they come from hand labels or extraction |
+| GET | `/courses` | catalog: code, official title, the skill ids it teaches and how many, whether they come from hand labels or extraction, and the catalog `track` (college, core, an elective track) for grouping on screen |
 | GET | `/skills` | the taxonomy, in its order: id, English and Arabic names, category. These are the skills a student can self-report |
 | POST | `/profiles` | create a student profile: `career`, `completed_courses` (codes), optional `major`, optional `self_reported_skills` (taxonomy ids), optional `other_careers` (up to two more, to compare side by side). The response lists all of them as `careers`, first first |
 | GET | `/profiles/{id}` | the stored profile |
@@ -121,7 +121,7 @@ because the catalog is.
 python -m pytest
 ```
 
-94 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+95 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 

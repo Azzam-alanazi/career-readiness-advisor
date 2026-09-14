@@ -53,6 +53,17 @@ void main() {
     expect(state().courses, {'IS 230'});
   });
 
+  test('bulk selection adds to what is chosen; setting replaces it', () {
+    controller()
+      ..toggleCourse('IS 230')
+      ..selectCourses(['IS 240', 'IS 230']);
+    expect(state().courses, {'IS 230', 'IS 240'});
+    controller().setCourses(const {});
+    expect(state().courses, isEmpty);
+    controller().setCourses({'IS 350'});
+    expect(state().courses, {'IS 350'});
+  });
+
   test('no skill starts ticked; toggling a skill twice removes it', () {
     expect(state().selfReported, isEmpty);
     controller()

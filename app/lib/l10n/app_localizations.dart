@@ -164,6 +164,132 @@ abstract class AppLocalizations {
   /// **'Listed as they appear in the course catalog.'**
   String get coursesCatalogNote;
 
+  /// No description provided for @coursesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by code or title'**
+  String get coursesSearchHint;
+
+  /// No description provided for @coursesClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get coursesClearSearch;
+
+  /// No description provided for @coursesSelectShown.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all shown ({count})'**
+  String coursesSelectShown(int count);
+
+  /// No description provided for @coursesNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No course matches your search.'**
+  String get coursesNoMatch;
+
+  /// No description provided for @coursesQuickSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick select:'**
+  String get coursesQuickSelect;
+
+  /// No description provided for @coursesUpToLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'All {level}-level and below'**
+  String coursesUpToLevel(int level);
+
+  /// No description provided for @trackCollege.
+  ///
+  /// In en, this message translates to:
+  /// **'College requirements'**
+  String get trackCollege;
+
+  /// No description provided for @trackCore.
+  ///
+  /// In en, this message translates to:
+  /// **'IS core'**
+  String get trackCore;
+
+  /// No description provided for @trackElectiveAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electives: business analytics'**
+  String get trackElectiveAnalytics;
+
+  /// No description provided for @trackElectiveEcommerce.
+  ///
+  /// In en, this message translates to:
+  /// **'Electives: e-commerce'**
+  String get trackElectiveEcommerce;
+
+  /// No description provided for @trackOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other courses'**
+  String get trackOther;
+
+  /// No description provided for @trackSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} selected'**
+  String trackSelected(int selected, int total);
+
+  /// No description provided for @selectedCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No courses selected} =1{1 course selected} other{{count} courses selected}}'**
+  String selectedCourses(int count);
+
+  /// No description provided for @coursesReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get coursesReview;
+
+  /// No description provided for @coursesClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get coursesClear;
+
+  /// No description provided for @coursesCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Selection cleared.'**
+  String get coursesCleared;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @coursesReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected courses'**
+  String get coursesReviewTitle;
+
+  /// No description provided for @coursesClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get coursesClearAll;
+
+  /// No description provided for @coursesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get coursesRemove;
+
+  /// No description provided for @coursesDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get coursesDone;
+
   /// No description provided for @submit.
   ///
   /// In en, this message translates to:

@@ -94,8 +94,9 @@ def write_world(root: Path, config: dict | None = None,
                 online: list[tuple[str, ...]] | None = None,
                 postings: list[tuple[str, str, str]] | None = None) -> Paths:
     """
-    Write the fixture world. `courses` replaces the catalog, as (code, text) or
-    (code, text, labels); `online` writes an online_courses.csv with those rows.
+    Write the fixture world. `courses` replaces the catalog, as (code, text),
+    (code, text, labels) or (code, text, labels, track); `online` writes an
+    online_courses.csv with those rows.
     Without it the world has no such file, so no test ever reads the real one.
     `postings` replaces the postings, as (id, career, text).
     """
@@ -111,9 +112,11 @@ def write_world(root: Path, config: dict | None = None,
             w.writerow([pid, career, text, ""])
     with (root / "courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
-        w.writerow(["id", "course_code", "lang", "course_text", "skill_ids"])
-        for i, (code, text, *labels) in enumerate(COURSES if courses is None else courses, 1):
-            w.writerow([i, code, "en", text, labels[0] if labels else ""])
+        w.writerow(["id", "course_code", "lang", "course_text", "skill_ids", "track"])
+        for i, (code, text, *extra) in enumerate(COURSES if courses is None else courses, 1):
+            labels = extra[0] if extra else ""
+            track = extra[1] if len(extra) > 1 else ""
+            w.writerow([i, code, "en", text, labels, track])
     if online is not None:
         with (root / "online_courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
             w = csv.writer(f)

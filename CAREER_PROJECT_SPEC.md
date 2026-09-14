@@ -356,7 +356,17 @@ any one of them. Each reading equals a profile targeting that career alone. A
 note under the comparison says each score rests on a handful of postings, so a
 few points apart is not a real difference.
 
-Verified headlessly by 37 tests and `flutter analyze`, and by a contract check
+Course selection was reworked on 2026-09-14, as presentation only:
+- search by code or title, including Arabic-Indic digits
+- "select all shown" on the filtered list
+- the catalog's own tracks as collapsible sections with selected counts
+- "this level and below" shortcuts
+- a persistent selected count, with review and an undoable clear
+
+The one backend change is that `/courses` now also returns each course's
+catalog track, read from `labeled_courses.csv`. No course's skills changed.
+
+Verified headlessly by 45 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not

@@ -119,7 +119,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     def courses(request: Request) -> list[S.CourseOut]:
         eng = engine(request)
         return [S.CourseOut(code=c.code, name=c.name, skill_count=len(c.skills),
-                            skills=list(c.skills), mapped_by=c.mapped_by)
+                            skills=list(c.skills), mapped_by=c.mapped_by, track=c.track)
                 for c in sorted(eng.courses.values(), key=lambda c: c.code)]
 
     @app.get("/skills", response_model=list[S.SkillOut])

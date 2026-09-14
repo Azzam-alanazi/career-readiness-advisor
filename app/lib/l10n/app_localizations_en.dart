@@ -48,6 +48,84 @@ class AppLocalizationsEn extends AppLocalizations {
       'Listed as they appear in the course catalog.';
 
   @override
+  String get coursesSearchHint => 'Search by code or title';
+
+  @override
+  String get coursesClearSearch => 'Clear search';
+
+  @override
+  String coursesSelectShown(int count) {
+    return 'Select all shown ($count)';
+  }
+
+  @override
+  String get coursesNoMatch => 'No course matches your search.';
+
+  @override
+  String get coursesQuickSelect => 'Quick select:';
+
+  @override
+  String coursesUpToLevel(int level) {
+    return 'All $level-level and below';
+  }
+
+  @override
+  String get trackCollege => 'College requirements';
+
+  @override
+  String get trackCore => 'IS core';
+
+  @override
+  String get trackElectiveAnalytics => 'Electives: business analytics';
+
+  @override
+  String get trackElectiveEcommerce => 'Electives: e-commerce';
+
+  @override
+  String get trackOther => 'Other courses';
+
+  @override
+  String trackSelected(int selected, int total) {
+    return '$selected of $total selected';
+  }
+
+  @override
+  String selectedCourses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count courses selected',
+      one: '1 course selected',
+      zero: 'No courses selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get coursesReview => 'Review';
+
+  @override
+  String get coursesClear => 'Clear';
+
+  @override
+  String get coursesCleared => 'Selection cleared.';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get coursesReviewTitle => 'Selected courses';
+
+  @override
+  String get coursesClearAll => 'Clear all';
+
+  @override
+  String get coursesRemove => 'Remove';
+
+  @override
+  String get coursesDone => 'Done';
+
+  @override
   String get submit => 'See my readiness';
 
   @override

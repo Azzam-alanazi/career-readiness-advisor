@@ -92,6 +92,7 @@ class Course:
     name: str
     skills: tuple[str, ...]
     mapped_by: str = "extraction"          # "labels" where the course is hand-labelled
+    track: str = ""                        # catalog track, for display only
 
 
 class CourseLabelsError(ValueError):
@@ -454,8 +455,14 @@ def build_state(paths: Paths | None = None,
         _save_cache(cache_file, key, profiles, extracted, names)
         from_cache = False
 
-    courses = {code: (Course(code, names[code], labels[code], "labels") if code in labels
-                      else Course(code, names[code], extracted[code]))
+    # The catalog's track (college, core, an elective track) is read like the
+    # labels, on every start and outside the cache. It groups courses for the
+    # student and plays no part in which skills a course is credited with.
+    tracks = {r["course_code"]: (r.get("track") or "").strip() for r in course_rows}
+    courses = {code: Course(code, names[code],
+                            labels[code] if code in labels else extracted[code],
+                            "labels" if code in labels else "extraction",
+                            tracks[code])
                for code in names}
 
     return EngineState(skills=skills, profiles=profiles, courses=courses,

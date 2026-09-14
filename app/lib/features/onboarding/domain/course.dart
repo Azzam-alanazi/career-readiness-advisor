@@ -13,6 +13,10 @@ abstract class Course with _$Course {
     /// Skill ids the course teaches, so onboarding can show them as already
     /// covered instead of offering them again.
     @Default(<String>[]) List<String> skills,
+
+    /// The catalog's track -- college, core, or an elective track -- for
+    /// grouping the list. Display only; empty when the catalog gives none.
+    @Default('') String track,
   }) = _Course;
 
   factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);

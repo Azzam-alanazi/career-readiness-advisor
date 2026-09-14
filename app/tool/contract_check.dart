@@ -24,6 +24,7 @@ import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart'
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/course_groups.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:career_readiness/features/onboarding/domain/skill_groups.dart';
 import 'package:career_readiness/features/profile/domain/profile.dart';
@@ -70,6 +71,9 @@ Future<void> main(List<String> args) async {
     check(careers.any((c) => c.name == 'Business Analyst'), '${careers.length} careers, Business Analyst among them');
     final codes = {for (final c in courses) c.code};
     check(sixCourses.every(codes.contains), '${courses.length} courses, all six scenario courses present');
+    check(courses.every((c) => trackOrder.contains(c.track)),
+        'every course carries a catalog track: '
+        '${[for (final t in trackOrder) '$t ${courses.where((c) => c.track == t).length}'].join(', ')}');
 
     final draft = ProfileDraft(
       career: 'Business Analyst',

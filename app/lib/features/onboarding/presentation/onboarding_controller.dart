@@ -27,6 +27,13 @@ class OnboardingController extends Notifier<OnboardingState> {
     state = state.copyWith(courses: courses);
   }
 
+  /// Adds every one of [codes]; what is already chosen stays chosen.
+  void selectCourses(Iterable<String> codes) =>
+      state = state.copyWith(courses: {...state.courses, ...codes});
+
+  /// Replaces the whole selection: for clearing it, and for undoing that.
+  void setCourses(Set<String> codes) => state = state.copyWith(courses: {...codes});
+
   void toggleSkill(String id) {
     final skills = {...state.selfReported};
     if (!skills.remove(id)) skills.add(id);

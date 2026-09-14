@@ -28,6 +28,9 @@ class CourseOut(BaseModel):
                     "a student's courses already cover")
     mapped_by: Literal["labels", "extraction"] = Field(
         description="Hand labels where the course has them, extraction otherwise")
+    track: str = Field(
+        description="The catalog's track for the course -- college, core, or an elective "
+                    "track -- for grouping it on screen; empty when the catalog gives none")
 
 
 class SkillOut(BaseModel):

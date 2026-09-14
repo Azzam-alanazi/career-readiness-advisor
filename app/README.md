@@ -8,6 +8,20 @@ screen then shows them side by side, each with its score and its covered and
 missing counts, and marks the one they are closest to. The department tab has the curriculum-gap view: the course
 catalog against what the job postings ask for.
 
+Choosing completed courses is built for a real catalog:
+- **Search** filters as you type, by code or title. Digits typed on an Arabic
+  keyboard find codes too.
+- **"Select all shown"** ticks every course a search leaves on screen.
+- **The catalog's own tracks** — college requirements, IS core and the elective
+  tracks — appear as collapsible sections, each with its selected count.
+- **Level shortcuts** such as "all 200-level and below" tick a level and
+  everything under it.
+- **A selected count stays in view,** with review and clear (and undo) before
+  moving on.
+
+This is presentation only: a course's skills come from the same labels as
+before.
+
 ## What the numbers are — read this first
 
 The skill matcher behind every figure **failed its Phase 0 validation gate**:
@@ -115,7 +129,7 @@ postings.
 flutter test
 ```
 
-37 tests, no device needed:
+45 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -139,6 +153,15 @@ flutter test
 - **university and online courses** — each card says whether it counts toward
   the degree, in both languages; the university course comes first; a gap with
   neither is listed, not dropped; a web address stays left to right in Arabic
+- **course groups** — tracks in degree order with unknown ones kept last,
+  courses by level then code, search by code or title ignoring case, spacing
+  and digit script, levels read from the code, and per-track counts over the
+  whole catalog
+- **course selection** — the list grouped by track with counts, search that
+  hides empty tracks, "select all shown", a level shortcut that adds without
+  removing, folding a track, and the review sheet with removal. Clearing is
+  undoable. In Arabic: track names, right-to-left layout, and a search typed in
+  Arabic-Indic digits
 - **several careers** — up to three, in the order chosen, a fourth refused; the
   first is sent as the main career and the rest to compare. The comparison puts
   each score side by side with its covered and missing counts and posting

@@ -13,6 +13,7 @@ _Course _$CourseFromJson(Map<String, dynamic> json) => _Course(
   skills:
       (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const <String>[],
+  track: json['track'] as String? ?? '',
 );
 
 Map<String, dynamic> _$CourseToJson(_Course instance) => <String, dynamic>{
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CourseToJson(_Course instance) => <String, dynamic>{
   'name': instance.name,
   'skill_count': instance.skillCount,
   'skills': instance.skills,
+  'track': instance.track,
 };

@@ -47,6 +47,87 @@ class AppLocalizationsAr extends AppLocalizations {
       'مدرجة كما وردت في دليل المقررات (بالإنجليزية).';
 
   @override
+  String get coursesSearchHint => 'ابحث برمز المقرر أو اسمه';
+
+  @override
+  String get coursesClearSearch => 'مسح البحث';
+
+  @override
+  String coursesSelectShown(int count) {
+    return 'اختر كل المعروض ($count)';
+  }
+
+  @override
+  String get coursesNoMatch => 'لا يوجد مقرر يطابق بحثك.';
+
+  @override
+  String get coursesQuickSelect => 'اختيار سريع:';
+
+  @override
+  String coursesUpToLevel(int level) {
+    return 'كل المستوى $level وما دونه';
+  }
+
+  @override
+  String get trackCollege => 'متطلبات الكلية';
+
+  @override
+  String get trackCore => 'المقررات الأساسية للتخصص';
+
+  @override
+  String get trackElectiveAnalytics => 'مقررات اختيارية: تحليلات الأعمال';
+
+  @override
+  String get trackElectiveEcommerce => 'مقررات اختيارية: التجارة الإلكترونية';
+
+  @override
+  String get trackOther => 'مقررات أخرى';
+
+  @override
+  String trackSelected(int selected, int total) {
+    return '$selected من $total مختارة';
+  }
+
+  @override
+  String selectedCourses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقرر مختار',
+      many: '$count مقررًا مختارًا',
+      few: '$count مقررات مختارة',
+      two: 'مقرران مختاران',
+      one: 'مقرر واحد مختار',
+      zero: 'لم تختر أي مقرر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get coursesReview => 'مراجعة';
+
+  @override
+  String get coursesClear => 'مسح';
+
+  @override
+  String get coursesCleared => 'مُسح الاختيار.';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get coursesReviewTitle => 'المقررات المختارة';
+
+  @override
+  String get coursesClearAll => 'مسح الكل';
+
+  @override
+  String get coursesRemove => 'إزالة';
+
+  @override
+  String get coursesDone => 'تم';
+
+  @override
   String get submit => 'اعرض جاهزيتي';
 
   @override

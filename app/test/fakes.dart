@@ -29,24 +29,43 @@ const careersJson = <Map<String, dynamic>>[
   {'name': 'Software Developer', 'posting_count': 5},
 ];
 
+// Three tracks and three levels (200, 300, 500), so grouping, search and the
+// level shortcuts all have something to sort.
 const coursesJson = <Map<String, dynamic>>[
   {
     'code': 'IS 230',
     'name': 'Database Management Systems',
     'skill_count': 2,
     'skills': ['SK16', 'SK17'],
+    'track': 'core',
   },
   {
     'code': 'IS 240',
     'name': 'Systems Analysis and Design',
     'skill_count': 1,
     'skills': ['SK02'],
+    'track': 'core',
   },
   {
     'code': 'IS 350',
     'name': 'Business Process Management',
     'skill_count': 1,
     'skills': ['SK04'],
+    'track': 'elective_analytics',
+  },
+  {
+    'code': 'MATH 210',
+    'name': 'Principles of Probabilities and Statistics',
+    'skill_count': 0,
+    'skills': <String>[],
+    'track': 'college',
+  },
+  {
+    'code': 'CIS 505',
+    'name': 'Data Mining',
+    'skill_count': 0,
+    'skills': <String>[],
+    'track': 'elective_analytics',
   },
 ];
 
