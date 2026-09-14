@@ -3,7 +3,9 @@
 Android app over the FastAPI backend in `../backend/`, in English and Arabic.
 Two tabs serve two audiences. The student tab has two-step onboarding
 (completed courses, then any skills from outside them), a readiness report and
-suggested courses. The department tab has the curriculum-gap view: the course
+suggested courses. A student can target up to three careers; the readiness
+screen then shows them side by side, each with its score and its covered and
+missing counts, and marks the one they are closest to. The department tab has the curriculum-gap view: the course
 catalog against what the job postings ask for.
 
 ## What the numbers are — read this first
@@ -109,7 +111,7 @@ postings.
 flutter test
 ```
 
-33 tests, no device needed:
+37 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -133,6 +135,13 @@ flutter test
 - **university and online courses** — each card says whether it counts toward
   the degree, in both languages; the university course comes first; a gap with
   neither is listed, not dropped; a web address stays left to right in Arabic
+- **several careers** — up to three, in the order chosen, a fourth refused; the
+  first is sent as the main career and the rest to compare. The comparison puts
+  each score side by side with its covered and missing counts and posting
+  count, marks the closest career, and shows the courses-only figure where
+  self-reported skills lift a score. Tapping a career switches the details and
+  the suggestions to it. In Arabic on a 360-wide phone, three columns lay out
+  right to left without overflowing
 - **the department view** — its own tab, fetched only when opened, with no step
   of the student flow behind it; switching tabs keeps the student where they
   were. The sample-size caveat, with the real counts, comes above every figure.
@@ -143,8 +152,8 @@ flutter test
 The widget tests run against fakes shaped like the backend's JSON. To check the
 models against the real, running backend instead — the spec's definition-of-done
 scenario, Business Analyst with six courses, then the same with two
-self-reported skills, then the department's curriculum view for every career —
-start the backend and run:
+self-reported skills, then three careers on one profile, then the department's
+curriculum view for every career — start the backend and run:
 
 ```bash
 dart run tool/contract_check.dart
@@ -153,6 +162,13 @@ dart run tool/contract_check.dart
 ## Not verified on a device
 
 The Android toolchain is now installed and a debug APK builds
-(`flutter build apk --debug`). These checks have not launched the app on a
-phone or an emulator. Everything above is verified headlessly: `flutter test`,
+(`flutter build apk --debug`). These checks have not seen the app on a phone.
+
+**A black screen on the emulator is the emulator image, not the app.** On
+the Android 17 preview image with 16 KB pages (`sdk_gphone16k_x86_64`), the
+app starts, fetches its data and builds its whole widget tree, and Flutter
+reports the first frame rasterized, yet the screen stays black. It stays black
+under Impeller and Skia, through a SurfaceView and a TextureView, and with
+software rendering. The stock `flutter create` counter app is black on the same
+image too. Use a standard API 35 or 36 x86_64 image with 4 KB pages. Everything above is verified headlessly: `flutter test`,
 `flutter analyze`, and the contract check against the live backend.

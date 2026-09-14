@@ -1,5 +1,6 @@
 import 'package:career_readiness/app.dart';
 import 'package:career_readiness/core/api/api_client.dart';
+import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/features/curriculum/data/curriculum_repository.dart';
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
 import 'package:career_readiness/features/gap/data/gap_repository.dart';
@@ -336,9 +337,9 @@ void main() {
     expect(w.curriculum.requested, [null]);
 
     // The sample-size caveat, with the real counts, above every figure.
-    const caveat = 'Indicative only: 11 job postings';
+    const caveat = 'Indicative only: 16 job postings';
     expect(find.text(caveat), findsOneWidget);
-    expect(find.textContaining('11 job postings, 5 to 6 per career'), findsOneWidget);
+    expect(find.textContaining('16 job postings, 5 to 6 per career'), findsOneWidget);
     expect(find.textContaining('not as grounds on its own for changing the curriculum'),
         findsOneWidget);
     expect(tester.getTopLeft(find.text(caveat)).dy,
@@ -429,7 +430,7 @@ void main() {
     expect(find.text('القسم'), findsOneWidget);
     expect(find.text('الطالب'), findsOneWidget);
 
-    const caveat = 'مؤشرات أولية فقط: 11 إعلانًا';
+    const caveat = 'مؤشرات أولية فقط: 16 إعلانًا';
     expect(find.text(caveat), findsOneWidget);
     expect(find.textContaining('لا كسبب كافٍ وحده لتغيير المنهج'), findsOneWidget);
     // Right to left by layout: the caveat's icon sits to the right of its title.
@@ -445,5 +446,106 @@ void main() {
     // Course codes stay as the catalog writes them.
     expect(find.text('تُدرَّس في: CIT 201 · CIT 202'), findsOneWidget);
     expect(find.text('تقديرات، وليست نتائج موثّقة'), findsOneWidget);
+  });
+
+  testWidgets('Two careers side by side: the closest is marked, and a tap opens its details',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+
+    await tester.tap(find.text('Business Analyst'));
+    await tester.tap(find.text('Software Developer'));
+    await tester.pump();
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    await tester.tap(button('See my readiness'));
+    await tester.pumpAndSettle();
+
+    expect(w.profiles.lastDraft!.career, 'Business Analyst');
+    expect(w.profiles.lastDraft!.otherCareers, ['Software Developer']);
+    expect(w.gap.careers.toSet(), {'Business Analyst', 'Software Developer'});
+
+    // Side by side, in the order chosen, each with its score and counts.
+    expect(find.text('Your careers side by side'), findsOneWidget);
+    final analyst = find.text('Business Analyst');
+    final developer = find.text('Software Developer');
+    expect(tester.getTopLeft(analyst).dy, tester.getTopLeft(developer).dy);
+    expect(tester.getCenter(analyst).dx, lessThan(tester.getCenter(developer).dx));
+    Finder column(Finder title) =>
+        find.ancestor(of: title, matching: find.byType(Card)).first;
+    Finder inColumn(Finder title, String text) =>
+        find.descendant(of: column(title), matching: find.text(text));
+    expect(inColumn(analyst, '10%'), findsOneWidget);
+    expect(inColumn(analyst, 'Covered: 2'), findsOneWidget);
+    expect(inColumn(analyst, 'Missing: 3'), findsOneWidget);
+    expect(inColumn(analyst, '6 job postings'), findsOneWidget);
+    expect(inColumn(analyst, 'Courses alone: 5%'), findsOneWidget,
+        reason: 'self-reported skills lift this score, so the record alone is shown too');
+    expect(inColumn(developer, '35%'), findsOneWidget);
+    expect(inColumn(developer, 'Covered: 3'), findsOneWidget);
+    expect(inColumn(developer, 'Missing: 2'), findsOneWidget);
+    expect(inColumn(developer, '5 job postings'), findsOneWidget);
+    expect(find.textContaining('Closest'), findsOneWidget);
+    expect(find.descendant(of: column(developer), matching: find.textContaining('Closest')),
+        findsOneWidget);
+    expect(find.textContaining('a few points apart is not a real difference'), findsOneWidget);
+
+    // The details below are the first career's until another is tapped.
+    expect(find.text('Readiness for Business Analyst'), findsOneWidget);
+    await tester.tap(developer);
+    await tester.pumpAndSettle();
+    expect(find.text('Readiness for Software Developer'), findsOneWidget);
+    expect(find.text('Python programming'), findsOneWidget);
+    expect(find.text('35%'), findsNWidgets(2), reason: 'the column and the score card');
+
+    // Suggestions follow the career on show.
+    await tester.tap(find.text('Suggested courses'));
+    await tester.pumpAndSettle();
+    expect(w.recommendations.careers, ['Software Developer']);
+    expect(find.text('For Software Developer'), findsOneWidget);
+  });
+
+  testWidgets('Three careers in Arabic on a phone: right to left, and nothing overflows',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    // A 360 x 800 phone, where three columns are tightest.
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3.0;
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('العربية'));
+    await tester.pumpAndSettle();
+    const chosen = ['محلل أعمال', 'محلل بيانات', 'مطور برمجيات'];
+    for (final career in chosen) {
+      await tester.tap(find.text(career));
+      await tester.pump();
+    }
+    await tester.tap(button('التالي: مهارات أخرى'));
+    await tester.pumpAndSettle();
+    await tester.tap(button('اعرض جاهزيتي'));
+    await tester.pumpAndSettle();
+
+    expect(w.profiles.lastDraft!.otherCareers, ['Data Analyst', 'Software Developer']);
+    expect(Directionality.of(tester.element(find.byType(ReadinessScreen))), TextDirection.rtl);
+    // On a phone in Arabic the quality flag fills the first screen, so the
+    // comparison is reached by scrolling -- after the flag, never before it.
+    final heading = find.text('مهنك جنبًا إلى جنب');
+    expect(find.byType(QualityBanner), findsOneWidget);
+    expect(heading, findsNothing, reason: 'below the flag, not yet built');
+    await tester.scrollUntilVisible(heading, 200,
+        scrollable: find
+            .descendant(of: find.byType(ReadinessScreen), matching: find.byType(Scrollable))
+            .first);
+    await tester.pumpAndSettle();
+    expect(heading, findsOneWidget);
+    // Right to left: the first chosen stands rightmost.
+    final xs = [for (final c in chosen) tester.getCenter(find.text(c)).dx];
+    expect(xs[0], greaterThan(xs[1]));
+    expect(xs[1], greaterThan(xs[2]));
+    expect(find.text('متوفرة: 3'), findsOneWidget);
+    expect(find.text('ناقصة: 4'), findsOneWidget);
+    expect(find.textContaining('الأقرب'), findsOneWidget);
+    expect(find.textContaining('فارق بضع نقاط لا يعني فرقًا حقيقيًا'), findsOneWidget);
   });
 }

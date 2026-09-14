@@ -29,7 +29,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get majorHint => 'مثل: نظم المعلومات';
 
   @override
-  String get careerLabel => 'المهنة المستهدفة';
+  String get careerLabel => 'المهن المستهدفة';
+
+  @override
+  String get careersHint => 'اختر مهنة واحدة، أو حتى ثلاث مهن للمقارنة بينها.';
 
   @override
   String get careerRequired => 'اختر مهنة للمتابعة.';
@@ -151,7 +154,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get seeRecommendations => 'المقررات المقترحة';
 
   @override
+  String get compareTitle => 'مهنك جنبًا إلى جنب';
+
+  @override
+  String compareCovered(int count) {
+    return 'متوفرة: $count';
+  }
+
+  @override
+  String compareMissing(int count) {
+    return 'ناقصة: $count';
+  }
+
+  @override
+  String compareFromCourses(String percent) {
+    return 'من المقررات وحدها: $percent';
+  }
+
+  @override
+  String get compareClosest => 'الأقرب';
+
+  @override
+  String get compareNote =>
+      'اضغط على مهنة لعرض تفاصيلها أدناه. تستند كل نتيجة إلى الإعلانات القليلة المذكورة تحت اسمها، لذا فإن فارق بضع نقاط لا يعني فرقًا حقيقيًا.';
+
+  @override
   String get recommendationsTitle => 'المقررات المقترحة';
+
+  @override
+  String recommendationsFor(String career) {
+    return 'لمهنة $career';
+  }
 
   @override
   String get suggestionTitle => 'اقتراحات، لا أحكام';

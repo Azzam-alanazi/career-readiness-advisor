@@ -10,8 +10,16 @@ class OnboardingController extends Notifier<OnboardingState> {
 
   void setMajor(String value) => state = state.copyWith(major: value);
 
-  void selectCareer(String career) =>
-      state = state.copyWith(career: career, error: null);
+  /// Adds a career, or lets it go if already chosen. A fourth is ignored: the
+  /// screen disables the rest once three are chosen.
+  void toggleCareer(String career) {
+    final careers = [...state.careers];
+    if (!careers.remove(career)) {
+      if (careers.length >= OnboardingState.maxCareers) return;
+      careers.add(career);
+    }
+    state = state.copyWith(careers: careers, error: null);
+  }
 
   void toggleCourse(String code) {
     final courses = {...state.courses};
@@ -37,7 +45,9 @@ class OnboardingController extends Notifier<OnboardingState> {
     try {
       final profile = await ref.read(profileRepositoryProvider).create(
             ProfileDraft(
-              career: state.career!,
+              // The first chosen is the main target; the rest are compared with it.
+              career: state.careers.first,
+              otherCareers: state.careers.skip(1).toList(),
               completedCourses: state.courses.toList()..sort(),
               selfReportedSkills: state.selfReported.toList()..sort(),
               // A blank field means "not given", not a major called "".

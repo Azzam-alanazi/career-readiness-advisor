@@ -167,10 +167,13 @@ class _SubmitBar extends ConsumerWidget {
   }
 
   Future<void> _submit(BuildContext context, WidgetRef ref) async {
+    final careers = ref.read(onboardingControllerProvider).careers;
     final id = await ref.read(onboardingControllerProvider.notifier).submit();
     if (id == null || !context.mounted) return;
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => ReadinessScreen(profileId: id)),
+      MaterialPageRoute<void>(
+        builder: (_) => ReadinessScreen(profileId: id, careers: careers),
+      ),
     );
   }
 }

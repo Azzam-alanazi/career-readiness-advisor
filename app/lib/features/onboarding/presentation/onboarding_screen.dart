@@ -4,6 +4,7 @@ import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
+import 'package:career_readiness/features/onboarding/domain/onboarding_state.dart';
 import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
@@ -67,19 +68,25 @@ class _Form extends ConsumerWidget {
           onChanged: controller.setMajor,
         ),
         SectionHeader(l.careerLabel),
+        Text(l.careersHint, style: text.bodySmall),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             for (final career in careers)
-              ChoiceChip(
+              FilterChip(
                 label: Text(careerName(l, career.name)),
-                selected: state.career == career.name,
-                onSelected: (_) => controller.selectCareer(career.name),
+                selected: state.careers.contains(career.name),
+                // Once three are chosen, the others wait until one is let go.
+                onSelected: state.careers.contains(career.name) ||
+                        state.careers.length < OnboardingState.maxCareers
+                    ? (_) => controller.toggleCareer(career.name)
+                    : null,
               ),
           ],
         ),
-        if (state.career == null)
+        if (state.careers.isEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(l.careerRequired, style: text.bodySmall),
@@ -107,7 +114,7 @@ class _NextBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final hasCareer =
-        ref.watch(onboardingControllerProvider.select((s) => s.career != null));
+        ref.watch(onboardingControllerProvider.select((s) => s.careers.isNotEmpty));
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),

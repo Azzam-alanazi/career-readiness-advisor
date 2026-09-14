@@ -302,7 +302,17 @@ skills step says so once, and no other screen repeats it. They touch no mapping,
 validation figure or cache. They are one student's word, and count only in that
 student's readiness.
 
-Verified headlessly by 29 tests and `flutter analyze`, and by a contract check
+Multi-career comparison arrived on 2026-09-14. A student can choose up to three
+target careers during onboarding. With two or three, the readiness screen shows
+them side by side, each with its score, its covered and missing counts, and its
+posting count. It marks the closest, but only when the scores differ as shown.
+Tapping one switches the details and the suggestions to it. The profiles already
+existed, so the backend only stores the extra careers and reads a profile against
+any one of them. Each reading equals a profile targeting that career alone. A
+note under the comparison says each score rests on a handful of postings, so a
+few points apart is not a real difference.
+
+Verified headlessly by 37 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not

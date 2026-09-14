@@ -6,9 +6,15 @@ part 'onboarding_state.freezed.dart';
 abstract class OnboardingState with _$OnboardingState {
   const OnboardingState._();
 
+  /// Enough to compare side by side on a phone, and no more.
+  static const maxCareers = 3;
+
   const factory OnboardingState({
     @Default('') String major,
-    String? career,
+
+    /// Target careers in the order chosen, at most [maxCareers]. The first is
+    /// the one the readiness screen opens on.
+    @Default(<String>[]) List<String> careers,
     @Default(<String>{}) Set<String> courses,
 
     /// Skill ids the student holds from outside coursework. Unverified, and
@@ -24,5 +30,5 @@ abstract class OnboardingState with _$OnboardingState {
 
   /// A career is the one thing the backend cannot do without. Zero courses and
   /// zero self-reported skills are valid answers.
-  bool get canSubmit => career != null && !submitting;
+  bool get canSubmit => careers.isNotEmpty && !submitting;
 }

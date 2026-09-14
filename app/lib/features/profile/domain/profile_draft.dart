@@ -8,6 +8,9 @@ part 'profile_draft.g.dart';
 abstract class ProfileDraft with _$ProfileDraft {
   const factory ProfileDraft({
     required String career,
+
+    /// Up to two more target careers, compared with [career] side by side.
+    @Default(<String>[]) List<String> otherCareers,
     required List<String> completedCourses,
 
     /// Skill ids held from outside coursework. Unverified.

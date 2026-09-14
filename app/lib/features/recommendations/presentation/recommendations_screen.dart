@@ -1,4 +1,5 @@
 import 'package:career_readiness/core/format.dart';
+import 'package:career_readiness/core/l10n/career_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
@@ -10,22 +11,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecommendationsScreen extends ConsumerWidget {
-  const RecommendationsScreen({super.key, required this.profileId});
+  const RecommendationsScreen({super.key, required this.profileId, required this.career});
 
   final String profileId;
+
+  /// The career the suggestions close gaps for: one of the profile's.
+  final String career;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
+    final key = (profileId: profileId, career: career);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.recommendationsTitle),
         actions: const [LanguageToggle()],
       ),
       body: AsyncView(
-        asyncValue: ref.watch(recommendationsProvider(profileId)),
-        onRetry: () => ref.invalidate(recommendationsProvider(profileId)),
-        data: (report) => _Suggestions(report: report),
+        asyncValue: ref.watch(recommendationsProvider(key)),
+        onRetry: () => ref.invalidate(recommendationsProvider(key)),
+        data: (report) => _Suggestions(report: report, career: career),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -45,9 +50,10 @@ class RecommendationsScreen extends ConsumerWidget {
 }
 
 class _Suggestions extends StatelessWidget {
-  const _Suggestions({required this.report});
+  const _Suggestions({required this.report, required this.career});
 
   final RecommendationsReport report;
+  final String career;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,11 @@ class _Suggestions extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // First, above everything: these are suggestions, not verdicts.
+        // Which career these are for: with several compared, it is not obvious.
+        Text(l.recommendationsFor(careerName(l, career)),
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 12),
+        // Then, above every course: these are suggestions, not verdicts.
         const _SuggestionNotice(),
         const SizedBox(height: 12),
         QualityBanner(validation: report.validation),

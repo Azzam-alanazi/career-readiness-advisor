@@ -8,6 +8,7 @@ abstract class Profile with _$Profile {
   const factory Profile({
     required String id,
     required String career,
+    @Default(<String>[]) List<String> otherCareers,
     String? major,
     required List<String> completedCourses,
     @Default(<String>[]) List<String> selfReportedSkills,

@@ -29,7 +29,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get majorHint => 'e.g. Information Systems';
 
   @override
-  String get careerLabel => 'Target career';
+  String get careerLabel => 'Target careers';
+
+  @override
+  String get careersHint =>
+      'Choose one, or up to three to compare side by side.';
 
   @override
   String get careerRequired => 'Choose a career to continue.';
@@ -152,7 +156,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeRecommendations => 'Suggested courses';
 
   @override
+  String get compareTitle => 'Your careers side by side';
+
+  @override
+  String compareCovered(int count) {
+    return 'Covered: $count';
+  }
+
+  @override
+  String compareMissing(int count) {
+    return 'Missing: $count';
+  }
+
+  @override
+  String compareFromCourses(String percent) {
+    return 'Courses alone: $percent';
+  }
+
+  @override
+  String get compareClosest => 'Closest';
+
+  @override
+  String get compareNote =>
+      'Tap a career to see its details below. Each score rests on the few postings shown under its name, so a few points apart is not a real difference.';
+
+  @override
   String get recommendationsTitle => 'Suggested courses';
+
+  @override
+  String recommendationsFor(String career) {
+    return 'For $career';
+  }
 
   @override
   String get suggestionTitle => 'Suggestions, not verdicts';

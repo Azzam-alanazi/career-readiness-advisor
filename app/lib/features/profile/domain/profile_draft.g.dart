@@ -9,6 +9,11 @@ part of 'profile_draft.dart';
 _ProfileDraft _$ProfileDraftFromJson(Map<String, dynamic> json) =>
     _ProfileDraft(
       career: json['career'] as String,
+      otherCareers:
+          (json['other_careers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       completedCourses: (json['completed_courses'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -23,6 +28,7 @@ _ProfileDraft _$ProfileDraftFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ProfileDraftToJson(_ProfileDraft instance) =>
     <String, dynamic>{
       'career': instance.career,
+      'other_careers': instance.otherCareers,
       'completed_courses': instance.completedCourses,
       'self_reported_skills': instance.selfReportedSkills,
       'major': instance.major,

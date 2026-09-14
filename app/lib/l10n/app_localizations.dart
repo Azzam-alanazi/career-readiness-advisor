@@ -137,8 +137,14 @@ abstract class AppLocalizations {
   /// No description provided for @careerLabel.
   ///
   /// In en, this message translates to:
-  /// **'Target career'**
+  /// **'Target careers'**
   String get careerLabel;
+
+  /// No description provided for @careersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one, or up to three to compare side by side.'**
+  String get careersHint;
 
   /// No description provided for @careerRequired.
   ///
@@ -332,11 +338,53 @@ abstract class AppLocalizations {
   /// **'Suggested courses'**
   String get seeRecommendations;
 
+  /// No description provided for @compareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your careers side by side'**
+  String get compareTitle;
+
+  /// No description provided for @compareCovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Covered: {count}'**
+  String compareCovered(int count);
+
+  /// No description provided for @compareMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing: {count}'**
+  String compareMissing(int count);
+
+  /// No description provided for @compareFromCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses alone: {percent}'**
+  String compareFromCourses(String percent);
+
+  /// No description provided for @compareClosest.
+  ///
+  /// In en, this message translates to:
+  /// **'Closest'**
+  String get compareClosest;
+
+  /// No description provided for @compareNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a career to see its details below. Each score rests on the few postings shown under its name, so a few points apart is not a real difference.'**
+  String get compareNote;
+
   /// No description provided for @recommendationsTitle.
   ///
   /// In en, this message translates to:
   /// **'Suggested courses'**
   String get recommendationsTitle;
+
+  /// No description provided for @recommendationsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'For {career}'**
+  String recommendationsFor(String career);
 
   /// No description provided for @suggestionTitle.
   ///

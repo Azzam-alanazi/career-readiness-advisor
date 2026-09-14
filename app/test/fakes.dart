@@ -25,6 +25,7 @@ const validationJson = <String, dynamic>{
 
 const careersJson = <Map<String, dynamic>>[
   {'name': 'Business Analyst', 'posting_count': 6},
+  {'name': 'Data Analyst', 'posting_count': 5},
   {'name': 'Software Developer', 'posting_count': 5},
 ];
 
@@ -138,6 +139,88 @@ const gapJson = <String, dynamic>{
       'demand': 0.3333,
       'demand_percent': 33,
     },
+  ],
+  'validation': validationJson,
+};
+
+const _sql = <String, dynamic>{
+  'id': 'SK17',
+  'en': 'SQL',
+  'ar': 'لغة الاستعلام الهيكلية SQL',
+  'category': 'data',
+};
+const _databases = <String, dynamic>{
+  'id': 'SK16',
+  'en': 'Database management',
+  'ar': 'إدارة قواعد البيانات',
+  'category': 'data',
+};
+const _modelling = <String, dynamic>{
+  'id': 'SK15',
+  'en': 'Data modelling',
+  'ar': 'نمذجة البيانات',
+  'category': 'data',
+};
+const _python = <String, dynamic>{
+  'id': 'SK25',
+  'en': 'Python programming',
+  'ar': 'برمجة بايثون',
+  'category': 'software_development',
+};
+const _javascript = <String, dynamic>{
+  'id': 'SK29',
+  'en': 'JavaScript',
+  'ar': 'جافاسكريبت',
+  'category': 'software_development',
+};
+
+// The same student read against the other two careers. Software Developer is
+// the furthest along (35% against 10% and 20%), so a comparison has a closest
+// career to mark, and every count differs: 2, 3 and 1 covered; 3, 2 and 4 missing.
+const gapDeveloperJson = <String, dynamic>{
+  'profile_id': 'p1',
+  'career': 'Software Developer',
+  'readiness': 0.35,
+  'readiness_percent': 35,
+  'readiness_from_courses': 0.35,
+  'readiness_from_courses_percent': 35,
+  'covered': [
+    {..._sql, 'demand': 0.6, 'demand_percent': 60, 'source': 'courses'},
+    {..._databases, 'demand': 0.4, 'demand_percent': 40, 'source': 'courses'},
+    {..._modelling, 'demand': 0.2, 'demand_percent': 20, 'source': 'courses'},
+  ],
+  'covered_from_courses': [
+    {..._sql, 'demand': 0.6, 'demand_percent': 60},
+    {..._databases, 'demand': 0.4, 'demand_percent': 40},
+    {..._modelling, 'demand': 0.2, 'demand_percent': 20},
+  ],
+  'covered_self_reported': <dynamic>[],
+  'missing': [
+    {..._python, 'demand': 0.8, 'demand_percent': 80},
+    {..._javascript, 'demand': 0.4, 'demand_percent': 40},
+  ],
+  'validation': validationJson,
+};
+
+const gapDataJson = <String, dynamic>{
+  'profile_id': 'p1',
+  'career': 'Data Analyst',
+  'readiness': 0.2,
+  'readiness_percent': 20,
+  'readiness_from_courses': 0.2,
+  'readiness_from_courses_percent': 20,
+  'covered': [
+    {..._databases, 'demand': 0.4, 'demand_percent': 40, 'source': 'courses'},
+  ],
+  'covered_from_courses': [
+    {..._databases, 'demand': 0.4, 'demand_percent': 40},
+  ],
+  'covered_self_reported': <dynamic>[],
+  'missing': [
+    {..._python, 'demand': 0.6, 'demand_percent': 60},
+    {..._sql, 'demand': 0.6, 'demand_percent': 60},
+    {..._modelling, 'demand': 0.4, 'demand_percent': 40},
+    {..._javascript, 'demand': 0.2, 'demand_percent': 20},
   ],
   'validation': validationJson,
 };
@@ -361,6 +444,7 @@ class FakeProfileRepository implements ProfileRepository {
     return Profile(
       id: 'p1',
       career: draft.career,
+      otherCareers: draft.otherCareers,
       major: draft.major,
       completedCourses: draft.completedCourses,
       selfReportedSkills: draft.selfReportedSkills,
@@ -371,16 +455,26 @@ class FakeProfileRepository implements ProfileRepository {
 
 class FakeGapRepository implements GapRepository {
   final requested = <String>[];
+  final careers = <String?>[];
 
   @override
-  Future<GapReport> fetch(String profileId) async {
+  Future<GapReport> fetch(String profileId, {String? career}) async {
     requested.add(profileId);
-    return GapReport.fromJson(gapJson);
+    careers.add(career);
+    return GapReport.fromJson(switch (career) {
+      'Software Developer' => gapDeveloperJson,
+      'Data Analyst' => gapDataJson,
+      _ => gapJson,
+    });
   }
 }
 
 class FakeRecommendationsRepository implements RecommendationsRepository {
+  final careers = <String?>[];
+
   @override
-  Future<RecommendationsReport> fetch(String profileId) async =>
-      RecommendationsReport.fromJson(recsJson);
+  Future<RecommendationsReport> fetch(String profileId, {String? career}) async {
+    careers.add(career);
+    return RecommendationsReport.fromJson(recsJson);
+  }
 }

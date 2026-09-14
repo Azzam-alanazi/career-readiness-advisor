@@ -5,7 +5,14 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-_COLUMNS = "id, career, major, completed_courses, self_reported_skills, created_at"
+_COLUMNS = ("id, career, major, completed_courses, self_reported_skills, "
+            "other_careers, created_at")
+
+# Columns added after the first release, each with the default that reads an
+# old row correctly: a profile saved before the column existed reported no
+# skills and compared no careers.
+_ADDED = {"self_reported_skills": "TEXT NOT NULL DEFAULT '[]'",
+          "other_careers": "TEXT NOT NULL DEFAULT '[]'"}
 
 
 class ProfileStore:
@@ -19,14 +26,12 @@ class ProfileStore:
                          major                TEXT,
                          completed_courses    TEXT NOT NULL,
                          created_at           TEXT NOT NULL,
-                         self_reported_skills TEXT NOT NULL DEFAULT '[]')""")
-        # Profiles saved before self-reported skills existed have no such
-        # column. Adding it with a default of [] keeps them readable, as
-        # profiles that report no skills.
+                         self_reported_skills TEXT NOT NULL DEFAULT '[]',
+                         other_careers        TEXT NOT NULL DEFAULT '[]')""")
         columns = {row[1] for row in self._run("PRAGMA table_info(profiles)")}
-        if "self_reported_skills" not in columns:
-            self._run("ALTER TABLE profiles ADD COLUMN self_reported_skills "
-                      "TEXT NOT NULL DEFAULT '[]'")
+        for name, declaration in _ADDED.items():
+            if name not in columns:
+                self._run(f"ALTER TABLE profiles ADD COLUMN {name} {declaration}")
 
     def _run(self, sql: str, params: tuple = ()) -> list[tuple]:
         # One short-lived connection per call: FastAPI runs sync handlers on a
@@ -45,21 +50,25 @@ class ProfileStore:
             db.close()
 
     def create(self, career: str, major: str | None, courses: list[str],
-               self_reported: list[str] | tuple = ()) -> dict:
+               self_reported: list[str] | tuple = (),
+               other_careers: list[str] | tuple = ()) -> dict:
         row = {"id": uuid.uuid4().hex, "career": career, "major": major,
                "completed_courses": courses,
                "self_reported_skills": list(self_reported),
+               "other_careers": list(other_careers),
                "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-        self._run(f"INSERT INTO profiles ({_COLUMNS}) VALUES (?, ?, ?, ?, ?, ?)",
+        self._run(f"INSERT INTO profiles ({_COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?)",
                   (row["id"], career, major, json.dumps(courses),
-                   json.dumps(row["self_reported_skills"]), row["created_at"]))
+                   json.dumps(row["self_reported_skills"]),
+                   json.dumps(row["other_careers"]), row["created_at"]))
         return row
 
     def get(self, profile_id: str) -> dict | None:
         rows = self._run(f"SELECT {_COLUMNS} FROM profiles WHERE id = ?", (profile_id,))
         if not rows:
             return None
-        pid, career, major, courses, skills, created = rows[0]
+        pid, career, major, courses, skills, others, created = rows[0]
         return {"id": pid, "career": career, "major": major,
                 "completed_courses": json.loads(courses),
-                "self_reported_skills": json.loads(skills), "created_at": created}
+                "self_reported_skills": json.loads(skills),
+                "other_careers": json.loads(others), "created_at": created}

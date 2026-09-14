@@ -108,11 +108,13 @@ void main() {
   test('a profile draft serialises to the backend field names', () {
     const draft = ProfileDraft(
       career: 'Business Analyst',
+      otherCareers: ['Software Developer'],
       completedCourses: ['IS 230'],
       selfReportedSkills: ['SK85'],
     );
     expect(draft.toJson(), {
       'career': 'Business Analyst',
+      'other_careers': ['Software Developer'],
       'completed_courses': ['IS 230'],
       'self_reported_skills': ['SK85'],
       'major': null,

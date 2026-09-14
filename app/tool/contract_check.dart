@@ -205,6 +205,49 @@ Future<void> main(List<String> args) async {
             selfRecs.uncovered.every((s) => s.id != claimed.id),
         'nothing is suggested for a skill the student already reports');
 
+    // Several careers on one profile: each, read against the same record, must
+    // match a profile that targets that career alone.
+    print('\ncomparison');
+    Future<Profile> createProfile(ProfileDraft d) async => Profile.fromJson(decode(
+          await client.post(
+            Uri.parse('$base/profiles'),
+            headers: const {'Content-Type': 'application/json'},
+            body: jsonEncode(d.toJson()),
+          ),
+        ) as Map<String, dynamic>);
+    const compared = ['Business Analyst', 'Data Analyst', 'Software Developer'];
+    final several = await createProfile(ProfileDraft(
+      career: compared.first,
+      otherCareers: compared.sublist(1),
+      completedCourses: sixCourses,
+    ));
+    check(several.otherCareers.join(', ') == compared.sublist(1).join(', '),
+        'stored with ${compared.length} careers: ${compared.join(', ')}');
+    final scores = <String, int>{};
+    for (final career in compared) {
+      final side = GapReport.fromJson(await get(
+              '/profiles/${several.id}/gap?career=${Uri.encodeComponent(career)}')
+          as Map<String, dynamic>);
+      final single = await createProfile(
+          ProfileDraft(career: career, completedCourses: sixCourses));
+      final alone = GapReport.fromJson(
+          await get('/profiles/${single.id}/gap') as Map<String, dynamic>);
+      scores[career] = side.readinessPercent;
+      check(
+          side.career == career &&
+              side.readiness == alone.readiness &&
+              side.covered.length == alone.covered.length &&
+              side.missing.length == alone.missing.length,
+          '$career: ${side.readinessPercent}%, ${side.covered.length} covered, '
+          '${side.missing.length} missing -- the same as targeting it alone');
+    }
+    final closest = scores.entries.reduce((a, b) => b.value > a.value ? b : a);
+    check(true, 'closest of the three for these six courses: ${closest.key} (${closest.value}%)');
+    final notNamed = await client.get(Uri.parse(
+        '$base/profiles/${several.id}/gap?career=${Uri.encodeComponent('ERP Consultant')}'));
+    check(notNamed.statusCode == 422,
+        'a career the profile does not name is refused (HTTP ${notNamed.statusCode})');
+
     // The department's view: the catalog against every posting, for one career
     // or all of them, from the same profiles and course labels.
     Future<CurriculumGap> curriculum([String? career]) async =>

@@ -4,6 +4,32 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-14 — Up to three careers, compared side by side
+
+A student can now choose up to three target careers during onboarding. The
+readiness screen shows them side by side: each career's score, covered and
+missing counts, and posting count. It marks the one the student is closest to,
+and a tap switches the details and the suggestions to that career.
+
+- **No new computation.** A profile stores its extra careers as
+  `other_careers`, and `/gap` and `/recommendations` take a `career` from the
+  profile's own. Each reading equals a profile that targets that career alone;
+  the contract check confirms this on the live data.
+- **The demo's six courses, read against three careers:**
+  - Business Analyst: 31% (7 covered, 29 missing), the closest
+  - Software Developer: 16% (6 covered, 38 missing)
+  - Data Analyst: 13% (3 covered, 19 missing)
+- **Close scores are not called.** "Closest" is marked only when the scores
+  differ as displayed. A note says each score rests on that career's 5 or 6
+  postings, so a few points apart is not a real difference.
+- **On a phone in Arabic** the quality flag fills the first screen, so the
+  comparison is reached by scrolling. It stays after the flag, by the project's
+  rule that the flag comes before the figures it qualifies.
+
+Backend tests: 80 → 90. App tests: 33 → 37.
+
+---
+
 ## 2026-09-13 — Department curriculum-gap view
 
 A new view for the department, not the student: the course catalog against what

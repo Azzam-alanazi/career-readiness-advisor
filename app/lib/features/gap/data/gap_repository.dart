@@ -7,8 +7,10 @@ class GapRepository {
 
   final ApiClient _api;
 
-  Future<GapReport> fetch(String profileId) async => GapReport.fromJson(
-        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/gap') as Json,
+  /// The profile read against [career], one of its careers; its first when null.
+  Future<GapReport> fetch(String profileId, {String? career}) async => GapReport.fromJson(
+        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/gap'
+            '${career == null ? '' : '?career=${Uri.encodeComponent(career)}'}') as Json,
       );
 }
 

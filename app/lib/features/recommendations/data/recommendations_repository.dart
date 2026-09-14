@@ -10,10 +10,12 @@ class RecommendationsRepository {
   /// Every suggestion, not a top three: each missing skill gets a university
   /// course, an online course, or a place in `uncovered`, and the screen shows
   /// all of them.
-  Future<RecommendationsReport> fetch(String profileId) async =>
+  ///
+  /// [career] is one of the profile's careers; its first when null.
+  Future<RecommendationsReport> fetch(String profileId, {String? career}) async =>
       RecommendationsReport.fromJson(
-        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/recommendations')
-            as Json,
+        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/recommendations'
+            '${career == null ? '' : '?career=${Uri.encodeComponent(career)}'}') as Json,
       );
 }
 

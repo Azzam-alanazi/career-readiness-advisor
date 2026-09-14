@@ -46,6 +46,10 @@ class ProfileIn(BaseModel):
         default_factory=list,
         description="Skill ids from GET /skills that the student holds from outside "
                     "coursework: self-study, certifications, work experience. Unverified.")
+    other_careers: list[str] = Field(
+        default_factory=list, max_length=2,
+        description="Up to two more target careers from GET /careers, to compare with "
+                    "`career` side by side. Repeats, and `career` itself, are dropped")
     major: str | None = None
 
 
@@ -55,6 +59,10 @@ class ProfileOut(BaseModel):
     major: str | None
     completed_courses: list[str]
     self_reported_skills: list[str]
+    other_careers: list[str]
+    careers: list[str] = Field(
+        description="`career` first, then `other_careers`: every career the profile's "
+                    "gap and suggestions can be read against")
     created_at: str
 
 
