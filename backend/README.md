@@ -13,8 +13,9 @@ recommendation response carry a `validation` block with `gate_passed: false`
 and a plain-language note. Show it to users next to the numbers it qualifies.
 
 F1 is measured on the 15 hand-labelled postings. The career profiles the API
-serves are built on every collected posting: 52 since 2026-09-14, 10 or 11 per
-career. The extra postings change demand, not the measured quality of the
+serves are built on every collected posting: 82 across eight careers since
+2026-09-14, 10 or 11 per career. The three careers added then have no labelled
+posting at all. The extra postings change demand, not the measured quality of the
 matcher.
 
 Every course in the catalog, the real Shaqra IS catalog, is hand-labelled. The
@@ -54,7 +55,7 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 | GET | `/profiles/{id}` | the stored profile |
 | GET | `/profiles/{id}/gap` | for `career`, one of the profile's (its first when omitted): readiness % from all acquired skills and `readiness_from_courses` from the courses alone; covered skills, each with its `source`, also split into `covered_from_courses` and `covered_self_reported`; missing skills ranked by demand |
 | GET | `/profiles/{id}/recommendations` | for every missing skill, a university course if the catalog teaches it, otherwise an online course, each marked by `source`; skills with neither listed as `uncovered`. Optional `career` as for the gap; optional `limit` caps each list |
-| GET | `/curriculum/gap` | the department's view, for one `career` or all when omitted: demanded skills no course teaches, ranked by their share of postings, with the careers asking; taught skills no posting names, with their courses; coverage (taught / demanded) for the scope and for every career; `sample_note` on how few postings this rests on |
+| GET | `/curriculum/gap` | the department's view, for one `career` or all when omitted: demanded skills no course teaches, ranked by their share of postings, with the careers asking; taught skills no posting names, with their courses; skills named by too few postings to count (`below_threshold`), with their courses; coverage (taught / demanded) for the scope and for every career, with the postings a skill needs there (`min_postings`); `sample_note` on how few postings this rests on |
 
 Unknown careers, course codes and skill ids are rejected with a 422 naming the
 offending value, and so is a `career` the profile does not name. Skill entries carry both `en` and `ar`. Course names are English only,
@@ -100,7 +101,7 @@ because the catalog is.
   `min_demand`, so a career's uncovered skills are what a student with every
   course would still miss. Across careers the postings are pooled. Coverage
   counts skills, not demand. `sample_note` and the `validation` block travel with
-  it: 52 postings, 10 or 11 per career, is too few for these gaps to drive a
+  it: 82 postings, 10 or 11 per career, is too few for these gaps to drive a
   curriculum decision on
   their own.
 - **SQLite with a TRUNCATE journal.** The repo sits in OneDrive, which can refuse
@@ -109,7 +110,10 @@ because the catalog is.
   on the next start.
 - **Engine defaults pass through untouched.** `analyze_gap`'s `min_demand=0.15`
   has never been validated. The API uses it as-is rather than burying a second
-  unvalidated number in the service layer.
+  unvalidated number in the service layer. It is a share of a career's postings,
+  so its meaning in postings moves with the sample: 1 posting at 5 or 6 per
+  career, 2 at 10 or 11. The curriculum view reports that number
+  (`min_postings`) and lists the skills it leaves out (`below_threshold`).
 
 ## Tests
 
@@ -117,7 +121,7 @@ because the catalog is.
 python -m pytest
 ```
 
-90 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+94 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -134,7 +138,8 @@ profiles table migrated in place; up to three careers per profile, each read
 exactly as a profile targeting it alone, and a career the profile does not name
 refused; the curriculum view reading the labels, pooling
 postings across careers, ranking by demand, and agreeing with what a student
-with every course still misses; and the reports below.
+with every course still misses, and listing the skills too few postings name
+rather than dropping them; and the reports below.
 
 ## Online courses
 

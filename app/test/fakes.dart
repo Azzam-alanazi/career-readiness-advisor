@@ -307,6 +307,7 @@ const _perCareerJson = <Map<String, dynamic>>[
     'taught': 2,
     'coverage': 0.5,
     'coverage_percent': 50,
+    'min_postings': 2,
   },
   {
     'career': 'Software Developer',
@@ -315,8 +316,30 @@ const _perCareerJson = <Map<String, dynamic>>[
     'taught': 1,
     'coverage': 0.3333,
     'coverage_percent': 33,
+    'min_postings': 2,
   },
 ];
+
+// Named by one posting each, below the two the threshold takes.
+const _dataQuality = <String, dynamic>{
+  'id': 'SK19',
+  'en': 'Data quality management',
+  'ar': 'إدارة جودة البيانات',
+  'category': 'data',
+  'postings': 1,
+  'careers': ['Business Analyst'],
+  'courses': <String>[],
+};
+
+const _databaseOnce = <String, dynamic>{
+  'id': 'SK16',
+  'en': 'Database management',
+  'ar': 'إدارة قواعد البيانات',
+  'category': 'data',
+  'postings': 1,
+  'careers': ['Software Developer'],
+  'courses': ['CIT 201', 'CIS 302'],
+};
 
 const curriculumAllJson = <String, dynamic>{
   'career': null,
@@ -363,6 +386,7 @@ const curriculumAllJson = <String, dynamic>{
     },
   ],
   'not_asked': [_networks],
+  'below_threshold': [_dataQuality, _databaseOnce],
   'per_career': _perCareerJson,
   'sample_note': 'Based on 11 job postings, 5 to 6 per career.',
   'validation': validationJson,
@@ -402,6 +426,7 @@ const curriculumAnalystJson = <String, dynamic>{
     },
     _networks,
   ],
+  'below_threshold': [_dataQuality],
   'per_career': _perCareerJson,
   'sample_note': 'Based on 11 job postings, 5 to 6 per career.',
   'validation': validationJson,

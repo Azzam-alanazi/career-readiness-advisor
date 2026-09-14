@@ -378,6 +378,20 @@ void main() {
     expect(find.text('Network administration'), findsOneWidget);
     expect(find.text('Taught in: CIT 201 · CIT 202'), findsOneWidget);
 
+    // What the threshold leaves out is on the screen, not silently dropped:
+    // stated on the coverage card, then listed after the uncovered skills.
+    expect(find.textContaining("named in at least 2 of a career's postings"), findsOneWidget);
+    expect(find.textContaining('2 named by fewer are left out'), findsOneWidget);
+    const below = 'Named, but below the threshold (2)';
+    expect(find.text(below), findsOneWidget);
+    expect(find.text('Data quality management'), findsOneWidget);
+    expect(find.text('Taught in no course'), findsOneWidget);
+    expect(find.text('Taught in: CIT 201 · CIS 302'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('JavaScript')).dy,
+        lessThan(tester.getTopLeft(find.text(below)).dy));
+    expect(tester.getTopLeft(find.text(below)).dy,
+        lessThan(tester.getTopLeft(find.text('Coverage by career')).dy));
+
     // One career.
     await tester.tap(find.widgetWithText(ChoiceChip, 'Business Analyst'));
     await tester.pumpAndSettle();
@@ -389,6 +403,8 @@ void main() {
     expect(find.textContaining('Asked for in:'), findsNothing,
         reason: 'with one career chosen, which career asks goes without saying');
     expect(find.text('Taught in: IS 230'), findsOneWidget);
+    expect(find.text('Named, but below the threshold (1)'), findsOneWidget);
+    expect(find.textContaining('1 named by fewer are left out'), findsOneWidget);
     expect(find.text(caveat), findsOneWidget, reason: 'the caveat stays for every scope');
   });
 
@@ -445,6 +461,9 @@ void main() {
     expect(find.textContaining('· 6 إعلانات'), findsOneWidget);
     // Course codes stay as the catalog writes them.
     expect(find.text('تُدرَّس في: CIT 201 · CIT 202'), findsOneWidget);
+    expect(find.text('مذكورة لكن دون الحد (2)'), findsOneWidget);
+    expect(find.text('لا يدرّسها أي مقرر'), findsOneWidget);
+    expect(find.textContaining('ما لا يقل عن 2 من إعلانات المهنة'), findsOneWidget);
     expect(find.text('تقديرات، وليست نتائج موثّقة'), findsOneWidget);
   });
 

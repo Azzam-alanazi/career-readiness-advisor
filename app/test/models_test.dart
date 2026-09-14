@@ -99,6 +99,9 @@ void main() {
     expect(all.perCareer.map((c) => (c.career, c.postingCount, c.coveragePercent)),
         [('Business Analyst', 6, 50), ('Software Developer', 5, 33)]);
     expect(all.validation.gatePassed, isFalse);
+    expect(all.belowThreshold.map((s) => (s.id, s.postings, s.courses.length)),
+        [('SK19', 1, 0), ('SK16', 1, 2)]);
+    expect(all.perCareer.map((c) => c.minPostings), [2, 2]);
 
     expect(CurriculumGap.fromJson(curriculumAnalystJson).career, 'Business Analyst');
     // A whole-number coverage arrives as an int.

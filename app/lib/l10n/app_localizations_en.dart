@@ -372,6 +372,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String curriculumThreshold(String k) {
+    return 'Counted: skills named in at least $k of a career\'s postings.';
+  }
+
+  @override
+  String curriculumThresholdLeftOut(int count) {
+    return '$count named by fewer are left out and listed below.';
+  }
+
+  @override
+  String curriculumBelowTitle(int count) {
+    return 'Named, but below the threshold ($count)';
+  }
+
+  @override
+  String curriculumBelowNote(String k) {
+    return 'Each is named by at least one posting, but by fewer than $k of any career\'s postings, so it counts as neither demanded nor not asked for. The threshold is a share of postings, so the number of postings it takes grows with the sample.';
+  }
+
+  @override
+  String get curriculumNotTaught => 'Taught in no course';
+
+  @override
   String get careerBusinessAnalyst => 'Business Analyst';
 
   @override
@@ -385,4 +408,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get careerSoftwareDeveloper => 'Software Developer';
+
+  @override
+  String get careerDatabaseAdministrator => 'Database Administrator';
+
+  @override
+  String get careerCybersecurityAnalyst => 'Cybersecurity Analyst';
+
+  @override
+  String get careerItProjectManager => 'IT Project Manager';
 }

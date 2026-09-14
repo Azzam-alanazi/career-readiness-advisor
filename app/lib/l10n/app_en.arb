@@ -128,10 +128,22 @@
   "curriculumNoneNotAsked": "Every skill the catalog teaches is asked for by at least one posting.",
   "curriculumTaughtIn": "Taught in: {courses}",
   "@curriculumTaughtIn": {"placeholders": {"courses": {"type": "String"}}},
+  "curriculumThreshold": "Counted: skills named in at least {k} of a career's postings.",
+  "@curriculumThreshold": {"placeholders": {"k": {"type": "String"}}},
+  "curriculumThresholdLeftOut": "{count} named by fewer are left out and listed below.",
+  "@curriculumThresholdLeftOut": {"placeholders": {"count": {"type": "int"}}},
+  "curriculumBelowTitle": "Named, but below the threshold ({count})",
+  "@curriculumBelowTitle": {"placeholders": {"count": {"type": "int"}}},
+  "curriculumBelowNote": "Each is named by at least one posting, but by fewer than {k} of any career's postings, so it counts as neither demanded nor not asked for. The threshold is a share of postings, so the number of postings it takes grows with the sample.",
+  "@curriculumBelowNote": {"placeholders": {"k": {"type": "String"}}},
+  "curriculumNotTaught": "Taught in no course",
 
   "careerBusinessAnalyst": "Business Analyst",
   "careerDataAnalyst": "Data Analyst",
   "careerErpConsultant": "ERP Consultant",
   "careerItSupportSpecialist": "IT Support Specialist",
-  "careerSoftwareDeveloper": "Software Developer"
+  "careerSoftwareDeveloper": "Software Developer",
+  "careerDatabaseAdministrator": "Database Administrator",
+  "careerCybersecurityAnalyst": "Cybersecurity Analyst",
+  "careerItProjectManager": "IT Project Manager"
 }

@@ -23,7 +23,9 @@ mixin _$CurriculumGap {
  double get coverage; int get coveragePercent;/// Demanded skills no course teaches, most in demand first -- the
 /// backend's order, rendered as received.
  List<CurriculumSkill> get uncovered;/// Skills the catalog teaches that no posting in scope names.
- List<TaughtSkill> get notAsked;/// Every career's coverage, whatever the scope.
+ List<TaughtSkill> get notAsked;/// Skills some posting names, but too few to count as demanded in any
+/// career in scope -- in neither list above, so listed on their own.
+ List<BelowThresholdSkill> get belowThreshold;/// Every career's coverage, whatever the scope.
  List<CareerCoverage> get perCareer; ValidationInfo get validation;
 /// Create a copy of CurriculumGap
 /// with the given fields replaced by the non-null parameter values.
@@ -38,20 +40,20 @@ $CurriculumGapCopyWith<CurriculumGap> get copyWith => _$CurriculumGapCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as CurriculumGap;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurriculumGap&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.postingCount, _this.postingCount) || other.postingCount == _this.postingCount)&&(identical(other.minDemand, _this.minDemand) || other.minDemand == _this.minDemand)&&(identical(other.demanded, _this.demanded) || other.demanded == _this.demanded)&&(identical(other.taught, _this.taught) || other.taught == _this.taught)&&(identical(other.coverage, _this.coverage) || other.coverage == _this.coverage)&&(identical(other.coveragePercent, _this.coveragePercent) || other.coveragePercent == _this.coveragePercent)&&const DeepCollectionEquality().equals(other.uncovered, _this.uncovered)&&const DeepCollectionEquality().equals(other.notAsked, _this.notAsked)&&const DeepCollectionEquality().equals(other.perCareer, _this.perCareer)&&(identical(other.validation, _this.validation) || other.validation == _this.validation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurriculumGap&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.postingCount, _this.postingCount) || other.postingCount == _this.postingCount)&&(identical(other.minDemand, _this.minDemand) || other.minDemand == _this.minDemand)&&(identical(other.demanded, _this.demanded) || other.demanded == _this.demanded)&&(identical(other.taught, _this.taught) || other.taught == _this.taught)&&(identical(other.coverage, _this.coverage) || other.coverage == _this.coverage)&&(identical(other.coveragePercent, _this.coveragePercent) || other.coveragePercent == _this.coveragePercent)&&const DeepCollectionEquality().equals(other.uncovered, _this.uncovered)&&const DeepCollectionEquality().equals(other.notAsked, _this.notAsked)&&const DeepCollectionEquality().equals(other.belowThreshold, _this.belowThreshold)&&const DeepCollectionEquality().equals(other.perCareer, _this.perCareer)&&(identical(other.validation, _this.validation) || other.validation == _this.validation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CurriculumGap;
-  return Object.hash(runtimeType,_this.career,_this.postingCount,_this.minDemand,_this.demanded,_this.taught,_this.coverage,_this.coveragePercent,const DeepCollectionEquality().hash(_this.uncovered),const DeepCollectionEquality().hash(_this.notAsked),const DeepCollectionEquality().hash(_this.perCareer),_this.validation);
+  return Object.hash(runtimeType,_this.career,_this.postingCount,_this.minDemand,_this.demanded,_this.taught,_this.coverage,_this.coveragePercent,const DeepCollectionEquality().hash(_this.uncovered),const DeepCollectionEquality().hash(_this.notAsked),const DeepCollectionEquality().hash(_this.belowThreshold),const DeepCollectionEquality().hash(_this.perCareer),_this.validation);
 }
 
 @override
 String toString() {
   final _this = this as CurriculumGap;
-  return 'CurriculumGap(career: ${_this.career}, postingCount: ${_this.postingCount}, minDemand: ${_this.minDemand}, demanded: ${_this.demanded}, taught: ${_this.taught}, coverage: ${_this.coverage}, coveragePercent: ${_this.coveragePercent}, uncovered: ${_this.uncovered}, notAsked: ${_this.notAsked}, perCareer: ${_this.perCareer}, validation: ${_this.validation})';
+  return 'CurriculumGap(career: ${_this.career}, postingCount: ${_this.postingCount}, minDemand: ${_this.minDemand}, demanded: ${_this.demanded}, taught: ${_this.taught}, coverage: ${_this.coverage}, coveragePercent: ${_this.coveragePercent}, uncovered: ${_this.uncovered}, notAsked: ${_this.notAsked}, belowThreshold: ${_this.belowThreshold}, perCareer: ${_this.perCareer}, validation: ${_this.validation})';
 }
 
 
@@ -62,7 +64,7 @@ abstract mixin class $CurriculumGapCopyWith<$Res>  {
   factory $CurriculumGapCopyWith(CurriculumGap value, $Res Function(CurriculumGap) _then) = _$CurriculumGapCopyWithImpl;
 @useResult
 $Res call({
- String? career, int postingCount, double minDemand, int demanded, int taught, double coverage, int coveragePercent, List<CurriculumSkill> uncovered, List<TaughtSkill> notAsked, List<CareerCoverage> perCareer, ValidationInfo validation
+ String? career, int postingCount, double minDemand, int demanded, int taught, double coverage, int coveragePercent, List<CurriculumSkill> uncovered, List<TaughtSkill> notAsked, List<BelowThresholdSkill> belowThreshold, List<CareerCoverage> perCareer, ValidationInfo validation
 });
 
 
@@ -79,7 +81,7 @@ class _$CurriculumGapCopyWithImpl<$Res>
 
 /// Create a copy of CurriculumGap
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? career = freezed,Object? postingCount = null,Object? minDemand = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? uncovered = null,Object? notAsked = null,Object? perCareer = null,Object? validation = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? career = freezed,Object? postingCount = null,Object? minDemand = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? uncovered = null,Object? notAsked = null,Object? belowThreshold = null,Object? perCareer = null,Object? validation = null,}) {
   return _then(CurriculumGap(
 career: freezed == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String?,postingCount: null == postingCount ? _self.postingCount : postingCount // ignore: cast_nullable_to_non_nullable
@@ -90,7 +92,8 @@ as int,coverage: null == coverage ? _self.coverage : coverage // ignore: cast_nu
 as double,coveragePercent: null == coveragePercent ? _self.coveragePercent : coveragePercent // ignore: cast_nullable_to_non_nullable
 as int,uncovered: null == uncovered ? _self.uncovered : uncovered // ignore: cast_nullable_to_non_nullable
 as List<CurriculumSkill>,notAsked: null == notAsked ? _self.notAsked : notAsked // ignore: cast_nullable_to_non_nullable
-as List<TaughtSkill>,perCareer: null == perCareer ? _self.perCareer : perCareer // ignore: cast_nullable_to_non_nullable
+as List<TaughtSkill>,belowThreshold: null == belowThreshold ? _self.belowThreshold : belowThreshold // ignore: cast_nullable_to_non_nullable
+as List<BelowThresholdSkill>,perCareer: null == perCareer ? _self.perCareer : perCareer // ignore: cast_nullable_to_non_nullable
 as List<CareerCoverage>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
 as ValidationInfo,
   ));
@@ -186,10 +189,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<CareerCoverage> perCareer,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<BelowThresholdSkill> belowThreshold,  List<CareerCoverage> perCareer,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CurriculumGap() when $default != null:
-return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.perCareer,_that.validation);case _:
+return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.belowThreshold,_that.perCareer,_that.validation);case _:
   return orElse();
 
 }
@@ -207,10 +210,10 @@ return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<CareerCoverage> perCareer,  ValidationInfo validation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<BelowThresholdSkill> belowThreshold,  List<CareerCoverage> perCareer,  ValidationInfo validation)  $default,) {final _that = this;
 switch (_that) {
 case _CurriculumGap():
-return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.perCareer,_that.validation);case _:
+return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.belowThreshold,_that.perCareer,_that.validation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -227,10 +230,10 @@ return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<CareerCoverage> perCareer,  ValidationInfo validation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? career,  int postingCount,  double minDemand,  int demanded,  int taught,  double coverage,  int coveragePercent,  List<CurriculumSkill> uncovered,  List<TaughtSkill> notAsked,  List<BelowThresholdSkill> belowThreshold,  List<CareerCoverage> perCareer,  ValidationInfo validation)?  $default,) {final _that = this;
 switch (_that) {
 case _CurriculumGap() when $default != null:
-return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.perCareer,_that.validation);case _:
+return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.uncovered,_that.notAsked,_that.belowThreshold,_that.perCareer,_that.validation);case _:
   return null;
 
 }
@@ -242,7 +245,7 @@ return $default(_that.career,_that.postingCount,_that.minDemand,_that.demanded,_
 @JsonSerializable()
 
 class _CurriculumGap implements CurriculumGap {
-  const _CurriculumGap({this.career, required this.postingCount, required this.minDemand, required this.demanded, required this.taught, required this.coverage, required this.coveragePercent, required  List<CurriculumSkill> uncovered, required  List<TaughtSkill> notAsked, required  List<CareerCoverage> perCareer, required this.validation}): _uncovered = uncovered,_notAsked = notAsked,_perCareer = perCareer;
+  const _CurriculumGap({this.career, required this.postingCount, required this.minDemand, required this.demanded, required this.taught, required this.coverage, required this.coveragePercent, required  List<CurriculumSkill> uncovered, required  List<TaughtSkill> notAsked, required  List<BelowThresholdSkill> belowThreshold, required  List<CareerCoverage> perCareer, required this.validation}): _uncovered = uncovered,_notAsked = notAsked,_belowThreshold = belowThreshold,_perCareer = perCareer;
   factory _CurriculumGap.fromJson(Map<String, dynamic> json) => _$CurriculumGapFromJson(json);
 
 /// The career asked for; null for every career.
@@ -276,6 +279,17 @@ class _CurriculumGap implements CurriculumGap {
   return EqualUnmodifiableListView(_notAsked);
 }
 
+/// Skills some posting names, but too few to count as demanded in any
+/// career in scope -- in neither list above, so listed on their own.
+ final  List<BelowThresholdSkill> _belowThreshold;
+/// Skills some posting names, but too few to count as demanded in any
+/// career in scope -- in neither list above, so listed on their own.
+@override List<BelowThresholdSkill> get belowThreshold {
+  if (_belowThreshold is EqualUnmodifiableListView) return _belowThreshold;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_belowThreshold);
+}
+
 /// Every career's coverage, whatever the scope.
  final  List<CareerCoverage> _perCareer;
 /// Every career's coverage, whatever the scope.
@@ -300,18 +314,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurriculumGap&&(identical(other.career, career) || other.career == career)&&(identical(other.postingCount, postingCount) || other.postingCount == postingCount)&&(identical(other.minDemand, minDemand) || other.minDemand == minDemand)&&(identical(other.demanded, demanded) || other.demanded == demanded)&&(identical(other.taught, taught) || other.taught == taught)&&(identical(other.coverage, coverage) || other.coverage == coverage)&&(identical(other.coveragePercent, coveragePercent) || other.coveragePercent == coveragePercent)&&const DeepCollectionEquality().equals(other.uncovered, _uncovered)&&const DeepCollectionEquality().equals(other.notAsked, _notAsked)&&const DeepCollectionEquality().equals(other.perCareer, _perCareer)&&(identical(other.validation, validation) || other.validation == validation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurriculumGap&&(identical(other.career, career) || other.career == career)&&(identical(other.postingCount, postingCount) || other.postingCount == postingCount)&&(identical(other.minDemand, minDemand) || other.minDemand == minDemand)&&(identical(other.demanded, demanded) || other.demanded == demanded)&&(identical(other.taught, taught) || other.taught == taught)&&(identical(other.coverage, coverage) || other.coverage == coverage)&&(identical(other.coveragePercent, coveragePercent) || other.coveragePercent == coveragePercent)&&const DeepCollectionEquality().equals(other.uncovered, _uncovered)&&const DeepCollectionEquality().equals(other.notAsked, _notAsked)&&const DeepCollectionEquality().equals(other.belowThreshold, _belowThreshold)&&const DeepCollectionEquality().equals(other.perCareer, _perCareer)&&(identical(other.validation, validation) || other.validation == validation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,career,postingCount,minDemand,demanded,taught,coverage,coveragePercent,const DeepCollectionEquality().hash(_uncovered),const DeepCollectionEquality().hash(_notAsked),const DeepCollectionEquality().hash(_perCareer),validation);
+    return Object.hash(runtimeType,career,postingCount,minDemand,demanded,taught,coverage,coveragePercent,const DeepCollectionEquality().hash(_uncovered),const DeepCollectionEquality().hash(_notAsked),const DeepCollectionEquality().hash(_belowThreshold),const DeepCollectionEquality().hash(_perCareer),validation);
 }
 
 @override
 String toString() {
-    return 'CurriculumGap(career: $career, postingCount: $postingCount, minDemand: $minDemand, demanded: $demanded, taught: $taught, coverage: $coverage, coveragePercent: $coveragePercent, uncovered: $uncovered, notAsked: $notAsked, perCareer: $perCareer, validation: $validation)';
+    return 'CurriculumGap(career: $career, postingCount: $postingCount, minDemand: $minDemand, demanded: $demanded, taught: $taught, coverage: $coverage, coveragePercent: $coveragePercent, uncovered: $uncovered, notAsked: $notAsked, belowThreshold: $belowThreshold, perCareer: $perCareer, validation: $validation)';
 }
 
 
@@ -322,7 +336,7 @@ abstract mixin class _$CurriculumGapCopyWith<$Res> implements $CurriculumGapCopy
   factory _$CurriculumGapCopyWith(_CurriculumGap value, $Res Function(_CurriculumGap) _then) = __$CurriculumGapCopyWithImpl;
 @override @useResult
 $Res call({
- String? career, int postingCount, double minDemand, int demanded, int taught, double coverage, int coveragePercent, List<CurriculumSkill> uncovered, List<TaughtSkill> notAsked, List<CareerCoverage> perCareer, ValidationInfo validation
+ String? career, int postingCount, double minDemand, int demanded, int taught, double coverage, int coveragePercent, List<CurriculumSkill> uncovered, List<TaughtSkill> notAsked, List<BelowThresholdSkill> belowThreshold, List<CareerCoverage> perCareer, ValidationInfo validation
 });
 
 
@@ -339,7 +353,7 @@ class __$CurriculumGapCopyWithImpl<$Res>
 
 /// Create a copy of CurriculumGap
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? career = freezed,Object? postingCount = null,Object? minDemand = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? uncovered = null,Object? notAsked = null,Object? perCareer = null,Object? validation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? career = freezed,Object? postingCount = null,Object? minDemand = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? uncovered = null,Object? notAsked = null,Object? belowThreshold = null,Object? perCareer = null,Object? validation = null,}) {
   return _then(_CurriculumGap(
 career: freezed == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String?,postingCount: null == postingCount ? _self.postingCount : postingCount // ignore: cast_nullable_to_non_nullable
@@ -350,7 +364,8 @@ as int,coverage: null == coverage ? _self.coverage : coverage // ignore: cast_nu
 as double,coveragePercent: null == coveragePercent ? _self.coveragePercent : coveragePercent // ignore: cast_nullable_to_non_nullable
 as int,uncovered: null == uncovered ? _self._uncovered : uncovered // ignore: cast_nullable_to_non_nullable
 as List<CurriculumSkill>,notAsked: null == notAsked ? _self._notAsked : notAsked // ignore: cast_nullable_to_non_nullable
-as List<TaughtSkill>,perCareer: null == perCareer ? _self._perCareer : perCareer // ignore: cast_nullable_to_non_nullable
+as List<TaughtSkill>,belowThreshold: null == belowThreshold ? _self._belowThreshold : belowThreshold // ignore: cast_nullable_to_non_nullable
+as List<BelowThresholdSkill>,perCareer: null == perCareer ? _self._perCareer : perCareer // ignore: cast_nullable_to_non_nullable
 as List<CareerCoverage>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
 as ValidationInfo,
   ));
@@ -963,10 +978,317 @@ as List<String>,
 
 
 /// @nodoc
+mixin _$BelowThresholdSkill {
+
+ String get id; String get en; String get ar; String get category;/// Postings in scope that name it, and the careers they belong to.
+ int get postings; List<String> get careers;/// Catalog courses that teach it; empty when none does.
+ List<String> get courses;
+/// Create a copy of BelowThresholdSkill
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BelowThresholdSkillCopyWith<BelowThresholdSkill> get copyWith => _$BelowThresholdSkillCopyWithImpl<BelowThresholdSkill>(this as BelowThresholdSkill, _$identity);
+
+  /// Serializes this BelowThresholdSkill to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as BelowThresholdSkill;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BelowThresholdSkill&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.en, _this.en) || other.en == _this.en)&&(identical(other.ar, _this.ar) || other.ar == _this.ar)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.postings, _this.postings) || other.postings == _this.postings)&&const DeepCollectionEquality().equals(other.careers, _this.careers)&&const DeepCollectionEquality().equals(other.courses, _this.courses));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as BelowThresholdSkill;
+  return Object.hash(runtimeType,_this.id,_this.en,_this.ar,_this.category,_this.postings,const DeepCollectionEquality().hash(_this.careers),const DeepCollectionEquality().hash(_this.courses));
+}
+
+@override
+String toString() {
+  final _this = this as BelowThresholdSkill;
+  return 'BelowThresholdSkill(id: ${_this.id}, en: ${_this.en}, ar: ${_this.ar}, category: ${_this.category}, postings: ${_this.postings}, careers: ${_this.careers}, courses: ${_this.courses})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BelowThresholdSkillCopyWith<$Res>  {
+  factory $BelowThresholdSkillCopyWith(BelowThresholdSkill value, $Res Function(BelowThresholdSkill) _then) = _$BelowThresholdSkillCopyWithImpl;
+@useResult
+$Res call({
+ String id, String en, String ar, String category, int postings, List<String> careers, List<String> courses
+});
+
+
+
+
+}
+/// @nodoc
+class _$BelowThresholdSkillCopyWithImpl<$Res>
+    implements $BelowThresholdSkillCopyWith<$Res> {
+  _$BelowThresholdSkillCopyWithImpl(this._self, this._then);
+
+  final BelowThresholdSkill _self;
+  final $Res Function(BelowThresholdSkill) _then;
+
+/// Create a copy of BelowThresholdSkill
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? en = null,Object? ar = null,Object? category = null,Object? postings = null,Object? careers = null,Object? courses = null,}) {
+  return _then(BelowThresholdSkill(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,en: null == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
+as String,ar: null == ar ? _self.ar : ar // ignore: cast_nullable_to_non_nullable
+as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String,postings: null == postings ? _self.postings : postings // ignore: cast_nullable_to_non_nullable
+as int,careers: null == careers ? _self.careers : careers // ignore: cast_nullable_to_non_nullable
+as List<String>,courses: null == courses ? _self.courses : courses // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [BelowThresholdSkill].
+extension BelowThresholdSkillPatterns on BelowThresholdSkill {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _BelowThresholdSkill value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _BelowThresholdSkill() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _BelowThresholdSkill value)  $default,){
+final _that = this;
+switch (_that) {
+case _BelowThresholdSkill():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _BelowThresholdSkill value)?  $default,){
+final _that = this;
+switch (_that) {
+case _BelowThresholdSkill() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String en,  String ar,  String category,  int postings,  List<String> careers,  List<String> courses)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _BelowThresholdSkill() when $default != null:
+return $default(_that.id,_that.en,_that.ar,_that.category,_that.postings,_that.careers,_that.courses);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String en,  String ar,  String category,  int postings,  List<String> careers,  List<String> courses)  $default,) {final _that = this;
+switch (_that) {
+case _BelowThresholdSkill():
+return $default(_that.id,_that.en,_that.ar,_that.category,_that.postings,_that.careers,_that.courses);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String en,  String ar,  String category,  int postings,  List<String> careers,  List<String> courses)?  $default,) {final _that = this;
+switch (_that) {
+case _BelowThresholdSkill() when $default != null:
+return $default(_that.id,_that.en,_that.ar,_that.category,_that.postings,_that.careers,_that.courses);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _BelowThresholdSkill extends BelowThresholdSkill {
+  const _BelowThresholdSkill({required this.id, required this.en, required this.ar, required this.category, required this.postings, required  List<String> careers, required  List<String> courses}): _careers = careers,_courses = courses,super._();
+  factory _BelowThresholdSkill.fromJson(Map<String, dynamic> json) => _$BelowThresholdSkillFromJson(json);
+
+@override final  String id;
+@override final  String en;
+@override final  String ar;
+@override final  String category;
+/// Postings in scope that name it, and the careers they belong to.
+@override final  int postings;
+ final  List<String> _careers;
+@override List<String> get careers {
+  if (_careers is EqualUnmodifiableListView) return _careers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_careers);
+}
+
+/// Catalog courses that teach it; empty when none does.
+ final  List<String> _courses;
+/// Catalog courses that teach it; empty when none does.
+@override List<String> get courses {
+  if (_courses is EqualUnmodifiableListView) return _courses;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_courses);
+}
+
+
+/// Create a copy of BelowThresholdSkill
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$BelowThresholdSkillCopyWith<_BelowThresholdSkill> get copyWith => __$BelowThresholdSkillCopyWithImpl<_BelowThresholdSkill>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$BelowThresholdSkillToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BelowThresholdSkill&&(identical(other.id, id) || other.id == id)&&(identical(other.en, en) || other.en == en)&&(identical(other.ar, ar) || other.ar == ar)&&(identical(other.category, category) || other.category == category)&&(identical(other.postings, postings) || other.postings == postings)&&const DeepCollectionEquality().equals(other.careers, _careers)&&const DeepCollectionEquality().equals(other.courses, _courses));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,en,ar,category,postings,const DeepCollectionEquality().hash(_careers),const DeepCollectionEquality().hash(_courses));
+}
+
+@override
+String toString() {
+    return 'BelowThresholdSkill(id: $id, en: $en, ar: $ar, category: $category, postings: $postings, careers: $careers, courses: $courses)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$BelowThresholdSkillCopyWith<$Res> implements $BelowThresholdSkillCopyWith<$Res> {
+  factory _$BelowThresholdSkillCopyWith(_BelowThresholdSkill value, $Res Function(_BelowThresholdSkill) _then) = __$BelowThresholdSkillCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String en, String ar, String category, int postings, List<String> careers, List<String> courses
+});
+
+
+
+
+}
+/// @nodoc
+class __$BelowThresholdSkillCopyWithImpl<$Res>
+    implements _$BelowThresholdSkillCopyWith<$Res> {
+  __$BelowThresholdSkillCopyWithImpl(this._self, this._then);
+
+  final _BelowThresholdSkill _self;
+  final $Res Function(_BelowThresholdSkill) _then;
+
+/// Create a copy of BelowThresholdSkill
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? en = null,Object? ar = null,Object? category = null,Object? postings = null,Object? careers = null,Object? courses = null,}) {
+  return _then(_BelowThresholdSkill(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,en: null == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
+as String,ar: null == ar ? _self.ar : ar // ignore: cast_nullable_to_non_nullable
+as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String,postings: null == postings ? _self.postings : postings // ignore: cast_nullable_to_non_nullable
+as int,careers: null == careers ? _self._careers : careers // ignore: cast_nullable_to_non_nullable
+as List<String>,courses: null == courses ? _self._courses : courses // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$CareerCoverage {
 
  String get career; int get postingCount;/// Skills the career's postings ask for, and how many some course teaches.
- int get demanded; int get taught; double get coverage; int get coveragePercent;
+ int get demanded; int get taught; double get coverage; int get coveragePercent;/// Postings of this career a skill needs to count as demanded. min_demand
+/// is a share, so this grows with the career's posting count.
+ int get minPostings;
 /// Create a copy of CareerCoverage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -980,20 +1302,20 @@ $CareerCoverageCopyWith<CareerCoverage> get copyWith => _$CareerCoverageCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as CareerCoverage;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareerCoverage&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.postingCount, _this.postingCount) || other.postingCount == _this.postingCount)&&(identical(other.demanded, _this.demanded) || other.demanded == _this.demanded)&&(identical(other.taught, _this.taught) || other.taught == _this.taught)&&(identical(other.coverage, _this.coverage) || other.coverage == _this.coverage)&&(identical(other.coveragePercent, _this.coveragePercent) || other.coveragePercent == _this.coveragePercent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareerCoverage&&(identical(other.career, _this.career) || other.career == _this.career)&&(identical(other.postingCount, _this.postingCount) || other.postingCount == _this.postingCount)&&(identical(other.demanded, _this.demanded) || other.demanded == _this.demanded)&&(identical(other.taught, _this.taught) || other.taught == _this.taught)&&(identical(other.coverage, _this.coverage) || other.coverage == _this.coverage)&&(identical(other.coveragePercent, _this.coveragePercent) || other.coveragePercent == _this.coveragePercent)&&(identical(other.minPostings, _this.minPostings) || other.minPostings == _this.minPostings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CareerCoverage;
-  return Object.hash(runtimeType,_this.career,_this.postingCount,_this.demanded,_this.taught,_this.coverage,_this.coveragePercent);
+  return Object.hash(runtimeType,_this.career,_this.postingCount,_this.demanded,_this.taught,_this.coverage,_this.coveragePercent,_this.minPostings);
 }
 
 @override
 String toString() {
   final _this = this as CareerCoverage;
-  return 'CareerCoverage(career: ${_this.career}, postingCount: ${_this.postingCount}, demanded: ${_this.demanded}, taught: ${_this.taught}, coverage: ${_this.coverage}, coveragePercent: ${_this.coveragePercent})';
+  return 'CareerCoverage(career: ${_this.career}, postingCount: ${_this.postingCount}, demanded: ${_this.demanded}, taught: ${_this.taught}, coverage: ${_this.coverage}, coveragePercent: ${_this.coveragePercent}, minPostings: ${_this.minPostings})';
 }
 
 
@@ -1004,7 +1326,7 @@ abstract mixin class $CareerCoverageCopyWith<$Res>  {
   factory $CareerCoverageCopyWith(CareerCoverage value, $Res Function(CareerCoverage) _then) = _$CareerCoverageCopyWithImpl;
 @useResult
 $Res call({
- String career, int postingCount, int demanded, int taught, double coverage, int coveragePercent
+ String career, int postingCount, int demanded, int taught, double coverage, int coveragePercent, int minPostings
 });
 
 
@@ -1021,7 +1343,7 @@ class _$CareerCoverageCopyWithImpl<$Res>
 
 /// Create a copy of CareerCoverage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? career = null,Object? postingCount = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? career = null,Object? postingCount = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? minPostings = null,}) {
   return _then(CareerCoverage(
 career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,postingCount: null == postingCount ? _self.postingCount : postingCount // ignore: cast_nullable_to_non_nullable
@@ -1029,6 +1351,7 @@ as int,demanded: null == demanded ? _self.demanded : demanded // ignore: cast_nu
 as int,taught: null == taught ? _self.taught : taught // ignore: cast_nullable_to_non_nullable
 as int,coverage: null == coverage ? _self.coverage : coverage // ignore: cast_nullable_to_non_nullable
 as double,coveragePercent: null == coveragePercent ? _self.coveragePercent : coveragePercent // ignore: cast_nullable_to_non_nullable
+as int,minPostings: null == minPostings ? _self.minPostings : minPostings // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -1114,10 +1437,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent,  int minPostings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CareerCoverage() when $default != null:
-return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent);case _:
+return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.minPostings);case _:
   return orElse();
 
 }
@@ -1135,10 +1458,10 @@ return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent,  int minPostings)  $default,) {final _that = this;
 switch (_that) {
 case _CareerCoverage():
-return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent);case _:
+return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.minPostings);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1155,10 +1478,10 @@ return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String career,  int postingCount,  int demanded,  int taught,  double coverage,  int coveragePercent,  int minPostings)?  $default,) {final _that = this;
 switch (_that) {
 case _CareerCoverage() when $default != null:
-return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent);case _:
+return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_that.coverage,_that.coveragePercent,_that.minPostings);case _:
   return null;
 
 }
@@ -1170,7 +1493,7 @@ return $default(_that.career,_that.postingCount,_that.demanded,_that.taught,_tha
 @JsonSerializable()
 
 class _CareerCoverage implements CareerCoverage {
-  const _CareerCoverage({required this.career, required this.postingCount, required this.demanded, required this.taught, required this.coverage, required this.coveragePercent});
+  const _CareerCoverage({required this.career, required this.postingCount, required this.demanded, required this.taught, required this.coverage, required this.coveragePercent, required this.minPostings});
   factory _CareerCoverage.fromJson(Map<String, dynamic> json) => _$CareerCoverageFromJson(json);
 
 @override final  String career;
@@ -1180,6 +1503,9 @@ class _CareerCoverage implements CareerCoverage {
 @override final  int taught;
 @override final  double coverage;
 @override final  int coveragePercent;
+/// Postings of this career a skill needs to count as demanded. min_demand
+/// is a share, so this grows with the career's posting count.
+@override final  int minPostings;
 
 /// Create a copy of CareerCoverage
 /// with the given fields replaced by the non-null parameter values.
@@ -1194,18 +1520,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareerCoverage&&(identical(other.career, career) || other.career == career)&&(identical(other.postingCount, postingCount) || other.postingCount == postingCount)&&(identical(other.demanded, demanded) || other.demanded == demanded)&&(identical(other.taught, taught) || other.taught == taught)&&(identical(other.coverage, coverage) || other.coverage == coverage)&&(identical(other.coveragePercent, coveragePercent) || other.coveragePercent == coveragePercent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareerCoverage&&(identical(other.career, career) || other.career == career)&&(identical(other.postingCount, postingCount) || other.postingCount == postingCount)&&(identical(other.demanded, demanded) || other.demanded == demanded)&&(identical(other.taught, taught) || other.taught == taught)&&(identical(other.coverage, coverage) || other.coverage == coverage)&&(identical(other.coveragePercent, coveragePercent) || other.coveragePercent == coveragePercent)&&(identical(other.minPostings, minPostings) || other.minPostings == minPostings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,career,postingCount,demanded,taught,coverage,coveragePercent);
+    return Object.hash(runtimeType,career,postingCount,demanded,taught,coverage,coveragePercent,minPostings);
 }
 
 @override
 String toString() {
-    return 'CareerCoverage(career: $career, postingCount: $postingCount, demanded: $demanded, taught: $taught, coverage: $coverage, coveragePercent: $coveragePercent)';
+    return 'CareerCoverage(career: $career, postingCount: $postingCount, demanded: $demanded, taught: $taught, coverage: $coverage, coveragePercent: $coveragePercent, minPostings: $minPostings)';
 }
 
 
@@ -1216,7 +1542,7 @@ abstract mixin class _$CareerCoverageCopyWith<$Res> implements $CareerCoverageCo
   factory _$CareerCoverageCopyWith(_CareerCoverage value, $Res Function(_CareerCoverage) _then) = __$CareerCoverageCopyWithImpl;
 @override @useResult
 $Res call({
- String career, int postingCount, int demanded, int taught, double coverage, int coveragePercent
+ String career, int postingCount, int demanded, int taught, double coverage, int coveragePercent, int minPostings
 });
 
 
@@ -1233,7 +1559,7 @@ class __$CareerCoverageCopyWithImpl<$Res>
 
 /// Create a copy of CareerCoverage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? career = null,Object? postingCount = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? career = null,Object? postingCount = null,Object? demanded = null,Object? taught = null,Object? coverage = null,Object? coveragePercent = null,Object? minPostings = null,}) {
   return _then(_CareerCoverage(
 career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,postingCount: null == postingCount ? _self.postingCount : postingCount // ignore: cast_nullable_to_non_nullable
@@ -1241,6 +1567,7 @@ as int,demanded: null == demanded ? _self.demanded : demanded // ignore: cast_nu
 as int,taught: null == taught ? _self.taught : taught // ignore: cast_nullable_to_non_nullable
 as int,coverage: null == coverage ? _self.coverage : coverage // ignore: cast_nullable_to_non_nullable
 as double,coveragePercent: null == coveragePercent ? _self.coveragePercent : coveragePercent // ignore: cast_nullable_to_non_nullable
+as int,minPostings: null == minPostings ? _self.minPostings : minPostings // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

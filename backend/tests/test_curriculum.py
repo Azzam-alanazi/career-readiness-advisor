@@ -70,9 +70,9 @@ def test_uncovered_skills_rank_by_their_share_of_every_posting(make_client, tmp_
 
 def test_every_careers_coverage_comes_with_any_scope(dept):
     expected = [{"career": "Analyst", "posting_count": 2, "demanded": 2, "taught": 1,
-                 "coverage": 0.5, "coverage_percent": 50},
+                 "coverage": 0.5, "coverage_percent": 50, "min_postings": 1},
                 {"career": "Developer", "posting_count": 2, "demanded": 2, "taught": 2,
-                 "coverage": 1.0, "coverage_percent": 100}]
+                 "coverage": 1.0, "coverage_percent": 100, "min_postings": 1}]
     for scope in (None, "Analyst", "Developer"):
         assert view(dept, scope)["per_career"] == expected
     assert view(dept, "Developer")["coverage"] == 1.0
@@ -92,6 +92,54 @@ def test_an_unknown_career_is_rejected_by_name(dept):
     r = dept.get("/curriculum/gap", params={"career": "Astronaut"})
     assert r.status_code == 422
     assert r.json()["detail"]["career"] == "Astronaut"
+
+
+# ---- what the threshold leaves out ---------------------------------------------------
+
+# Seven Analyst postings: SQL in all of them, communication and python in one
+# each. 1 of 7 is below min_demand 0.15, so a single posting no longer counts --
+# the sample-size shift the real data went through between 5 and 11 per career.
+THIN = [(str(i), "Analyst", "Maintain SQL databases for reporting.") for i in range(1, 6)] + [
+    ("6", "Analyst", "Write SQL queries against databases daily. "
+                     "Strong communication and presentation required."),
+    ("7", "Analyst", "Maintain SQL databases for reporting. Some python programming helps."),
+    ("8", "Developer", "Build python programming tools for automation."),
+    ("9", "Developer", "Python programming and SQL databases experience."),
+]
+
+
+@pytest.fixture
+def thin(make_client, tmp_path):
+    with make_client(write_world(tmp_path / "thin", postings=THIN)) as c:
+        yield c
+
+
+def below(v: dict) -> list[tuple]:
+    return [(s["id"], s["postings"], s["careers"], s["courses"]) for s in v["below_threshold"]]
+
+
+def test_skills_named_by_too_few_postings_are_listed_not_dropped(thin):
+    v = view(thin, "Analyst")
+    assert v["demanded"] == 1
+    assert below(v) == [("CM", 1, ["Analyst"], ["BUS210"]), ("PY", 1, ["Analyst"], ["IS210"])]
+    # ...and they are in neither of the other lists.
+    listed = {s["id"] for s in v["uncovered"]} | {s["id"] for s in v["not_asked"]}
+    assert listed.isdisjoint({"CM", "PY"})
+
+
+def test_the_threshold_in_postings_grows_with_the_sample(thin):
+    assert {c["career"]: c["min_postings"] for c in view(thin)["per_career"]} == {
+        "Analyst": 2, "Developer": 1}
+
+
+def test_across_careers_a_skill_another_career_demands_is_not_below(thin):
+    # One Analyst posting names python, but both Developer postings ask for it.
+    assert below(view(thin)) == [("CM", 1, ["Analyst"], ["BUS210"])]
+
+
+def test_at_small_samples_nothing_falls_below(dept):
+    assert view(dept)["below_threshold"] == []
+    assert {c["min_postings"] for c in view(dept)["per_career"]} == {1}
 
 
 def test_the_view_says_how_small_the_sample_is_and_carries_the_quality_flag(dept):

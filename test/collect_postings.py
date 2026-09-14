@@ -53,6 +53,10 @@ CAREERS = {
     "ERP Consultant": "ERP consultant",
     "IT Support Specialist": "IT support specialist",
     "Software Developer": "software developer",
+    # Added 2026-09-14 as product data: collected, never hand-labelled.
+    "Database Administrator": "database administrator",
+    "Cybersecurity Analyst": "cybersecurity analyst",
+    "IT Project Manager": "IT project manager",
 }
 
 TARGET_PER_CAREER = 5

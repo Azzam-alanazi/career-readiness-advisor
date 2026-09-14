@@ -9,5 +9,8 @@ String careerName(AppLocalizations l, String career) => switch (career) {
       'ERP Consultant' => l.careerErpConsultant,
       'IT Support Specialist' => l.careerItSupportSpecialist,
       'Software Developer' => l.careerSoftwareDeveloper,
+      'Database Administrator' => l.careerDatabaseAdministrator,
+      'Cybersecurity Analyst' => l.careerCybersecurityAnalyst,
+      'IT Project Manager' => l.careerItProjectManager,
       _ => career,
     };

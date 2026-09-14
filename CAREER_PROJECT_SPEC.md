@@ -33,8 +33,8 @@ Four decisions in that engine that must not be quietly reversed:
 2. **No translation step.** The model is multilingual; Arabic text matches
    English skill labels directly. Still the design, and not reversed — but as
    of 2026-09-05 it is **unvalidated on the market side**: the collected
-   posting sample was 25 English, 0 Arabic, and since 2026-09-14 is 51
-   English, 1 Arabic; the one Arabic posting is unlabelled (see *Sampling:
+   posting sample was 25 English, 0 Arabic, and since 2026-09-14 is 80
+   English, 2 Arabic; neither Arabic posting is labelled (see *Sampling:
    language* below). The claim is only evidenced on the taxonomy's Arabic
    labels and a single Arabic posting in the earlier hand-labeled set.
 3. **Demand weighting, not counting.** Readiness is weighted by how often each
@@ -83,9 +83,11 @@ labels themselves. The placeholder row is kept as history.
 
 **Evaluation set versus product data.** F1 is measured on the 15 hand-labelled
 postings, and on those only. Career profiles are built on every collected
-posting: 27 at first, and **52 since 2026-09-14**. The 25 added that day are
-product data, unlabelled and outside every F1 figure, and `validate.py` was not
-re-run for them. More postings change the demand weights, not the measured
+posting: 27 at first, then 52, then **82 since 2026-09-14**, when three careers
+were added. The 55 added that day are product data, unlabelled and outside
+every F1 figure, and `validate.py` was not re-run for them. All 15 evaluation
+postings come from the original five careers, so the matcher is unmeasured on
+the three new ones. More postings change the demand weights, not the measured
 quality of the matcher.
 
 **Both winners are provisional.** The plateau is the range of thresholds that
@@ -165,6 +167,10 @@ topping up the set with machine labels to reach the count.
 7. Target careers to start: Business Analyst, Data Analyst, ERP Consultant,
    IT Support Specialist, Software Developer
 
+   Extended on 2026-09-14 with Database Administrator, Cybersecurity Analyst
+   and IT Project Manager. These are IS roles too, added as product data: 10
+   postings each, none hand-labelled.
+
    Narrowed to roles an Information Systems graduate is actually hired into.
    The earlier list (Marketing Specialist, Accountant, HR Officer) spanned the
    whole business school and left taxonomy entries such as `erp` and
@@ -183,6 +189,17 @@ evaluation set, three or four per career (two for Data Analyst). The new 25 are
 unlabelled product data. At 10 or 11 postings per career, `min_demand` 0.15 now
 takes two postings to count a skill as demanded, where 5 or 6 postings let a
 single one do it. The before-and-after figures are in `skillgap/CHANGELOG.md`.
+
+**82 postings, eight careers, later on 2026-09-14.** Three careers were added
+with 10 postings each: Database Administrator, Cybersecurity Analyst and IT
+Project Manager. None of them is labelled. The evaluation set is still the same
+15 postings from the original five careers.
+
+**`min_demand` is a share, so its meaning moved with the sample.** At 0.15 it
+asked for 1 posting per career at 5 or 6 postings, and it asks for 2 at 10 or
+11. It would ask for 3 at 20. Figures before and after 2026-09-14 therefore
+count "demanded" differently. The curriculum view now states the threshold in
+postings, and lists the skills it leaves out.
 
 ### Sampling: language
 
@@ -205,7 +222,9 @@ output of Phase 1.
 1 Arabic. The Arabic one (id 55) is a Data Analyst advert from a Riyadh medical
 group on Bayt.com. It is unlabelled, so it enters the Data Analyst profile
 through a matcher never measured on a real Arabic posting. It confirms the
-market finding, one Arabic posting in 52, rather than changing it.
+market finding, one Arabic posting in 52, rather than changing it. The three
+careers added later that day brought a second, an IT Project Manager advert in
+Al Khobar: 80 English and 2 Arabic across 82 postings.
 
 **This finding survived a corrected filter, which is what makes it worth
 stating.** The first collection screened on `job_country` alone, and that field
@@ -361,7 +380,9 @@ Items 17–21 are implemented. A skill counts as demanded exactly when a student
 gap would count it: at the engine's `min_demand` (0.15) in some career in scope.
 With 5 or 6 postings per career, that meant any skill a single posting named. At
 10 or 11 postings per career since 2026-09-14 it takes two, and a skill named by
-one posting in every career appears in neither of the view's lists. Across
+one posting in every career is in neither of the view's main lists. Since
+2026-09-14 the view lists such skills on their own and states the threshold in
+postings, so nothing drops out of sight. Across
 careers the postings are pooled, so a skill's weight is its share of all of them. Coverage counts skills, not
 demand: each demanded skill counts once. For one career, the uncovered skills
 are exactly what a student who took every catalog course would still be missing.
@@ -384,6 +405,14 @@ CI/CD (18 of 52 postings), then Communication and Stakeholder management (14
 each). Two taught skills are named by no posting: Network administration and
 Java programming. F1 behind these figures is still the 0.504 measured on 15
 postings.
+
+**Eight careers, 82 postings, 2026-09-14.** Across eight careers, the catalog
+teaches 33 of the 75 skills the postings ask for: 44% coverage. The new careers
+read Database Administrator 50%, Cybersecurity Analyst 44% and IT Project
+Manager 40%. 14 skills are named by some posting but by fewer than the 2 a
+career needs. The coverage card now states that threshold, and a section lists
+those 14 skills with the courses that teach them. They used to be dropped
+without a word.
 
 The app reaches the view from a bottom navigation bar, beside the student flow
 and never inside it. Each tab keeps its own navigation stack, so opening the

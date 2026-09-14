@@ -91,11 +91,13 @@ def make_config(taxonomy_skills: int = 4, threshold: float = 0.45,
 
 def write_world(root: Path, config: dict | None = None,
                 courses: list[tuple[str, ...]] | None = None,
-                online: list[tuple[str, ...]] | None = None) -> Paths:
+                online: list[tuple[str, ...]] | None = None,
+                postings: list[tuple[str, str, str]] | None = None) -> Paths:
     """
     Write the fixture world. `courses` replaces the catalog, as (code, text) or
     (code, text, labels); `online` writes an online_courses.csv with those rows.
     Without it the world has no such file, so no test ever reads the real one.
+    `postings` replaces the postings, as (id, career, text).
     """
     root.mkdir(parents=True, exist_ok=True)
     (root / "taxonomy.json").write_text(
@@ -105,7 +107,7 @@ def write_world(root: Path, config: dict | None = None,
     with (root / "postings.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow(["id", "career", "posting_text", "skill_ids"])
-        for pid, career, text in POSTINGS:
+        for pid, career, text in POSTINGS if postings is None else postings:
             w.writerow([pid, career, text, ""])
     with (root / "courses.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)

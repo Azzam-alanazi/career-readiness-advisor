@@ -4,6 +4,145 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-14 — Three more careers, and `min_demand`'s exclusions made visible
+
+Database Administrator, Cybersecurity Analyst and IT Project Manager join the
+five careers. **Profiles are now built on 82 postings; F1 is still measured on
+15.**
+- **The new careers are product data.** None of their 30 postings is labelled.
+  `validate.py` was not re-run, and `config.json` is unchanged.
+- **The matcher has never been measured on these careers at all.** The 15
+  evaluation postings all come from the original five careers. So nothing
+  measures how well it reads a security or database posting.
+
+### Collection
+
+`collect_postings.py --more 10 --careers ...` ran under the existing screening
+rules. It kept 30 postings (ids 74–103, 10 per career) and screened out 3, which
+were logged; the excluded file now holds 28.
+- **Language:** 29 English, 1 Arabic. The Arabic one is id 98, an IT Project
+  Manager advert in Al Khobar on Bayt.com. Across all 82 postings: 80 English,
+  2 Arabic.
+- **Sources of the 30 new postings:**
+  - BeBee 10
+  - GulfTalent 5
+  - LinkedIn 5
+  - Bayt.com 3
+  - Naukrigulf, Foundit, Jobrapido, Accenture, Workable, the PMI job board and
+    Haskoning: 1 each
+- **One to check by hand: id 83,** "Database Administrator- Dubai, UAE". Its
+  text names no location, and it passed on the API's country field, so it is
+  most likely a UAE vacancy inside the Database Administrator profile. It was
+  left in, unedited, and the screening rules were not changed for it.
+- **Id 93** is a fully remote role, but its text places it in Saudi Arabia, so
+  it meets the rules.
+
+### Profiles
+
+| career | postings | skills named | demanded at 0.15 | named once, below the threshold | coverage |
+|---|---|---|---|---|---|
+| Database Administrator | 10 | 29 | 10 | 19 | 50% (5 of 10) |
+| Cybersecurity Analyst | 10 | 35 | 16 | 19 | 44% (7 of 16) |
+| IT Project Manager | 10 | 44 | 25 | 19 | 40% (10 of 25) |
+
+The five existing careers are unchanged, because their postings did not change.
+- **Database Administrator:** Database management is in 10 of 10 postings, SQL
+  in 6, Backup and recovery in 6. The catalog teaches the first two; Backup and
+  recovery is a gap.
+- **Cybersecurity Analyst:** IT security is in 10 of 10 postings, taught by
+  CIS 306. Untaught: Security monitoring (5), Incident management and Quality
+  assurance (4 each).
+- **IT Project Manager:** Project coordination (7) and Agile/Scrum (5) are
+  taught by CIS 516. CI/CD and Communication (6 each) are untaught.
+
+### Course reach
+
+The course side is unchanged: 39 of 91 skills reachable, and extraction F1
+0.373. The 52 unreachable skills now divide differently:
+
+| unreachable skills | 52 postings | 82 postings |
+|---|---|---|
+| named by 2+ postings in some career | 34 | 42 |
+| named by a single posting only | 14 | 9 |
+| named by no posting | 4 | 1 |
+
+### Curriculum gaps, all careers
+
+| | 52 postings, 5 careers | 82 postings, 8 careers |
+|---|---|---|
+| demanded | 66 | 75 |
+| taught | 32 | 33 |
+| coverage | 48% | 44% |
+| uncovered | 34 | 42 |
+| taught, not asked for | 2 | 1 (Java programming) |
+| named, below the threshold | 19 (5 taught) | 14 (5 taught) |
+
+- **Coverage fell** because the new careers ask for skills the catalog does not
+  teach: Security monitoring, Backup and recovery, Incident management, Patch
+  management.
+- **Top uncovered:**
+  - CI/CD: 28 of 82 postings (34%)
+  - Communication: 25 (30%)
+  - Stakeholder management: 20
+  - Quality assurance: 18
+  - Help desk / service desk: 16
+  - Technical support: 14
+  - Backup and recovery, Customer service and Mentoring: 13 each
+
+### Online courses
+
+`python -m backend.online sync` added four placeholder rows:
+- SK50 Active Directory and SK60 Remote support, which already lacked rows at 52
+  postings
+- SK63 Patch management and SK67 Security monitoring, which Cybersecurity
+  Analyst brings
+
+There are 42 gap skills. 38 have an online course, and 4 wait for one. The four
+rows are empty, for a person to fill.
+
+### `min_demand` means a different number of postings at each sample size
+
+`min_demand` = 0.15 is a share of a career's postings, not a count. The number
+of postings it asks for moves with the sample:
+
+| postings per career | a skill must appear in |
+|---|---|
+| 5 or 6 (the 27-posting set, until 2026-09-14) | 1 posting |
+| 10 or 11 (52 and 82 postings, since 2026-09-14) | 2 postings |
+| 20 | 3 postings |
+
+The value has never been validated, and nothing in its name says that its
+meaning shifts with the sample. Every figure recorded before 2026-09-14 counts
+skills named by a single posting; every figure since does not. Comparing
+readiness or coverage across that date compares two definitions of "demanded",
+not just two samples.
+
+### The exclusion is now visible
+
+Until today the department view listed two things: demanded skills no course
+teaches, and taught skills no posting names. A skill named by only one posting
+in every career fell between the two and was silently dropped. There were 19 of
+them at 52 postings.
+- **API:** the curriculum view now returns `below_threshold`, with each skill's
+  posting count, the careers naming it and the courses teaching it. It also
+  returns `min_postings` for each career.
+- **Screen:** the coverage card states the threshold: "Counted: skills named in
+  at least 2 of a career's postings. 14 named by fewer are left out and listed
+  below." A "Named, but below the threshold" section follows the uncovered
+  skills, each marked as taught or not. It is in English and Arabic, right to
+  left.
+- **At 82 postings there are 14 such skills.** Five are taught: C/C++, PHP and
+  JavaScript programming, Linux administration and Network administration.
+- **Application support is the most named:** 6 postings, spread across six
+  careers, but never two in the same one. The pooled count sees it; the
+  per-career threshold does not.
+
+Backend tests: 90 → 94. App tests: 37, with the department assertions extended.
+The contract check passes against the live backend with 8 careers and 82
+postings.
+
+---
+
 ## 2026-09-14 — 25 more postings: profiles on 52, F1 still on 15
 
 **Career profiles are now built on 52 postings. F1 is still measured on 15.**

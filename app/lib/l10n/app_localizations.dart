@@ -656,6 +656,36 @@ abstract class AppLocalizations {
   /// **'Taught in: {courses}'**
   String curriculumTaughtIn(String courses);
 
+  /// No description provided for @curriculumThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted: skills named in at least {k} of a career\'s postings.'**
+  String curriculumThreshold(String k);
+
+  /// No description provided for @curriculumThresholdLeftOut.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} named by fewer are left out and listed below.'**
+  String curriculumThresholdLeftOut(int count);
+
+  /// No description provided for @curriculumBelowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Named, but below the threshold ({count})'**
+  String curriculumBelowTitle(int count);
+
+  /// No description provided for @curriculumBelowNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each is named by at least one posting, but by fewer than {k} of any career\'s postings, so it counts as neither demanded nor not asked for. The threshold is a share of postings, so the number of postings it takes grows with the sample.'**
+  String curriculumBelowNote(String k);
+
+  /// No description provided for @curriculumNotTaught.
+  ///
+  /// In en, this message translates to:
+  /// **'Taught in no course'**
+  String get curriculumNotTaught;
+
   /// No description provided for @careerBusinessAnalyst.
   ///
   /// In en, this message translates to:
@@ -685,6 +715,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Software Developer'**
   String get careerSoftwareDeveloper;
+
+  /// No description provided for @careerDatabaseAdministrator.
+  ///
+  /// In en, this message translates to:
+  /// **'Database Administrator'**
+  String get careerDatabaseAdministrator;
+
+  /// No description provided for @careerCybersecurityAnalyst.
+  ///
+  /// In en, this message translates to:
+  /// **'Cybersecurity Analyst'**
+  String get careerCybersecurityAnalyst;
+
+  /// No description provided for @careerItProjectManager.
+  ///
+  /// In en, this message translates to:
+  /// **'IT Project Manager'**
+  String get careerItProjectManager;
 }
 
 class _AppLocalizationsDelegate

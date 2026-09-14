@@ -375,6 +375,29 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String curriculumThreshold(String k) {
+    return 'تُحتسب المهارة إذا ذكرها ما لا يقل عن $k من إعلانات المهنة.';
+  }
+
+  @override
+  String curriculumThresholdLeftOut(int count) {
+    return 'المستبعدة لأن إعلانات أقل ذكرتها: $count، وهي مدرجة أدناه.';
+  }
+
+  @override
+  String curriculumBelowTitle(int count) {
+    return 'مذكورة لكن دون الحد ($count)';
+  }
+
+  @override
+  String curriculumBelowNote(String k) {
+    return 'ذكر كلًّا منها إعلان واحد على الأقل، لكن أقل من $k من إعلانات أي مهنة، فلا تُحتسب مطلوبة ولا غير مطلوبة. والحد نسبة من الإعلانات، فيرتفع عدد الإعلانات الذي يتطلبه كلما كبرت العيّنة.';
+  }
+
+  @override
+  String get curriculumNotTaught => 'لا يدرّسها أي مقرر';
+
+  @override
   String get careerBusinessAnalyst => 'محلل أعمال';
 
   @override
@@ -388,4 +411,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get careerSoftwareDeveloper => 'مطور برمجيات';
+
+  @override
+  String get careerDatabaseAdministrator => 'مسؤول قواعد البيانات';
+
+  @override
+  String get careerCybersecurityAnalyst => 'محلل الأمن السيبراني';
+
+  @override
+  String get careerItProjectManager => 'مدير مشاريع تقنية المعلومات';
 }

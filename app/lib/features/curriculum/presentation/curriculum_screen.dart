@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:career_readiness/core/format.dart';
 import 'package:career_readiness/core/l10n/career_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
@@ -146,6 +148,7 @@ class _Report extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     final text = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,6 +165,12 @@ class _Report extends StatelessWidget {
           for (final skill in gap.uncovered)
             // With one career chosen, which career asks goes without saying.
             _UncoveredRow(skill: skill, showCareers: gap.career == null),
+        // What the threshold leaves out, next to what it lets in.
+        if (gap.belowThreshold.isNotEmpty) ...[
+          SectionHeader(l.curriculumBelowTitle(gap.belowThreshold.length)),
+          Text(l.curriculumBelowNote(_threshold(gap, lang)), style: text.bodySmall),
+          for (final skill in gap.belowThreshold) _BelowRow(skill: skill),
+        ],
         SectionHeader(l.curriculumByCareerTitle),
         for (final coverage in gap.perCareer)
           _CareerRow(coverage: coverage, current: coverage.career == gap.career),
@@ -209,8 +218,75 @@ class _CoverageCard extends StatelessWidget {
             )),
             const SizedBox(height: 4),
             Text(l.curriculumCoverageCounting, style: text.bodySmall),
+            const SizedBox(height: 8),
+            // The threshold and what it leaves out, said where the figure is.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.filter_alt_outlined, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    [
+                      l.curriculumThreshold(_threshold(gap, lang)),
+                      if (gap.belowThreshold.isNotEmpty)
+                        l.curriculumThresholdLeftOut(gap.belowThreshold.length),
+                    ].join(' '),
+                    style: text.bodySmall,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// The postings a skill needs to count: one number for one career, a range
+/// when the careers in scope differ.
+String _threshold(CurriculumGap gap, String lang) {
+  final ks = [
+    for (final c in gap.perCareer)
+      if (gap.career == null || c.career == gap.career) c.minPostings,
+  ];
+  if (ks.isEmpty) return '';
+  final low = ks.reduce(math.min), high = ks.reduce(math.max);
+  return low == high
+      ? formatNumber(low, lang)
+      : '${formatNumber(low, lang)}–${formatNumber(high, lang)}';
+}
+
+class _BelowRow extends StatelessWidget {
+  const _BelowRow({required this.skill});
+
+  final BelowThresholdSkill skill;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
+    final small = Theme.of(context).textTheme.bodySmall;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(skill.nameFor(lang))),
+              const SizedBox(width: 8),
+              Text(l.postingsCount(skill.postings), style: small),
+            ],
+          ),
+          Text(
+            skill.courses.isEmpty
+                ? l.curriculumNotTaught
+                : l.curriculumTaughtIn(skill.courses.join(' · ')),
+            style: small,
+          ),
+        ],
       ),
     );
   }

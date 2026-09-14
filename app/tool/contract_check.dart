@@ -285,6 +285,13 @@ Future<void> main(List<String> args) async {
         whole.notAsked
             .every((s) => sortedCodes(teaching[s.id] ?? const []) == sortedCodes(s.courses)),
         '${whole.notAsked.length} taught skills no posting asks for, each with its courses');
+    check(
+        whole.belowThreshold.every((s) =>
+            !whole.uncovered.any((u) => u.id == s.id) &&
+            !whole.notAsked.any((n) => n.id == s.id) &&
+            sortedCodes(teaching[s.id] ?? const []) == sortedCodes(s.courses)),
+        '${whole.belowThreshold.length} skills named by too few postings, listed apart from '
+        'both lists, each with its courses');
 
     final unionOfCareers = <String>{};
     for (final career in careers) {
@@ -293,9 +300,11 @@ Future<void> main(List<String> args) async {
       unionOfCareers.addAll(one.uncovered.map((s) => s.id));
       check(one.career == career.name && one.postingCount == career.postingCount &&
               one.coverage == row.coverage && one.demanded == row.demanded &&
-              byDemand(one.uncovered),
+              byDemand(one.uncovered) &&
+              one.belowThreshold.every((s) => s.postings < row.minPostings),
           '${career.name}: ${one.coveragePercent}% (${one.taught} of ${one.demanded}), '
-          '${one.uncovered.length} uncovered, ${one.postingCount} postings');
+          '${one.uncovered.length} uncovered, ${one.postingCount} postings, '
+          '${one.belowThreshold.length} below the ${row.minPostings}-posting threshold');
     }
     check(unionOfCareers.length == whole.uncovered.length &&
             whole.uncovered.every((s) => unionOfCareers.contains(s.id)),

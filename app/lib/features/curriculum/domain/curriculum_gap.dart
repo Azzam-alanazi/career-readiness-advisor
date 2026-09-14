@@ -30,6 +30,10 @@ abstract class CurriculumGap with _$CurriculumGap {
     /// Skills the catalog teaches that no posting in scope names.
     required List<TaughtSkill> notAsked,
 
+    /// Skills some posting names, but too few to count as demanded in any
+    /// career in scope -- in neither list above, so listed on their own.
+    required List<BelowThresholdSkill> belowThreshold,
+
     /// Every career's coverage, whatever the scope.
     required List<CareerCoverage> perCareer,
     required ValidationInfo validation,
@@ -84,6 +88,30 @@ abstract class TaughtSkill with _$TaughtSkill {
 }
 
 @freezed
+abstract class BelowThresholdSkill with _$BelowThresholdSkill {
+  const BelowThresholdSkill._();
+
+  const factory BelowThresholdSkill({
+    required String id,
+    required String en,
+    required String ar,
+    required String category,
+
+    /// Postings in scope that name it, and the careers they belong to.
+    required int postings,
+    required List<String> careers,
+
+    /// Catalog courses that teach it; empty when none does.
+    required List<String> courses,
+  }) = _BelowThresholdSkill;
+
+  factory BelowThresholdSkill.fromJson(Map<String, dynamic> json) =>
+      _$BelowThresholdSkillFromJson(json);
+
+  String nameFor(String languageCode) => languageCode == 'ar' ? ar : en;
+}
+
+@freezed
 abstract class CareerCoverage with _$CareerCoverage {
   const factory CareerCoverage({
     required String career,
@@ -94,6 +122,10 @@ abstract class CareerCoverage with _$CareerCoverage {
     required int taught,
     required double coverage,
     required int coveragePercent,
+
+    /// Postings of this career a skill needs to count as demanded. min_demand
+    /// is a share, so this grows with the career's posting count.
+    required int minPostings,
   }) = _CareerCoverage;
 
   factory CareerCoverage.fromJson(Map<String, dynamic> json) =>

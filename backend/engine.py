@@ -64,6 +64,17 @@ CACHE_VERSION = 1
 MIN_DEMAND: float = inspect.signature(sg.analyze_gap).parameters["min_demand"].default
 
 
+def min_postings(posting_count: int, min_demand: float = MIN_DEMAND) -> int:
+    """
+    The fewest of a career's postings that must name a skill for it to count as
+    demanded. min_demand is a share, so this grows with the sample: at 0.15 it is
+    1 posting of 5 or 6, and 2 of 10 or 11. Computed with the same comparison
+    analyze_gap makes, so the two cannot disagree at a boundary.
+    """
+    return next((k for k in range(1, posting_count + 1)
+                 if k / posting_count >= min_demand), posting_count)
+
+
 @dataclass(frozen=True)
 class Paths:
     """Every input the engine reads. Tests point these at small fixtures."""
@@ -115,6 +126,7 @@ class CareerCoverage:
     posting_count: int
     demanded: int
     taught: int
+    min_postings: int           # postings a skill needs to count, at MIN_DEMAND
 
     @property
     def coverage(self) -> float:
@@ -131,6 +143,9 @@ class CurriculumGap:
     taught: frozenset[str]                        # the demanded skills some course teaches
     uncovered: list[str]                          # demanded, taught by no course; by demand
     not_asked: list[tuple[str, tuple[str, ...]]]  # taught, named by no posting in scope; courses
+    # Named by some posting in scope, demanded in no career of it: in neither
+    # list above. (skill, postings naming it, careers naming it, courses teaching it)
+    below_threshold: list[tuple[str, int, tuple[str, ...], tuple[str, ...]]]
     per_career: list[CareerCoverage]              # every career, whatever the scope
 
     @property
@@ -250,15 +265,20 @@ class EngineState:
         in some career in scope. Across careers the postings are pooled, so a
         skill's weight is the share of every posting in scope that names it. A
         taught skill is "not asked" only when no posting in scope names it at all.
+
+        A skill some posting names, but too few to reach MIN_DEMAND in any career
+        in scope, is neither demanded nor unasked. It is listed on its own, so
+        the threshold never drops a skill out of sight.
         """
         scope = (career,) if career is not None else tuple(sorted(self.profiles))
         taught = self.taught_by()
         rank = {s: i for i, s in enumerate(self.skills)}
 
         demanded_by: dict[str, list[str]] = {}
-        named: set[str] = set()
+        named_by: dict[str, list[str]] = {}
         for c in scope:
-            named |= set(self.profiles[c].demand)
+            for s in self.profiles[c].demand:
+                named_by.setdefault(s, []).append(c)
             for s in self.demanded(c):
                 demanded_by.setdefault(s, []).append(c)
 
@@ -268,11 +288,13 @@ class EngineState:
                              * self.profiles[c].posting_count) for c in scope)
 
         demanded = {s: postings_naming(s) for s in demanded_by}
+        below = {s: postings_naming(s) for s in named_by if s not in demanded_by}
         per_career = []
         for c, p in sorted(self.profiles.items()):
             d = self.demanded(c)
             per_career.append(CareerCoverage(c, p.posting_count, len(d),
-                                             sum(s in taught for s in d)))
+                                             sum(s in taught for s in d),
+                                             min_postings(p.posting_count)))
         return CurriculumGap(
             careers=scope,
             posting_count=sum(self.profiles[c].posting_count for c in scope),
@@ -282,7 +304,9 @@ class EngineState:
             uncovered=sorted((s for s in demanded if s not in taught),
                              key=lambda s: (-demanded[s], rank[s])),
             not_asked=[(s, taught[s]) for s in sorted(taught, key=rank.__getitem__)
-                       if s not in named],
+                       if s not in named_by],
+            below_threshold=[(s, below[s], tuple(named_by[s]), taught.get(s, ()))
+                             for s in sorted(below, key=lambda s: (-below[s], rank[s]))],
             per_career=per_career)
 
     def validation(self) -> dict[str, Any]:

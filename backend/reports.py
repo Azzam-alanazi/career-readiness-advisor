@@ -40,7 +40,9 @@ SWEEP = [round(0.10 + 0.05 * i, 2) for i in range(9)]
 ENGINE_DEFAULT = inspect.signature(sg.analyze_gap).parameters["min_demand"].default
 
 SHORT = {"Business Analyst": "BA", "Data Analyst": "DA", "ERP Consultant": "ERP",
-         "IT Support Specialist": "ITS", "Software Developer": "SD"}
+         "IT Support Specialist": "ITS", "Software Developer": "SD",
+         "Database Administrator": "DBA", "Cybersecurity Analyst": "CSA",
+         "IT Project Manager": "ITPM"}
 
 
 # --------------------------------------------------------------------------

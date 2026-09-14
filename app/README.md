@@ -26,10 +26,13 @@ alone appears beside the combined figure. The skills step says once, briefly,
 that these skills are self-reported and unverified.
 
 The department view opens with its own caveat, using the real posting counts:
-52 postings since 2026-09-14, 10 or 11 per career. At that size its gaps are
+82 postings across eight careers since 2026-09-14, 10 or 11 per career. At that size its gaps are
 indicative, and they
 should not drive curriculum decisions on their own. The quality flag follows,
-because the demand side comes from the same matcher.
+because the demand side comes from the same matcher. The coverage card states
+how many of a career's postings a skill needs to count: two, at 10 or 11
+postings. Skills named by fewer are listed in their own section rather than
+dropped.
 
 ## Run
 
@@ -147,7 +150,9 @@ flutter test
   of the student flow behind it; switching tabs keeps the student where they
   were. The sample-size caveat, with the real counts, comes above every figure.
   Uncovered skills are ranked by demand, with the careers asking. Coverage is
-  shown for the scope and for each career. One career can be chosen. Arabic and
+  shown for the scope and for each career. The threshold in postings is stated,
+  and the skills below it are listed after the uncovered ones. One career can be
+  chosen. Arabic and
   right-to-left layout are checked too
 
 The widget tests run against fakes shaped like the backend's JSON. To check the

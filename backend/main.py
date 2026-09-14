@@ -247,10 +247,15 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
                        for s in cg.uncovered],
             not_asked=[S.TaughtSkill(id=s, **eng.skills[s], courses=list(codes))
                        for s, codes in cg.not_asked],
+            below_threshold=[S.BelowThresholdSkill(id=s, **eng.skills[s], postings=count,
+                                                   careers=list(careers),
+                                                   courses=list(codes))
+                             for s, count, careers, codes in cg.below_threshold],
             per_career=[S.CareerCoverageOut(career=c.career, posting_count=c.posting_count,
                                             demanded=c.demanded, taught=c.taught,
                                             coverage=round(c.coverage, 4),
-                                            coverage_percent=round(c.coverage * 100))
+                                            coverage_percent=round(c.coverage * 100),
+                                            min_postings=c.min_postings)
                         for c in cg.per_career],
             sample_note=sample_note(eng),
             validation=validation(eng))

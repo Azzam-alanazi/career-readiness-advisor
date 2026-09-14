@@ -100,10 +100,18 @@
   "curriculumNotAskedNote": "مهارات يدرّسها الدليل ولا يطلبها أي إعلان في هذا العرض. وعدم طلبها لا يعني عدم الحاجة إليها، فعيّنة بهذا الحجم تغفل الكثير.",
   "curriculumNoneNotAsked": "كل مهارة يدرّسها الدليل يطلبها إعلان واحد على الأقل.",
   "curriculumTaughtIn": "تُدرَّس في: {courses}",
+  "curriculumThreshold": "تُحتسب المهارة إذا ذكرها ما لا يقل عن {k} من إعلانات المهنة.",
+  "curriculumThresholdLeftOut": "المستبعدة لأن إعلانات أقل ذكرتها: {count}، وهي مدرجة أدناه.",
+  "curriculumBelowTitle": "مذكورة لكن دون الحد ({count})",
+  "curriculumBelowNote": "ذكر كلًّا منها إعلان واحد على الأقل، لكن أقل من {k} من إعلانات أي مهنة، فلا تُحتسب مطلوبة ولا غير مطلوبة. والحد نسبة من الإعلانات، فيرتفع عدد الإعلانات الذي يتطلبه كلما كبرت العيّنة.",
+  "curriculumNotTaught": "لا يدرّسها أي مقرر",
 
   "careerBusinessAnalyst": "محلل أعمال",
   "careerDataAnalyst": "محلل بيانات",
   "careerErpConsultant": "مستشار أنظمة تخطيط موارد المؤسسات",
   "careerItSupportSpecialist": "أخصائي دعم تقنية المعلومات",
-  "careerSoftwareDeveloper": "مطور برمجيات"
+  "careerSoftwareDeveloper": "مطور برمجيات",
+  "careerDatabaseAdministrator": "مسؤول قواعد البيانات",
+  "careerCybersecurityAnalyst": "محلل الأمن السيبراني",
+  "careerItProjectManager": "مدير مشاريع تقنية المعلومات"
 }

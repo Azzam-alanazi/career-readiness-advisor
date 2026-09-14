@@ -171,6 +171,20 @@ class TaughtSkill(BaseModel):
     courses: list[str] = Field(description="Codes of the catalog courses teaching it")
 
 
+class BelowThresholdSkill(BaseModel):
+    """
+    Named by some posting in scope, but by too few to count as demanded in any
+    career of it -- so in neither the uncovered nor the not-asked list.
+    """
+    id: str
+    en: str
+    ar: str
+    category: str
+    postings: int = Field(description="Postings in scope that name it")
+    careers: list[str] = Field(description="Careers in scope whose postings name it")
+    courses: list[str] = Field(description="Catalog courses teaching it; empty when none does")
+
+
 class CareerCoverageOut(BaseModel):
     career: str
     posting_count: int
@@ -178,6 +192,9 @@ class CareerCoverageOut(BaseModel):
     taught: int = Field(description="Of those, the ones at least one course teaches")
     coverage: float
     coverage_percent: int
+    min_postings: int = Field(description=(
+        "Postings of this career a skill needs to count as demanded at min_demand. "
+        "min_demand is a share, so this grows with the career's posting count"))
 
 
 class CurriculumGapOut(BaseModel):
@@ -197,6 +214,10 @@ class CurriculumGapOut(BaseModel):
     not_asked: list[TaughtSkill] = Field(
         description="Skills the catalog teaches that no posting in scope names, in "
                     "taxonomy order")
+    below_threshold: list[BelowThresholdSkill] = Field(
+        description="Skills some posting in scope names, but too few to reach min_demand "
+                    "in any career of it, most named first. Counted in neither list "
+                    "above, and listed so that the threshold hides nothing")
     per_career: list[CareerCoverageOut] = Field(
         description="Every career's coverage, whatever the scope")
     sample_note: str = Field(description="How few postings these gaps rest on")
