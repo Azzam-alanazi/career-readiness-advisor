@@ -83,6 +83,12 @@
   "categoryErp": "ERP and enterprise processes",
   "categoryProfessional": "Professional skills",
 
+  "homeTitle": "Home",
+  "homeTopGaps": "Your top gaps",
+  "homeNoGaps": "No gaps: you have every skill these postings ask for.",
+  "homeFullReadiness": "Full readiness",
+  "homeFullReadinessHint": "Skills you have and still need, and your careers side by side",
+  "homeSettingsHint": "Edit your profile or change the language",
   "readinessTitle": "Readiness",
   "readinessFor": "Readiness for {career}",
   "@readinessFor": {"placeholders": {"career": {"type": "String"}}},

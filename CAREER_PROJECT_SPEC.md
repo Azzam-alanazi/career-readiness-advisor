@@ -395,7 +395,19 @@ mark courses as planned, on a planning screen reached from readiness.
 - **Planned courses persist with the profile,** on the device. Marking one as
   completed takes it off the plan.
 
-Verified headlessly by 57 tests and `flutter analyze`, and by a contract check
+**Home dashboard, 2026-09-15.** Once a profile is saved, the student tab opens
+on a home screen:
+- readiness for the main career, with the plan's projection beside it when
+  courses are planned
+- the three most-demanded gaps
+- the quality flag in short form, its headline and the failed gate; the full
+  flag is on the readiness view
+- entry points to planning, the full readiness view, and settings
+
+Onboarding runs only while no profile is saved. The planning screen is reached
+from home as well as from readiness.
+
+Verified headlessly by 59 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not

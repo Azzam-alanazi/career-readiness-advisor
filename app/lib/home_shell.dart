@@ -1,5 +1,5 @@
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
-import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
+import 'package:career_readiness/features/home/presentation/dashboard_screen.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// The student tab's first screen: onboarding until a profile is saved on this
-/// device, and the profile's readiness from then on.
+/// device, and the home dashboard from then on. Onboarding never runs again
+/// while a profile is saved.
 class StudentRoot extends ConsumerWidget {
   const StudentRoot({super.key});
 
@@ -15,7 +16,7 @@ class StudentRoot extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) =>
       ref.watch(savedProfileProvider) == null
           ? const OnboardingScreen()
-          : const ReadinessScreen();
+          : const DashboardScreen();
 }
 
 /// The app's two audiences side by side: the student flow and the department's

@@ -5,6 +5,8 @@ import 'package:career_readiness/features/curriculum/data/curriculum_repository.
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
 import 'package:career_readiness/features/gap/data/gap_repository.dart';
 import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
+import 'package:career_readiness/features/home/presentation/dashboard_screen.dart';
+import 'package:career_readiness/features/settings/presentation/settings_screen.dart';
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
@@ -138,8 +140,11 @@ void main() {
         selfReportedSkills: ['SK85'],
       ),
     ]);
-    // Readiness is now the student tab's first screen, not a step to go back from.
+    // Home is now the student tab's first screen, not a step to go back from.
+    expect(find.byType(DashboardScreen), findsOneWidget);
     expect(find.byType(BackButton), findsNothing);
+    await tester.tap(find.text('Full readiness'));
+    await tester.pumpAndSettle();
 
     // Readiness: the combined score, the courses-only reading, and where each
     // covered skill came from.
@@ -258,6 +263,8 @@ void main() {
 
     await tester.tap(button('اعرض جاهزيتي'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('الجاهزية الكاملة'));
+    await tester.pumpAndSettle();
 
     expect(Directionality.of(tester.element(find.byType(ReadinessScreen))), TextDirection.rtl);
     expect(find.text('الجاهزية لمهنة محلل أعمال'), findsOneWidget);
@@ -315,7 +322,7 @@ void main() {
         findsOneWidget);
   });
 
-  testWidgets('A saved profile opens straight on readiness; settings edits it and deletes it',
+  testWidgets('A saved profile opens straight on home; settings edits it and deletes it',
       (tester) async {
     final w = _World()
       ..store.profile = const StudentProfile(
@@ -325,8 +332,9 @@ void main() {
       );
     await _pumpApp(tester, w);
 
-    // The next launch: no onboarding, the saved profile read straight away.
+    // The next launch: no onboarding, home with the saved profile read at once.
     expect(find.byType(OnboardingScreen), findsNothing);
+    expect(find.byType(DashboardScreen), findsOneWidget);
     expect(find.text('Readiness for Business Analyst'), findsOneWidget);
     expect(w.gap.queries.single,
         const GapQuery(career: 'Business Analyst', completedCourses: ['IS 230']));
@@ -423,7 +431,7 @@ void main() {
     expect(find.text('+16 points'), findsOneWidget);
     expect(find.text('Your plan closes 1 of your 3 gaps.'), findsOneWidget);
 
-    // Back on readiness: now and projected side by side.
+    // Back home: now and projected side by side there too.
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('if you take your planned course'), findsOneWidget);
@@ -450,7 +458,7 @@ void main() {
       ..store.lang = 'ar';
     await _pumpApp(tester, w);
 
-    // The projection is on readiness already, beside today's figure.
+    // The projection is on home already, beside today's figure.
     expect(find.text('إذا أخذت المقرر الذي خططت له'), findsOneWidget);
     await tester.tap(find.text('خطط لمقرراتك'));
     await tester.pumpAndSettle();
@@ -461,6 +469,80 @@ void main() {
     // Right to left: today's figure on the right, the projection to its left.
     expect(tester.getTopLeft(find.text('الآن')).dx,
         greaterThan(tester.getTopLeft(find.text('إذا أخذت المقرر الذي خططت له')).dx));
+  });
+
+  testWidgets('Home: readiness for the main career, the top three gaps, and the ways on',
+      (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Data Analyst', 'Business Analyst'],
+        completedCourses: ['IS 230'],
+      );
+    await _pumpApp(tester, w);
+
+    expect(find.byType(DashboardScreen), findsOneWidget);
+    expect(find.text('Home'), findsOneWidget);
+    // The main career only: the comparison lives on the full view.
+    expect(find.text('Readiness for Data Analyst'), findsOneWidget);
+    expect(find.text('20%'), findsOneWidget);
+    expect(w.gap.careers, ['Data Analyst']);
+    expect(find.text('Your careers side by side'), findsNothing);
+
+    // The quality flag, short: its headline and the failed gate.
+    expect(find.text('Estimates, not validated results'), findsOneWidget);
+    expect(find.textContaining('scored F1 0.503'), findsOneWidget);
+    expect(find.textContaining('English-language job postings'), findsNothing);
+
+    // The three most-demanded gaps, in order; the fourth waits for the full view.
+    expect(find.text('Your top gaps'), findsOneWidget);
+    const top = ['Python programming', 'SQL', 'Data modelling'];
+    for (var i = 1; i < top.length; i++) {
+      expect(tester.getTopLeft(find.text(top[i - 1])).dy,
+          lessThan(tester.getTopLeft(find.text(top[i])).dy));
+    }
+    expect(find.text('JavaScript'), findsNothing);
+    expect(find.text('No planned courses'), findsOneWidget);
+
+    // The ways on.
+    await tester.tap(find.text('Full readiness'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ReadinessScreen), findsOneWidget);
+    expect(find.text('Your careers side by side'), findsOneWidget);
+    expect(find.text('JavaScript'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Plan courses'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanningScreen), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ListTile, 'Settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsOneWidget);
+  });
+
+  testWidgets('Home in Arabic: right to left', (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Business Analyst'],
+        completedCourses: ['IS 230'],
+      )
+      ..store.lang = 'ar';
+    await _pumpApp(tester, w);
+
+    expect(Directionality.of(tester.element(find.byType(DashboardScreen))), TextDirection.rtl);
+    expect(find.text('الرئيسية'), findsOneWidget);
+    expect(find.text('أبرز فجواتك'), findsOneWidget);
+    expect(find.text('المواصفات الوظيفية'), findsOneWidget);
+    expect(find.text('Functional specifications'), findsNothing);
+    // Right to left by layout: each way on has its icon on the right.
+    const full = 'الجاهزية الكاملة';
+    final entry = find.widgetWithText(ListTile, full);
+    expect(
+        tester.getCenter(find.descendant(of: entry, matching: find.byIcon(Icons.insights_outlined))).dx,
+        greaterThan(tester.getCenter(find.text(full)).dx));
   });
 
   testWidgets('The language chosen is remembered for the next launch', (tester) async {
@@ -758,6 +840,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(w.store.profile!.careers, ['Business Analyst', 'Software Developer']);
+    // Home shows the main career; the full view has both side by side.
+    expect(find.text('Readiness for Business Analyst'), findsOneWidget);
+    expect(find.text('Your careers side by side'), findsNothing);
+    await tester.tap(find.text('Full readiness'));
+    await tester.pumpAndSettle();
     expect(w.gap.careers.toSet(), {'Business Analyst', 'Software Developer'});
 
     // Side by side, in the order chosen, each with its score and counts.
@@ -822,6 +909,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(w.store.profile!.careers, ['Business Analyst', 'Data Analyst', 'Software Developer']);
+    final fullView = find.text('الجاهزية الكاملة');
+    await tester.scrollUntilVisible(fullView, 200,
+        scrollable: find
+            .descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable))
+            .first);
+    await tester.tap(fullView);
+    await tester.pumpAndSettle();
     expect(Directionality.of(tester.element(find.byType(ReadinessScreen))), TextDirection.rtl);
     // On a phone in Arabic the quality flag fills the first screen, so the
     // comparison is reached by scrolling -- after the flag, never before it.

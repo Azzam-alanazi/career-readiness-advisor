@@ -272,6 +272,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categoryProfessional => 'المهارات المهنية';
 
   @override
+  String get homeTitle => 'الرئيسية';
+
+  @override
+  String get homeTopGaps => 'أبرز فجواتك';
+
+  @override
+  String get homeNoGaps => 'لا فجوات: تمتلك كل مهارة تطلبها هذه الإعلانات.';
+
+  @override
+  String get homeFullReadiness => 'الجاهزية الكاملة';
+
+  @override
+  String get homeFullReadinessHint =>
+      'المهارات التي تمتلكها والتي تحتاجها، ومهنك جنبًا إلى جنب';
+
+  @override
+  String get homeSettingsHint => 'عدّل ملفك أو غيّر اللغة';
+
+  @override
   String get readinessTitle => 'الجاهزية';
 
   @override

@@ -265,6 +265,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryProfessional => 'Professional skills';
 
   @override
+  String get homeTitle => 'Home';
+
+  @override
+  String get homeTopGaps => 'Your top gaps';
+
+  @override
+  String get homeNoGaps =>
+      'No gaps: you have every skill these postings ask for.';
+
+  @override
+  String get homeFullReadiness => 'Full readiness';
+
+  @override
+  String get homeFullReadinessHint =>
+      'Skills you have and still need, and your careers side by side';
+
+  @override
+  String get homeSettingsHint => 'Edit your profile or change the language';
+
+  @override
   String get readinessTitle => 'Readiness';
 
   @override

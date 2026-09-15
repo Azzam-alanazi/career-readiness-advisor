@@ -71,6 +71,12 @@
   "categoryErp": "أنظمة تخطيط موارد المؤسسات وعملياتها",
   "categoryProfessional": "المهارات المهنية",
 
+  "homeTitle": "الرئيسية",
+  "homeTopGaps": "أبرز فجواتك",
+  "homeNoGaps": "لا فجوات: تمتلك كل مهارة تطلبها هذه الإعلانات.",
+  "homeFullReadiness": "الجاهزية الكاملة",
+  "homeFullReadinessHint": "المهارات التي تمتلكها والتي تحتاجها، ومهنك جنبًا إلى جنب",
+  "homeSettingsHint": "عدّل ملفك أو غيّر اللغة",
   "readinessTitle": "الجاهزية",
   "readinessFor": "الجاهزية لمهنة {career}",
   "readinessExplained": "نسبة المهارات المطلوبة التي تمتلكها، مرجّحة بعدد مرات طلب أصحاب العمل لكل منها.",

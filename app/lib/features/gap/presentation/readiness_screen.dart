@@ -172,7 +172,7 @@ class _Report extends StatelessWidget {
         ],
         SectionHeader(l.missingTitle(report.missing.length)),
         for (final skill in report.missing)
-          _DemandRow(name: skill.nameFor(lang), demand: skill.demand),
+          DemandRow(name: skill.nameFor(lang), demand: skill.demand),
       ],
     );
   }
@@ -416,8 +416,9 @@ class _SkillChips extends StatelessWidget {
       );
 }
 
-class _DemandRow extends StatelessWidget {
-  const _DemandRow({required this.name, required this.demand});
+/// A missing skill with the share of postings that ask for it.
+class DemandRow extends StatelessWidget {
+  const DemandRow({super.key, required this.name, required this.demand});
 
   final String name;
   final double demand;

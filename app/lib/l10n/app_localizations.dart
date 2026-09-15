@@ -506,6 +506,42 @@ abstract class AppLocalizations {
   /// **'Professional skills'**
   String get categoryProfessional;
 
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  /// No description provided for @homeTopGaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Your top gaps'**
+  String get homeTopGaps;
+
+  /// No description provided for @homeNoGaps.
+  ///
+  /// In en, this message translates to:
+  /// **'No gaps: you have every skill these postings ask for.'**
+  String get homeNoGaps;
+
+  /// No description provided for @homeFullReadiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Full readiness'**
+  String get homeFullReadiness;
+
+  /// No description provided for @homeFullReadinessHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills you have and still need, and your careers side by side'**
+  String get homeFullReadinessHint;
+
+  /// No description provided for @homeSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your profile or change the language'**
+  String get homeSettingsHint;
+
   /// No description provided for @readinessTitle.
   ///
   /// In en, this message translates to:

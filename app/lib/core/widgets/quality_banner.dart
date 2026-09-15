@@ -9,9 +9,13 @@ import 'package:flutter/material.dart';
 /// here in the student's language, with the actual scores, rather than hidden
 /// in documentation nobody using the app will read.
 class QualityBanner extends StatelessWidget {
-  const QualityBanner({super.key, required this.validation});
+  const QualityBanner({super.key, required this.validation, this.compact = false});
 
   final ValidationInfo validation;
+
+  /// Only the headline and the failed gate: for the home screen, where the
+  /// full flag is one tap away on the readiness view.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,10 @@ class QualityBanner extends StatelessWidget {
           formatNumber(validation.bestF1, lang),
           formatNumber(validation.gateMinF1, lang),
         ),
-      if (!validation.courseMappingValidated) l.qualityCoursesUnchecked,
-      l.qualityEnglishSource,
+      if (!compact) ...[
+        if (!validation.courseMappingValidated) l.qualityCoursesUnchecked,
+        l.qualityEnglishSource,
+      ],
     ];
 
     return Card(

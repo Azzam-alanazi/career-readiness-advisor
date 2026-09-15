@@ -24,12 +24,18 @@ before.
 
 **The profile is saved on the device,** with `shared_preferences`: careers,
 courses, self-reported skills, major, and the language. The first launch shows
-onboarding; every later launch opens straight on the profile. Settings, reached
-from the readiness screen, edits the profile, switches language, or deletes the
+onboarding; every later launch opens straight on the home screen. Settings,
+reached from home, edits the profile, switches language, or deletes the
 profile after asking. Nothing about the student is stored on a server: each
 request carries the profile, and the backend keeps nothing.
 
-**What-if planning.** On the planning screen, reached from readiness, a student
+**Home.** Once a profile is saved, the student tab opens on a dashboard. It shows
+readiness for the main career, with the plan's projection beside it, and the
+three most-demanded gaps. The quality flag appears in short form. The dashboard
+leads on to planning, the full readiness view, and settings. Onboarding runs
+only while no profile is saved.
+
+**What-if planning.** On the planning screen, reached from home or readiness, a student
 ticks courses they plan to take. Each course not yet taken lists the gaps it
 would close. The projection — the same readiness reading, with the planned
 courses counted as taken — stands beside today's figure there and on the
@@ -106,7 +112,9 @@ lib/
   core/                 api client, locale, formatting, shared widgets
   features/
     onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
+    home/               the dashboard a saved profile opens on
     profile/            the student profile, saved on the device
+    planning/           what-if planning: the gaps each planned course closes
     settings/           edit the profile, language, delete
     gap/                readiness report and screen
     recommendations/    suggested courses by source, and the screen
@@ -143,7 +151,7 @@ postings.
 flutter test
 ```
 
-57 tests, no device needed:
+59 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -161,6 +169,10 @@ flutter test
 - **persistence and settings** — a saved profile skips onboarding, settings
   edits it and deletes it after asking, and the language is remembered across
   launches
+- **home** — a saved profile opens on the dashboard: the main career's
+  readiness, the top three gaps in demand order with the fourth left to the full
+  view, the short quality flag, and entry points that open planning, the full
+  readiness view and settings. In Arabic the layout runs right to left
 - **planning** — a course closes the current gaps it teaches, in demand order,
   and a gap two planned courses close counts once. Planning saves at once, and
   an edit keeps the plan, less any course now completed. The planning screen

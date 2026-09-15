@@ -4,6 +4,23 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-15 — Home dashboard
+
+Once a profile is saved, the student tab opens on a home screen. Onboarding runs
+only while no profile is saved. The home screen shows:
+- **Readiness for the main career,** with the plan's projection beside it when
+  courses are planned.
+- **The three most-demanded gaps.**
+- **A short form of the quality flag:** its headline and the failed gate, since
+  the screen shows readiness figures too.
+- **Entry points** to planning, the full readiness view (careers side by side,
+  covered and missing skills, suggestions) and settings.
+
+Presentation only. It makes the same requests as the readiness screen, and no
+figure changes. App tests: 57 → 59.
+
+---
+
 ## 2026-09-15 — What-if course planning
 
 A student can mark courses as planned, alongside the completed ones.
