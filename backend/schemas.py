@@ -56,6 +56,19 @@ class ProfileIn(BaseModel):
     major: str | None = None
 
 
+class StudentIn(BaseModel):
+    """
+    A student's profile sent with the request, for a reading that stores
+    nothing. The app keeps the profile on the device and sends this each time.
+    """
+    career: str
+    completed_courses: list[str] = Field(default_factory=list,
+                                         description="Course codes from GET /courses")
+    self_reported_skills: list[str] = Field(
+        default_factory=list,
+        description="Skill ids from GET /skills held from outside coursework. Unverified.")
+
+
 class ProfileOut(BaseModel):
     id: str
     career: str
@@ -86,7 +99,9 @@ class CoveredSkill(SkillEntry):
 
 
 class GapOut(BaseModel):
-    profile_id: str
+    profile_id: str | None = Field(
+        None, description="The stored profile read; null when the profile came with the "
+                          "request (POST /gap), which stores nothing")
     career: str
     readiness: float = Field(
         description="Demand-weighted share of required skills held, from courses and "
@@ -141,7 +156,9 @@ Recommendation = Annotated[UniversityRecommendation | OnlineRecommendation,
 
 
 class RecommendationsOut(BaseModel):
-    profile_id: str
+    profile_id: str | None = Field(
+        None, description="The stored profile read; null when the profile came with the "
+                          "request (POST /recommendations), which stores nothing")
     career: str
     recommendations: list[Recommendation] = Field(description=(
         "University courses first, then online courses, each ranked by the demand "

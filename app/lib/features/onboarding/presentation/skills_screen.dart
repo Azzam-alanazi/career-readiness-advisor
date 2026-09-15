@@ -2,7 +2,6 @@ import 'package:career_readiness/core/l10n/category_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
-import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:career_readiness/features/onboarding/domain/skill_groups.dart';
@@ -157,7 +156,7 @@ class _SubmitBar extends ConsumerWidget {
                         dimension: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text(l.submit),
+                    : Text(state.editing ? l.saveChanges : l.submit),
               ),
             ),
           ],
@@ -167,13 +166,10 @@ class _SubmitBar extends ConsumerWidget {
   }
 
   Future<void> _submit(BuildContext context, WidgetRef ref) async {
-    final careers = ref.read(onboardingControllerProvider).careers;
-    final id = await ref.read(onboardingControllerProvider.notifier).submit();
-    if (id == null || !context.mounted) return;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => ReadinessScreen(profileId: id, careers: careers),
-      ),
-    );
+    final saved = await ref.read(onboardingControllerProvider.notifier).finish();
+    if (!saved || !context.mounted) return;
+    // Saved on the device: the student tab's first screen is now the profile's
+    // home, so go back to it rather than deeper in.
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }

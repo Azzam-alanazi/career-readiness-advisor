@@ -1,12 +1,10 @@
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Suggestions for a profile, for one of its careers.
-typedef RecommendationsKey = ({String profileId, String career});
-
+/// Suggestions for a profile read against one of its careers.
 final recommendationsProvider =
-    FutureProvider.autoDispose.family<RecommendationsReport, RecommendationsKey>(
-  (ref, key) =>
-      ref.watch(recommendationsRepositoryProvider).fetch(key.profileId, career: key.career),
+    FutureProvider.autoDispose.family<RecommendationsReport, GapQuery>(
+  (ref, query) => ref.watch(recommendationsRepositoryProvider).fetch(query),
 );

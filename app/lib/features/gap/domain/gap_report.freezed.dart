@@ -16,7 +16,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GapReport {
 
- String get profileId; String get career;/// Demand-weighted share of the career's required skills the student has,
+/// Null when the profile travelled with the request, as the app sends it.
+ String? get profileId; String get career;/// Demand-weighted share of the career's required skills the student has,
 /// from courses and self-reported skills together.
  double get readiness; int get readinessPercent;/// The same share from completed courses alone: the academic record.
  double get readinessFromCourses; int get readinessFromCoursesPercent;/// Both sources together, each entry marked with its source.
@@ -61,7 +62,7 @@ abstract mixin class $GapReportCopyWith<$Res>  {
   factory $GapReportCopyWith(GapReport value, $Res Function(GapReport) _then) = _$GapReportCopyWithImpl;
 @useResult
 $Res call({
- String profileId, String career, double readiness, int readinessPercent, double readinessFromCourses, int readinessFromCoursesPercent, List<SkillEntry> covered, List<SkillEntry> coveredFromCourses, List<SkillEntry> coveredSelfReported, List<SkillEntry> missing, ValidationInfo validation
+ String? profileId, String career, double readiness, int readinessPercent, double readinessFromCourses, int readinessFromCoursesPercent, List<SkillEntry> covered, List<SkillEntry> coveredFromCourses, List<SkillEntry> coveredSelfReported, List<SkillEntry> missing, ValidationInfo validation
 });
 
 
@@ -78,10 +79,10 @@ class _$GapReportCopyWithImpl<$Res>
 
 /// Create a copy of GapReport
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? profileId = null,Object? career = null,Object? readiness = null,Object? readinessPercent = null,Object? readinessFromCourses = null,Object? readinessFromCoursesPercent = null,Object? covered = null,Object? coveredFromCourses = null,Object? coveredSelfReported = null,Object? missing = null,Object? validation = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? profileId = freezed,Object? career = null,Object? readiness = null,Object? readinessPercent = null,Object? readinessFromCourses = null,Object? readinessFromCoursesPercent = null,Object? covered = null,Object? coveredFromCourses = null,Object? coveredSelfReported = null,Object? missing = null,Object? validation = null,}) {
   return _then(GapReport(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,readiness: null == readiness ? _self.readiness : readiness // ignore: cast_nullable_to_non_nullable
 as double,readinessPercent: null == readinessPercent ? _self.readinessPercent : readinessPercent // ignore: cast_nullable_to_non_nullable
 as int,readinessFromCourses: null == readinessFromCourses ? _self.readinessFromCourses : readinessFromCourses // ignore: cast_nullable_to_non_nullable
@@ -185,7 +186,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GapReport() when $default != null:
 return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPercent,_that.readinessFromCourses,_that.readinessFromCoursesPercent,_that.covered,_that.coveredFromCourses,_that.coveredSelfReported,_that.missing,_that.validation);case _:
@@ -206,7 +207,7 @@ return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPerc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)  $default,) {final _that = this;
 switch (_that) {
 case _GapReport():
 return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPercent,_that.readinessFromCourses,_that.readinessFromCoursesPercent,_that.covered,_that.coveredFromCourses,_that.coveredSelfReported,_that.missing,_that.validation);case _:
@@ -226,7 +227,7 @@ return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPerc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? profileId,  String career,  double readiness,  int readinessPercent,  double readinessFromCourses,  int readinessFromCoursesPercent,  List<SkillEntry> covered,  List<SkillEntry> coveredFromCourses,  List<SkillEntry> coveredSelfReported,  List<SkillEntry> missing,  ValidationInfo validation)?  $default,) {final _that = this;
 switch (_that) {
 case _GapReport() when $default != null:
 return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPercent,_that.readinessFromCourses,_that.readinessFromCoursesPercent,_that.covered,_that.coveredFromCourses,_that.coveredSelfReported,_that.missing,_that.validation);case _:
@@ -241,10 +242,11 @@ return $default(_that.profileId,_that.career,_that.readiness,_that.readinessPerc
 @JsonSerializable()
 
 class _GapReport implements GapReport {
-  const _GapReport({required this.profileId, required this.career, required this.readiness, required this.readinessPercent, required this.readinessFromCourses, required this.readinessFromCoursesPercent, required  List<SkillEntry> covered, required  List<SkillEntry> coveredFromCourses, required  List<SkillEntry> coveredSelfReported, required  List<SkillEntry> missing, required this.validation}): _covered = covered,_coveredFromCourses = coveredFromCourses,_coveredSelfReported = coveredSelfReported,_missing = missing;
+  const _GapReport({this.profileId, required this.career, required this.readiness, required this.readinessPercent, required this.readinessFromCourses, required this.readinessFromCoursesPercent, required  List<SkillEntry> covered, required  List<SkillEntry> coveredFromCourses, required  List<SkillEntry> coveredSelfReported, required  List<SkillEntry> missing, required this.validation}): _covered = covered,_coveredFromCourses = coveredFromCourses,_coveredSelfReported = coveredSelfReported,_missing = missing;
   factory _GapReport.fromJson(Map<String, dynamic> json) => _$GapReportFromJson(json);
 
-@override final  String profileId;
+/// Null when the profile travelled with the request, as the app sends it.
+@override final  String? profileId;
 @override final  String career;
 /// Demand-weighted share of the career's required skills the student has,
 /// from courses and self-reported skills together.
@@ -326,7 +328,7 @@ abstract mixin class _$GapReportCopyWith<$Res> implements $GapReportCopyWith<$Re
   factory _$GapReportCopyWith(_GapReport value, $Res Function(_GapReport) _then) = __$GapReportCopyWithImpl;
 @override @useResult
 $Res call({
- String profileId, String career, double readiness, int readinessPercent, double readinessFromCourses, int readinessFromCoursesPercent, List<SkillEntry> covered, List<SkillEntry> coveredFromCourses, List<SkillEntry> coveredSelfReported, List<SkillEntry> missing, ValidationInfo validation
+ String? profileId, String career, double readiness, int readinessPercent, double readinessFromCourses, int readinessFromCoursesPercent, List<SkillEntry> covered, List<SkillEntry> coveredFromCourses, List<SkillEntry> coveredSelfReported, List<SkillEntry> missing, ValidationInfo validation
 });
 
 
@@ -343,10 +345,10 @@ class __$GapReportCopyWithImpl<$Res>
 
 /// Create a copy of GapReport
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? profileId = null,Object? career = null,Object? readiness = null,Object? readinessPercent = null,Object? readinessFromCourses = null,Object? readinessFromCoursesPercent = null,Object? covered = null,Object? coveredFromCourses = null,Object? coveredSelfReported = null,Object? missing = null,Object? validation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? profileId = freezed,Object? career = null,Object? readiness = null,Object? readinessPercent = null,Object? readinessFromCourses = null,Object? readinessFromCoursesPercent = null,Object? covered = null,Object? coveredFromCourses = null,Object? coveredSelfReported = null,Object? missing = null,Object? validation = null,}) {
   return _then(_GapReport(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,readiness: null == readiness ? _self.readiness : readiness // ignore: cast_nullable_to_non_nullable
 as double,readinessPercent: null == readinessPercent ? _self.readinessPercent : readinessPercent // ignore: cast_nullable_to_non_nullable
 as int,readinessFromCourses: null == readinessFromCourses ? _self.readinessFromCourses : readinessFromCourses // ignore: cast_nullable_to_non_nullable

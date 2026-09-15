@@ -1,20 +1,21 @@
 import 'package:career_readiness/features/onboarding/domain/onboarding_state.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_controller.dart';
-import 'package:career_readiness/features/profile/data/profile_repository.dart';
-import 'package:career_readiness/features/profile/presentation/current_profile.dart';
+import 'package:career_readiness/features/profile/data/profile_store.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
+import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fakes.dart';
 
 void main() {
-  late FakeProfileRepository profiles;
+  late InMemoryProfileStore store;
   late ProviderContainer container;
 
   setUp(() {
-    profiles = FakeProfileRepository();
+    store = InMemoryProfileStore();
     container = ProviderContainer(
-      overrides: [profileRepositoryProvider.overrideWithValue(profiles)],
+      overrides: [profileStoreProvider.overrideWithValue(store)],
     );
   });
 
@@ -73,62 +74,74 @@ void main() {
     expect(state().selfReported, {'SK85'});
   });
 
-  test('submit sends the first career as the main one and the rest to compare', () async {
+  test('finishing saves the profile on the device, lists sorted, careers in order', () async {
     controller()
+      ..setMajor('  Information Systems ')
       ..toggleCareer('Software Developer')
       ..toggleCareer('Business Analyst')
-      ..toggleCareer('Data Analyst');
-
-    await controller().submit();
-    expect(profiles.lastDraft!.career, 'Software Developer');
-    expect(profiles.lastDraft!.otherCareers, ['Business Analyst', 'Data Analyst']);
-  });
-
-  test('submit sends self-reported skills sorted, beside the courses', () async {
-    controller()
-      ..toggleCareer('Business Analyst')
+      ..toggleCourse('IS 240')
       ..toggleCourse('IS 230')
       ..toggleSkill('SK85')
       ..toggleSkill('SK04');
 
-    await controller().submit();
-    expect(profiles.lastDraft!.completedCourses, ['IS 230']);
-    expect(profiles.lastDraft!.selfReportedSkills, ['SK04', 'SK85']);
+    expect(await controller().finish(), isTrue);
+    const expected = StudentProfile(
+      careers: ['Software Developer', 'Business Analyst'],
+      completedCourses: ['IS 230', 'IS 240'],
+      selfReportedSkills: ['SK04', 'SK85'],
+      major: 'Information Systems',
+    );
+    expect(store.profile, expected);
+    expect(container.read(savedProfileProvider), expected);
+    expect(state().careers, isEmpty, reason: 'the draft has done its job');
   });
 
-  test('submit sends sorted courses, drops a blank major, sets the profile', () async {
+  test('a blank major is saved as none', () async {
     controller()
       ..setMajor('   ')
-      ..toggleCareer('Business Analyst')
-      ..toggleCourse('IS 240')
-      ..toggleCourse('IS 230');
-
-    expect(await controller().submit(), 'p1');
-    expect(profiles.lastDraft!.completedCourses, ['IS 230', 'IS 240']);
-    expect(profiles.lastDraft!.selfReportedSkills, isEmpty, reason: 'skills are optional');
-    expect(profiles.lastDraft!.otherCareers, isEmpty, reason: 'one career is enough');
-    expect(profiles.lastDraft!.major, isNull);
-    expect(container.read(currentProfileProvider), 'p1');
-    expect(state().submitting, isFalse);
+      ..toggleCareer('Business Analyst');
+    await controller().finish();
+    expect(store.profile!.major, isNull);
   });
 
-  test('a failed submit keeps the error and sets no profile', () async {
-    profiles.failWith = Exception('backend down');
+  test('a failed save keeps the error and the draft, and saves nothing', () async {
+    store.failWith = StateError('disk full');
     controller().toggleCareer('Business Analyst');
 
-    expect(await controller().submit(), isNull);
+    expect(await controller().finish(), isFalse);
     expect(state().error, isNotNull);
     expect(state().submitting, isFalse);
-    expect(container.read(currentProfileProvider), isNull);
+    expect(state().careers, ['Business Analyst']);
+    expect(store.profile, isNull);
+    expect(container.read(savedProfileProvider), isNull);
   });
 
-  test('reset clears the draft and the current profile', () async {
+  test('editing opens the saved profile, and finishing replaces it', () async {
+    await container.read(savedProfileProvider.notifier).save(const StudentProfile(
+          careers: ['Business Analyst'],
+          completedCourses: ['IS 230'],
+          selfReportedSkills: ['SK85'],
+          major: 'Information Systems',
+        ));
+    controller().startEditing(container.read(savedProfileProvider)!);
+    expect(state().editing, isTrue);
+    expect(state().major, 'Information Systems');
+    expect(state().careers, ['Business Analyst']);
+    expect(state().courses, {'IS 230'});
+    expect(state().selfReported, {'SK85'});
+
+    controller().toggleCourse('IS 240');
+    await controller().finish();
+    expect(store.profile!.completedCourses, ['IS 230', 'IS 240']);
+    expect(store.profile!.selfReportedSkills, ['SK85']);
+    expect(state().editing, isFalse);
+  });
+
+  test('reset clears the draft', () {
     controller()
       ..toggleCareer('Business Analyst')
-      ..toggleCareer('Data Analyst')
       ..toggleCourse('IS 230')
       ..toggleSkill('SK85');
-    await controller().submit();
     final revision = state().revision;
 
     controller().reset();
@@ -137,6 +150,5 @@ void main() {
     expect(state().courses, isEmpty);
     expect(state().selfReported, isEmpty);
     expect(state().revision, revision + 1);
-    expect(container.read(currentProfileProvider), isNull);
   });
 }

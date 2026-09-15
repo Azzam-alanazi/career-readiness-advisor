@@ -698,7 +698,8 @@ as double,
 /// @nodoc
 mixin _$RecommendationsReport {
 
- String get profileId; String get career;/// University courses first, then online ones, each ranked by value.
+/// Null when the profile travelled with the request, as the app sends it.
+ String? get profileId; String get career;/// University courses first, then online ones, each ranked by value.
  List<Recommendation> get recommendations;/// Missing skills no university course teaches and no online course is
 /// listed for yet.
  List<SkillRef> get uncovered; ValidationInfo get validation;
@@ -739,7 +740,7 @@ abstract mixin class $RecommendationsReportCopyWith<$Res>  {
   factory $RecommendationsReportCopyWith(RecommendationsReport value, $Res Function(RecommendationsReport) _then) = _$RecommendationsReportCopyWithImpl;
 @useResult
 $Res call({
- String profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
+ String? profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
 });
 
 
@@ -756,10 +757,10 @@ class _$RecommendationsReportCopyWithImpl<$Res>
 
 /// Create a copy of RecommendationsReport
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? profileId = freezed,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
   return _then(RecommendationsReport(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,recommendations: null == recommendations ? _self.recommendations : recommendations // ignore: cast_nullable_to_non_nullable
 as List<Recommendation>,uncovered: null == uncovered ? _self.uncovered : uncovered // ignore: cast_nullable_to_non_nullable
 as List<SkillRef>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable
@@ -857,7 +858,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RecommendationsReport() when $default != null:
 return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
@@ -878,7 +879,7 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.uncover
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)  $default,) {final _that = this;
 switch (_that) {
 case _RecommendationsReport():
 return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
@@ -898,7 +899,7 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.uncover
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? profileId,  String career,  List<Recommendation> recommendations,  List<SkillRef> uncovered,  ValidationInfo validation)?  $default,) {final _that = this;
 switch (_that) {
 case _RecommendationsReport() when $default != null:
 return $default(_that.profileId,_that.career,_that.recommendations,_that.uncovered,_that.validation);case _:
@@ -913,10 +914,11 @@ return $default(_that.profileId,_that.career,_that.recommendations,_that.uncover
 @JsonSerializable()
 
 class _RecommendationsReport extends RecommendationsReport {
-  const _RecommendationsReport({required this.profileId, required this.career, required  List<Recommendation> recommendations, required  List<SkillRef> uncovered, required this.validation}): _recommendations = recommendations,_uncovered = uncovered,super._();
+  const _RecommendationsReport({this.profileId, required this.career, required  List<Recommendation> recommendations, required  List<SkillRef> uncovered, required this.validation}): _recommendations = recommendations,_uncovered = uncovered,super._();
   factory _RecommendationsReport.fromJson(Map<String, dynamic> json) => _$RecommendationsReportFromJson(json);
 
-@override final  String profileId;
+/// Null when the profile travelled with the request, as the app sends it.
+@override final  String? profileId;
 @override final  String career;
 /// University courses first, then online ones, each ranked by value.
  final  List<Recommendation> _recommendations;
@@ -975,7 +977,7 @@ abstract mixin class _$RecommendationsReportCopyWith<$Res> implements $Recommend
   factory _$RecommendationsReportCopyWith(_RecommendationsReport value, $Res Function(_RecommendationsReport) _then) = __$RecommendationsReportCopyWithImpl;
 @override @useResult
 $Res call({
- String profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
+ String? profileId, String career, List<Recommendation> recommendations, List<SkillRef> uncovered, ValidationInfo validation
 });
 
 
@@ -992,10 +994,10 @@ class __$RecommendationsReportCopyWithImpl<$Res>
 
 /// Create a copy of RecommendationsReport
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? profileId = null,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? profileId = freezed,Object? career = null,Object? recommendations = null,Object? uncovered = null,Object? validation = null,}) {
   return _then(_RecommendationsReport(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,career: null == career ? _self.career : career // ignore: cast_nullable_to_non_nullable
 as String,recommendations: null == recommendations ? _self._recommendations : recommendations // ignore: cast_nullable_to_non_nullable
 as List<Recommendation>,uncovered: null == uncovered ? _self._uncovered : uncovered // ignore: cast_nullable_to_non_nullable
 as List<SkillRef>,validation: null == validation ? _self.validation : validation // ignore: cast_nullable_to_non_nullable

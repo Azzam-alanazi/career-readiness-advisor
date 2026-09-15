@@ -8,7 +8,9 @@ import 'package:career_readiness/features/gap/presentation/readiness_screen.dart
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
-import 'package:career_readiness/features/profile/data/profile_repository.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
+import 'package:career_readiness/features/profile/data/profile_store.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +20,7 @@ import 'fakes.dart';
 
 class _World {
   final catalog = FakeCatalogRepository();
-  final profiles = FakeProfileRepository();
+  final store = InMemoryProfileStore();
   final gap = FakeGapRepository();
   final recommendations = FakeRecommendationsRepository();
   final curriculum = FakeCurriculumRepository();
@@ -34,7 +36,7 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
     retry: noAutomaticRetry, // the same policy main.dart ships with
     overrides: [
       catalogRepositoryProvider.overrideWithValue(w.catalog),
-      profileRepositoryProvider.overrideWithValue(w.profiles),
+      profileStoreProvider.overrideWithValue(w.store),
       gapRepositoryProvider.overrideWithValue(w.gap),
       recommendationsRepositoryProvider.overrideWithValue(w.recommendations),
       curriculumRepositoryProvider.overrideWithValue(w.curriculum),
@@ -119,12 +121,24 @@ void main() {
     await tester.tap(button('See my readiness'));
     await tester.pumpAndSettle();
 
-    final draft = w.profiles.lastDraft!;
-    expect(draft.career, 'Business Analyst');
-    expect(draft.completedCourses, ['IS 230', 'IS 240']);
-    expect(draft.selfReportedSkills, ['SK85']);
-    expect(draft.major, 'Information Systems');
-    expect(w.gap.requested, ['p1']);
+    // Saved on the device, and read by sending that profile with the request.
+    expect(
+        w.store.profile,
+        const StudentProfile(
+          careers: ['Business Analyst'],
+          completedCourses: ['IS 230', 'IS 240'],
+          selfReportedSkills: ['SK85'],
+          major: 'Information Systems',
+        ));
+    expect(w.gap.queries, [
+      const GapQuery(
+        career: 'Business Analyst',
+        completedCourses: ['IS 230', 'IS 240'],
+        selfReportedSkills: ['SK85'],
+      ),
+    ]);
+    // Readiness is now the student tab's first screen, not a step to go back from.
+    expect(find.byType(BackButton), findsNothing);
 
     // Readiness: the combined score, the courses-only reading, and where each
     // covered skill came from.
@@ -284,7 +298,7 @@ void main() {
   });
 
   testWidgets('A failed save keeps the student on the skills step and says so', (tester) async {
-    final w = _World()..profiles.failWith = const ApiException('boom', statusCode: 500);
+    final w = _World()..store.failWith = StateError('disk full');
     await _pumpApp(tester, w);
 
     await tester.tap(find.text('Business Analyst'));
@@ -296,38 +310,98 @@ void main() {
 
     expect(find.byType(ReadinessScreen), findsNothing);
     expect(find.byType(SkillsScreen), findsOneWidget);
-    expect(find.text('Your profile could not be saved. Check the connection and try again.'),
+    expect(find.text('Your profile could not be saved on this device. Try again.'),
         findsOneWidget);
   });
 
-  testWidgets('Start over returns to a blank form', (tester) async {
-    final w = _World();
+  testWidgets('A saved profile opens straight on readiness; settings edits it and deletes it',
+      (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Business Analyst'],
+        completedCourses: ['IS 230'],
+        major: 'Information Systems',
+      );
     await _pumpApp(tester, w);
 
-    await tester.enterText(find.byType(TextFormField), 'Information Systems');
-    await tester.tap(find.text('Business Analyst'));
-    await tester.pump();
+    // The next launch: no onboarding, the saved profile read straight away.
+    expect(find.byType(OnboardingScreen), findsNothing);
+    expect(find.text('Readiness for Business Analyst'), findsOneWidget);
+    expect(w.gap.queries.single,
+        const GapQuery(career: 'Business Analyst', completedCourses: ['IS 230']));
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    expect(find.text('Business Analyst'), findsOneWidget);
+    expect(find.text('Information Systems'), findsOneWidget);
+    expect(find.text('1 completed course'), findsOneWidget);
+    expect(find.text('No self-reported skills'), findsOneWidget);
+    expect(find.textContaining('saved on this device only'), findsOneWidget);
+
+    // The language can be set here too, and it is remembered.
+    await tester.tap(find.text('العربية'));
+    await tester.pumpAndSettle();
+    expect(find.text('الإعدادات'), findsOneWidget);
+    expect(w.store.lang, 'ar');
+    await tester.tap(find.text('English'));
+    await tester.pumpAndSettle();
+    expect(w.store.lang, 'en');
+
+    // Edit: the form opens holding the saved profile.
+    await tester.tap(find.text('Edit profile'));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit your profile'), findsOneWidget);
+    expect(find.text('Information Systems'), findsOneWidget);
+    expect(
+        tester
+            .widget<CheckboxListTile>(
+                find.widgetWithText(CheckboxListTile, 'Database Management Systems'))
+            .value,
+        isTrue);
+    await tester.tap(find.text('Systems Analysis and Design'));
     await tester.tap(button('Next: other skills'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Communication'));
-    await tester.tap(button('See my readiness'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Suggested courses'));
+    await tester.tap(button('Save changes'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Start over'));
-    await tester.pumpAndSettle();
+    expect(w.store.profile!.completedCourses, ['IS 230', 'IS 240']);
+    expect(w.store.profile!.major, 'Information Systems');
+    expect(find.text('Readiness for Business Analyst'), findsOneWidget);
+    expect(find.byType(BackButton), findsNothing, reason: 'back home, not deeper in');
+    expect(w.gap.queries.last.completedCourses, ['IS 230', 'IS 240']);
 
+    // Delete: asked first; cancelling keeps everything.
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete profile'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete your profile?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(w.store.profile, isNotNull);
+
+    await tester.tap(find.text('Delete profile'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+    expect(w.store.profile, isNull);
     expect(find.byType(OnboardingScreen), findsOneWidget);
-    expect(find.text('Information Systems'), findsNothing, reason: 'the major field is rebuilt empty');
+    expect(find.text('Information Systems'), findsNothing, reason: 'the form starts blank');
     expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull);
+  });
 
-    // The skills step starts blank too.
-    await tester.tap(find.text('Business Analyst'));
-    await tester.pump();
-    await tester.tap(button('Next: other skills'));
+  testWidgets('The language chosen is remembered for the next launch', (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    await tester.tap(find.text('العربية'));
     await tester.pumpAndSettle();
-    expect(find.text('Selected: 0'), findsOneWidget);
+    expect(w.store.lang, 'ar');
+
+    // Close the app, then open it again on the same device.
+    await tester.pumpWidget(const SizedBox());
+    await _pumpApp(tester, w);
+    expect(find.text('ملفك الشخصي'), findsOneWidget);
+    expect(Directionality.of(tester.element(find.byType(OnboardingScreen))), TextDirection.rtl);
   });
 
   testWidgets('Department: its own tab, the sample caveat first, gaps ranked by demand',
@@ -610,8 +684,7 @@ void main() {
     await tester.tap(button('See my readiness'));
     await tester.pumpAndSettle();
 
-    expect(w.profiles.lastDraft!.career, 'Business Analyst');
-    expect(w.profiles.lastDraft!.otherCareers, ['Software Developer']);
+    expect(w.store.profile!.careers, ['Business Analyst', 'Software Developer']);
     expect(w.gap.careers.toSet(), {'Business Analyst', 'Software Developer'});
 
     // Side by side, in the order chosen, each with its score and counts.
@@ -675,7 +748,7 @@ void main() {
     await tester.tap(button('اعرض جاهزيتي'));
     await tester.pumpAndSettle();
 
-    expect(w.profiles.lastDraft!.otherCareers, ['Data Analyst', 'Software Developer']);
+    expect(w.store.profile!.careers, ['Business Analyst', 'Data Analyst', 'Software Developer']);
     expect(Directionality.of(tester.element(find.byType(ReadinessScreen))), TextDirection.rtl);
     // On a phone in Arabic the quality flag fills the first screen, so the
     // comparison is reached by scrolling -- after the flag, never before it.

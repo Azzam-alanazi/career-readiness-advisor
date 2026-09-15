@@ -2,7 +2,8 @@ import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart'
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
-import 'package:career_readiness/features/profile/domain/profile_draft.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -108,19 +109,25 @@ void main() {
     expect(CurriculumGap.fromJson({...curriculumAllJson, 'coverage': 1}).coverage, 1.0);
   });
 
-  test('a profile draft serialises to the backend field names', () {
-    const draft = ProfileDraft(
-      career: 'Business Analyst',
-      otherCareers: ['Software Developer'],
-      completedCourses: ['IS 230'],
+  test('a profile round-trips through JSON; a query goes out in the backend names', () {
+    const profile = StudentProfile(
+      careers: ['Business Analyst', 'Software Developer'],
+      completedCourses: ['IS 240', 'IS 230'],
       selfReportedSkills: ['SK85'],
     );
-    expect(draft.toJson(), {
+    expect(StudentProfile.fromJson(profile.toJson()), profile);
+    expect(gapQueryFor(profile).toJson(), {
       'career': 'Business Analyst',
-      'other_careers': ['Software Developer'],
-      'completed_courses': ['IS 230'],
+      'completed_courses': ['IS 230', 'IS 240'],
       'self_reported_skills': ['SK85'],
-      'major': null,
     });
+    expect(gapQueryFor(profile, 'Software Developer').career, 'Software Developer');
+    // Compared by value, so one provider serves each profile content.
+    expect(gapQueryFor(profile), gapQueryFor(profile.copyWith(completedCourses: ['IS 230', 'IS 240'])));
+  });
+
+  test('a report read from a profile sent with the request has no profile id', () {
+    expect(GapReport.fromJson({...gapJson, 'profile_id': null}).profileId, isNull);
+    expect(RecommendationsReport.fromJson({...recsJson, 'profile_id': null}).profileId, isNull);
   });
 }

@@ -23,7 +23,9 @@ class OnboardingScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(l.onboardingTitle),
+        title: Text(ref.watch(onboardingControllerProvider.select((s) => s.editing))
+            ? l.editProfileTitle
+            : l.onboardingTitle),
         actions: const [LanguageToggle()],
       ),
       body: AsyncView(

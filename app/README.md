@@ -22,6 +22,13 @@ Choosing completed courses is built for a real catalog:
 This is presentation only: a course's skills come from the same labels as
 before.
 
+**The profile is saved on the device,** with `shared_preferences`: careers,
+courses, self-reported skills, major, and the language. The first launch shows
+onboarding; every later launch opens straight on the profile. Settings, reached
+from the readiness screen, edits the profile, switches language, or deletes the
+profile after asking. Nothing about the student is stored on a server: each
+request carries the profile, and the backend keeps nothing.
+
 ## What the numbers are — read this first
 
 The skill matcher behind every figure **failed its Phase 0 validation gate**:
@@ -93,7 +100,8 @@ lib/
   core/                 api client, locale, formatting, shared widgets
   features/
     onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
-    profile/            profile draft and saved profile, current-profile state
+    profile/            the student profile, saved on the device
+    settings/           edit the profile, language, delete
     gap/                readiness report and screen
     recommendations/    suggested courses by source, and the screen
     curriculum/         the department's curriculum-gap view
@@ -129,7 +137,7 @@ postings.
 flutter test
 ```
 
-45 tests, no device needed:
+50 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -138,8 +146,15 @@ flutter test
 - **API client** — Arabic decoded correctly from a response with no charset,
   non-2xx and unreachable-server errors, JSON on POST
 - **onboarding controller** — a career is required, courses and skills toggle,
-  both are sent sorted, nothing is ticked to start, a blank major is sent as
-  null, a failed save, start-over clearing everything
+  nothing is ticked to start. Finishing saves the profile on the device with
+  its lists sorted and a blank major as none. A failed save keeps the draft.
+  Editing opens the saved profile and replaces it
+- **profile store** — a saved profile loads back on the next launch; an
+  unreadable one means onboarding again rather than a crash; deleting the
+  profile keeps the language
+- **persistence and settings** — a saved profile skips onboarding, settings
+  edits it and deletes it after asking, and the language is remembered across
+  launches
 - **skill groups** — categories in taxonomy order, search in either language,
   the skills the chosen courses teach
 - **the full flow, in English and in Arabic** — courses, then other skills, then

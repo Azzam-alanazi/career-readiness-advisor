@@ -299,8 +299,98 @@ abstract class AppLocalizations {
   /// No description provided for @submitFailed.
   ///
   /// In en, this message translates to:
-  /// **'Your profile could not be saved. Check the connection and try again.'**
+  /// **'Your profile could not be saved on this device. Try again.'**
   String get submitFailed;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get settingsProfile;
+
+  /// No description provided for @settingsCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No completed courses} =1{1 completed course} other{{count} completed courses}}'**
+  String settingsCourses(int count);
+
+  /// No description provided for @settingsSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No self-reported skills} =1{1 self-reported skill} other{{count} self-reported skills}}'**
+  String settingsSkills(int count);
+
+  /// No description provided for @settingsEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get settingsEditProfile;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept on this device'**
+  String get settingsStorage;
+
+  /// No description provided for @settingsLocalOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is saved on this device only. Nothing about you is stored on a server, and there is no account, so removing the app removes your profile too.'**
+  String get settingsLocalOnly;
+
+  /// No description provided for @settingsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete profile'**
+  String get settingsDelete;
+
+  /// No description provided for @settingsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your profile?'**
+  String get settingsDeleteTitle;
+
+  /// No description provided for @settingsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes your careers, courses and skills from this device, and you start again from the beginning.'**
+  String get settingsDeleteBody;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 
   /// No description provided for @nextToSkills.
   ///

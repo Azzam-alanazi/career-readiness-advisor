@@ -7,7 +7,7 @@ part of 'gap_report.dart';
 // **************************************************************************
 
 _GapReport _$GapReportFromJson(Map<String, dynamic> json) => _GapReport(
-  profileId: json['profile_id'] as String,
+  profileId: json['profile_id'] as String?,
   career: json['career'] as String,
   readiness: (json['readiness'] as num).toDouble(),
   readinessPercent: (json['readiness_percent'] as num).toInt(),

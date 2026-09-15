@@ -130,7 +130,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submitFailed =>
-      'Your profile could not be saved. Check the connection and try again.';
+      'Your profile could not be saved on this device. Try again.';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get editProfileTitle => 'Edit your profile';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsProfile => 'Profile';
+
+  @override
+  String settingsCourses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count completed courses',
+      one: '1 completed course',
+      zero: 'No completed courses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String settingsSkills(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count self-reported skills',
+      one: '1 self-reported skill',
+      zero: 'No self-reported skills',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsEditProfile => 'Edit profile';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsStorage => 'Kept on this device';
+
+  @override
+  String get settingsLocalOnly =>
+      'Your profile is saved on this device only. Nothing about you is stored on a server, and there is no account, so removing the app removes your profile too.';
+
+  @override
+  String get settingsDelete => 'Delete profile';
+
+  @override
+  String get settingsDeleteTitle => 'Delete your profile?';
+
+  @override
+  String get settingsDeleteBody =>
+      'This removes your careers, courses and skills from this device, and you start again from the beginning.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
 
   @override
   String get nextToSkills => 'Next: other skills';

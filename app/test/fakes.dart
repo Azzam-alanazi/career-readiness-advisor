@@ -6,9 +6,9 @@ import 'package:career_readiness/features/onboarding/data/catalog_repository.dar
 import 'package:career_readiness/features/onboarding/domain/career.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
-import 'package:career_readiness/features/profile/data/profile_repository.dart';
-import 'package:career_readiness/features/profile/domain/profile.dart';
-import 'package:career_readiness/features/profile/domain/profile_draft.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
+import 'package:career_readiness/features/profile/data/profile_store.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 
@@ -477,35 +477,43 @@ class FakeCatalogRepository implements CatalogRepository {
   Future<List<Skill>> skills() async => skillsJson.map(Skill.fromJson).toList();
 }
 
-class FakeProfileRepository implements ProfileRepository {
-  ProfileDraft? lastDraft;
+/// The device's store, in memory: what a test launches with, and what it can
+/// read back afterwards.
+class InMemoryProfileStore implements ProfileStore {
+  InMemoryProfileStore({this.profile, this.lang});
+
+  StudentProfile? profile;
+  String? lang;
   Object? failWith;
 
   @override
-  Future<Profile> create(ProfileDraft draft) async {
-    lastDraft = draft;
+  StudentProfile? load() => profile;
+
+  @override
+  Future<void> save(StudentProfile value) async {
     if (failWith != null) throw failWith!;
-    return Profile(
-      id: 'p1',
-      career: draft.career,
-      otherCareers: draft.otherCareers,
-      major: draft.major,
-      completedCourses: draft.completedCourses,
-      selfReportedSkills: draft.selfReportedSkills,
-      createdAt: '2026-09-10T00:00:00+00:00',
-    );
+    profile = value;
   }
+
+  @override
+  Future<void> clear() async => profile = null;
+
+  @override
+  String? language() => lang;
+
+  @override
+  Future<void> saveLanguage(String languageCode) async => lang = languageCode;
 }
 
 class FakeGapRepository implements GapRepository {
-  final requested = <String>[];
-  final careers = <String?>[];
+  final queries = <GapQuery>[];
+
+  List<String> get careers => [for (final q in queries) q.career];
 
   @override
-  Future<GapReport> fetch(String profileId, {String? career}) async {
-    requested.add(profileId);
-    careers.add(career);
-    return GapReport.fromJson(switch (career) {
+  Future<GapReport> fetch(GapQuery query) async {
+    queries.add(query);
+    return GapReport.fromJson(switch (query.career) {
       'Software Developer' => gapDeveloperJson,
       'Data Analyst' => gapDataJson,
       _ => gapJson,
@@ -514,11 +522,13 @@ class FakeGapRepository implements GapRepository {
 }
 
 class FakeRecommendationsRepository implements RecommendationsRepository {
-  final careers = <String?>[];
+  final queries = <GapQuery>[];
+
+  List<String> get careers => [for (final q in queries) q.career];
 
   @override
-  Future<RecommendationsReport> fetch(String profileId, {String? career}) async {
-    careers.add(career);
+  Future<RecommendationsReport> fetch(GapQuery query) async {
+    queries.add(query);
     return RecommendationsReport.fromJson(recsJson);
   }
 }

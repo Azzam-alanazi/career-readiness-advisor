@@ -4,6 +4,27 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-15 — The profile is kept on the device
+
+The app saves the student's profile and language on the device. It sends the
+profile with each request to the new `POST /gap` and `POST /recommendations`,
+which store nothing.
+- **Nothing about the student is stored on the server, and there is no
+  account.** This is deliberate, and consistent with the non-goal of
+  integrating student records. Accounts are future work.
+- **`/profiles` stays in the API for scripted use.** The app no longer calls it.
+- **No figure changes.** The stateless endpoints read exactly as a stored
+  profile does; a backend test and the contract check both compare the two.
+- **Percentages round halves up now,** which fixes a bug found by the contract
+  check. Every `*_percent` field used Python's `round()`, which rounds a half to
+  the even neighbour. So Software Developer's readiness of exactly 12.5% came
+  back as 12, while the app, formatting the same share, showed 13%. They now
+  agree. Only values sitting exactly on a half change.
+
+Backend tests: 95 → 101. App tests: 45 → 50.
+
+---
+
 ## 2026-09-14 — Course selection: search, tracks, level shortcuts
 
 Presentation only; nothing the engine computes changed. The course step in

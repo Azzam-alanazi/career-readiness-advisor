@@ -9,7 +9,12 @@ Every response that reports a readiness figure carries a `validation` block.
 The matcher closed Phase 0 on a failed gate in both domains, and that fact
 travels with the data it qualifies, so the app can show it beside the numbers
 instead of leaving it in a changelog.
+
+The app keeps the student's profile on the device and sends it with each
+request to POST /gap and POST /recommendations, which store nothing. The
+stored-profile endpoints under /profiles remain for scripted use.
 """
+import math
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Callable
@@ -21,6 +26,15 @@ from .engine import MIN_DEMAND, REPO, EngineState, build_state
 from .store import ProfileStore
 
 DEFAULT_DB = REPO / "backend" / "data" / "profiles.sqlite3"
+
+
+def percent(share: float) -> int:
+    """
+    A share as a whole percentage, halves rounded up, as the app displays them.
+    Python's round() goes to the even neighbour, so a readiness of exactly 12.5%
+    came back as 12 while the app, formatting the same share, showed 13.
+    """
+    return math.floor(share * 100 + 0.5)
 
 
 def create_app(state_factory: Callable[[], EngineState] = build_state,
@@ -36,7 +50,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         app.state.store = ProfileStore(db_path)
         yield
 
-    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.4.0",
+    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.5.0",
                   lifespan=lifespan)
 
     def engine(request: Request) -> EngineState:
@@ -63,7 +77,72 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         meta = eng.skills.get(sid, {"en": sid, "ar": sid, "category": ""})
         return S.SkillEntry(id=sid, en=meta["en"], ar=meta["ar"],
                             category=meta["category"], demand=round(demand, 4),
-                            demand_percent=round(demand * 100))
+                            demand_percent=percent(demand))
+
+    def checked(eng: EngineState, career: str, courses: list[str],
+                skills: list[str]) -> tuple[list[str], list[str]]:
+        """The courses and skills without repeats, or a 422 naming what is unknown."""
+        if career not in eng.profiles:
+            raise HTTPException(422, detail={"error": "unknown career", "career": career,
+                                             "known": [c for c, _ in eng.careers()]})
+        codes = list(dict.fromkeys(courses))   # dedupe, keep order
+        unknown = [c for c in codes if c not in eng.courses]
+        if unknown:
+            raise HTTPException(422, detail={"error": "unknown course codes",
+                                             "unknown": unknown})
+        reported = list(dict.fromkeys(skills))
+        unknown = [s for s in reported if s not in eng.skills]
+        if unknown:
+            raise HTTPException(422, detail={"error": "unknown skill ids",
+                                             "unknown": unknown})
+        return codes, reported
+
+    def gap_out(eng: EngineState, career: str, courses: list[str], reported: list[str],
+                profile_id: str | None = None) -> S.GapOut:
+        g = eng.gap_by_source(career, courses, reported)
+        covered = [(s, w, g.source(s)) for s, w in g.combined.covered]
+        return S.GapOut(
+            profile_id=profile_id, career=career,
+            readiness=round(g.combined.readiness, 4),
+            readiness_percent=percent(g.combined.readiness),
+            readiness_from_courses=round(g.from_courses.readiness, 4),
+            readiness_from_courses_percent=percent(g.from_courses.readiness),
+            covered=[S.CoveredSkill(**skill_entry(eng, s, w).model_dump(), source=src)
+                     for s, w, src in covered],
+            covered_from_courses=[skill_entry(eng, s, w)
+                                  for s, w, src in covered if src == "courses"],
+            covered_self_reported=[skill_entry(eng, s, w)
+                                   for s, w, src in covered if src == "self_reported"],
+            missing=[skill_entry(eng, s, w) for s, w in g.combined.missing],
+            validation=validation(eng))
+
+    def recommendations_out(eng: EngineState, career: str, courses: list[str],
+                            reported: list[str], limit: int | None,
+                            profile_id: str | None = None) -> S.RecommendationsOut:
+        # Skills the student reports having are not gaps, so nothing is
+        # suggested for them.
+        g = eng.gap(career, courses, reported)
+        missing = dict(g.missing)
+
+        def refs(ids: list[str]) -> list[S.SkillRef]:
+            return [S.SkillRef(id=s, en=eng.skills[s]["en"], ar=eng.skills[s]["ar"],
+                               demand_percent=percent(missing[s]))
+                    for s in ids]
+
+        found = eng.recommendations(g, courses, limit)
+        recs: list[S.Recommendation] = [
+            S.UniversityRecommendation(code=c.code, name=c.name, closes=refs(closes),
+                                       value=round(value, 4))
+            for c, closes, value in found.university]
+        recs += [
+            S.OnlineRecommendation(provider=o.provider, title=o.title, url=o.url,
+                                   is_free=o.is_free, closes=refs(closes),
+                                   value=round(value, 4))
+            for o, closes, value in found.online]
+        return S.RecommendationsOut(profile_id=profile_id, career=career,
+                                    recommendations=recs,
+                                    uncovered=refs(found.uncovered),
+                                    validation=validation(eng))
 
     def load_profile(request: Request, profile_id: str) -> tuple[EngineState, dict]:
         prof = store(request).get(profile_id)
@@ -98,6 +177,9 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
 
     career_query = Query(None, description="One of the profile's careers; its first "
                                            "when omitted")
+    limit_query = Query(None, ge=1, le=50,
+                        description="Cap on each list, university and online; all when "
+                                    "omitted")
 
     @app.get("/health", response_model=S.HealthOut)
     def health(request: Request) -> S.HealthOut:
@@ -126,23 +208,32 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     def skills(request: Request) -> list[S.SkillOut]:
         return [S.SkillOut(id=sid, **meta) for sid, meta in engine(request).skills.items()]
 
+    # ---- a profile sent with the request: what the app uses --------------------
+
+    @app.post("/gap", response_model=S.GapOut)
+    def gap_for(body: S.StudentIn, request: Request) -> S.GapOut:
+        """The gap for a profile sent with the request. Nothing is stored."""
+        eng = engine(request)
+        codes, reported = checked(eng, body.career, body.completed_courses,
+                                  body.self_reported_skills)
+        return gap_out(eng, body.career, codes, reported)
+
+    @app.post("/recommendations", response_model=S.RecommendationsOut)
+    def recommendations_for(body: S.StudentIn, request: Request,
+                            limit: int | None = limit_query) -> S.RecommendationsOut:
+        """Suggestions for a profile sent with the request. Nothing is stored."""
+        eng = engine(request)
+        codes, reported = checked(eng, body.career, body.completed_courses,
+                                  body.self_reported_skills)
+        return recommendations_out(eng, body.career, codes, reported, limit)
+
+    # ---- stored profiles: kept for scripted use --------------------------------
+
     @app.post("/profiles", response_model=S.ProfileOut, status_code=201)
     def create_profile(body: S.ProfileIn, request: Request) -> S.ProfileOut:
         eng = engine(request)
-        if body.career not in eng.profiles:
-            raise HTTPException(422, detail={"error": "unknown career",
-                                             "career": body.career,
-                                             "known": [c for c, _ in eng.careers()]})
-        codes = list(dict.fromkeys(body.completed_courses))   # dedupe, keep order
-        unknown = [c for c in codes if c not in eng.courses]
-        if unknown:
-            raise HTTPException(422, detail={"error": "unknown course codes",
-                                             "unknown": unknown})
-        reported = list(dict.fromkeys(body.self_reported_skills))
-        unknown = [s for s in reported if s not in eng.skills]
-        if unknown:
-            raise HTTPException(422, detail={"error": "unknown skill ids",
-                                             "unknown": unknown})
+        codes, reported = checked(eng, body.career, body.completed_courses,
+                                  body.self_reported_skills)
         others = [c for c in dict.fromkeys(body.other_careers) if c != body.career]
         unknown = [c for c in others if c not in eng.profiles]
         if unknown:
@@ -163,59 +254,20 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     def gap(profile_id: str, request: Request,
             career: str | None = career_query) -> S.GapOut:
         eng, prof = load_profile(request, profile_id)
-        target = target_career(prof, career)
-        g = eng.gap_by_source(target, prof["completed_courses"],
-                              prof["self_reported_skills"])
-        covered = [(s, w, g.source(s)) for s, w in g.combined.covered]
-        return S.GapOut(
-            profile_id=profile_id, career=target,
-            readiness=round(g.combined.readiness, 4),
-            readiness_percent=round(g.combined.readiness * 100),
-            readiness_from_courses=round(g.from_courses.readiness, 4),
-            readiness_from_courses_percent=round(g.from_courses.readiness * 100),
-            covered=[S.CoveredSkill(**skill_entry(eng, s, w).model_dump(), source=src)
-                     for s, w, src in covered],
-            covered_from_courses=[skill_entry(eng, s, w)
-                                  for s, w, src in covered if src == "courses"],
-            covered_self_reported=[skill_entry(eng, s, w)
-                                   for s, w, src in covered if src == "self_reported"],
-            missing=[skill_entry(eng, s, w) for s, w in g.combined.missing],
-            validation=validation(eng))
+        return gap_out(eng, target_career(prof, career), prof["completed_courses"],
+                       prof["self_reported_skills"], profile_id)
 
     @app.get("/profiles/{profile_id}/recommendations",
              response_model=S.RecommendationsOut)
     def recommendations(profile_id: str, request: Request,
                         career: str | None = career_query,
-                        limit: int | None = Query(
-                            None, ge=1, le=50,
-                            description="Cap on each list, university and online; "
-                                        "all when omitted")) -> S.RecommendationsOut:
+                        limit: int | None = limit_query) -> S.RecommendationsOut:
         eng, prof = load_profile(request, profile_id)
-        target = target_career(prof, career)
-        # Skills the student reports having are not gaps, so nothing is
-        # suggested for them.
-        g = eng.gap(target, prof["completed_courses"], prof["self_reported_skills"])
-        missing = dict(g.missing)
+        return recommendations_out(eng, target_career(prof, career),
+                                   prof["completed_courses"], prof["self_reported_skills"],
+                                   limit, profile_id)
 
-        def refs(ids: list[str]) -> list[S.SkillRef]:
-            return [S.SkillRef(id=s, en=eng.skills[s]["en"], ar=eng.skills[s]["ar"],
-                               demand_percent=round(missing[s] * 100))
-                    for s in ids]
-
-        found = eng.recommendations(g, prof["completed_courses"], limit)
-        recs: list[S.Recommendation] = [
-            S.UniversityRecommendation(code=c.code, name=c.name, closes=refs(closes),
-                                       value=round(value, 4))
-            for c, closes, value in found.university]
-        recs += [
-            S.OnlineRecommendation(provider=o.provider, title=o.title, url=o.url,
-                                   is_free=o.is_free, closes=refs(closes),
-                                   value=round(value, 4))
-            for o, closes, value in found.online]
-        return S.RecommendationsOut(profile_id=profile_id, career=target,
-                                    recommendations=recs,
-                                    uncovered=refs(found.uncovered),
-                                    validation=validation(eng))
+    # ---- the department's view --------------------------------------------------
 
     def sample_note(eng: EngineState) -> str:
         per = sorted(p.posting_count for p in eng.profiles.values())
@@ -239,10 +291,10 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         return S.CurriculumGapOut(
             career=career, posting_count=n, min_demand=MIN_DEMAND,
             demanded=len(cg.demanded), taught=len(cg.taught),
-            coverage=round(cg.coverage, 4), coverage_percent=round(cg.coverage * 100),
+            coverage=round(cg.coverage, 4), coverage_percent=percent(cg.coverage),
             uncovered=[S.CurriculumSkill(id=s, **eng.skills[s], postings=cg.demanded[s],
                                          demand=round(cg.demanded[s] / n, 4),
-                                         demand_percent=round(cg.demanded[s] / n * 100),
+                                         demand_percent=percent(cg.demanded[s] / n),
                                          careers=list(cg.demanded_by[s]))
                        for s in cg.uncovered],
             not_asked=[S.TaughtSkill(id=s, **eng.skills[s], courses=list(codes))
@@ -254,7 +306,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
             per_career=[S.CareerCoverageOut(career=c.career, posting_count=c.posting_count,
                                             demanded=c.demanded, taught=c.taught,
                                             coverage=round(c.coverage, 4),
-                                            coverage_percent=round(c.coverage * 100),
+                                            coverage_percent=percent(c.coverage),
                                             min_postings=c.min_postings)
                         for c in cg.per_career],
             sample_note=sample_note(eng),

@@ -1,10 +1,10 @@
 import 'package:career_readiness/features/gap/data/gap_repository.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// A profile read against one of its careers.
-typedef GapKey = ({String profileId, String career});
-
-final gapReportProvider = FutureProvider.autoDispose.family<GapReport, GapKey>(
-  (ref, key) => ref.watch(gapRepositoryProvider).fetch(key.profileId, career: key.career),
+/// A gap per query. Queries compare by value, so the same profile content
+/// read against the same career is fetched once.
+final gapReportProvider = FutureProvider.autoDispose.family<GapReport, GapQuery>(
+  (ref, query) => ref.watch(gapRepositoryProvider).fetch(query),
 );

@@ -1,7 +1,22 @@
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
+import 'package:career_readiness/features/gap/presentation/readiness_screen.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// The student tab's first screen: onboarding until a profile is saved on this
+/// device, and the profile's readiness from then on.
+class StudentRoot extends ConsumerWidget {
+  const StudentRoot({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      ref.watch(savedProfileProvider) == null
+          ? const OnboardingScreen()
+          : const ReadinessScreen();
+}
 
 /// The app's two audiences side by side: the student flow and the department's
 /// curriculum view. Each tab keeps its own navigation stack, so opening the
@@ -29,7 +44,7 @@ class _HomeShellState extends State<HomeShell> {
       body: IndexedStack(
         index: _index,
         children: [
-          _tab(0, const OnboardingScreen()),
+          _tab(0, const StudentRoot()),
           if (_opened.contains(1))
             _tab(1, const CurriculumScreen())
           else

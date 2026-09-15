@@ -366,7 +366,23 @@ Course selection was reworked on 2026-09-14, as presentation only:
 The one backend change is that `/courses` now also returns each course's
 catalog track, read from `labeled_courses.csv`. No course's skills changed.
 
-Verified headlessly by 45 tests and `flutter analyze`, and by a contract check
+**Profile persistence, 2026-09-15.** The student's profile — target careers,
+completed courses, self-reported skills and major — and the language preference
+are saved on the device with `shared_preferences`. The first launch shows
+onboarding, and every later launch opens straight on the profile. Settings edits
+the profile, switches language, and deletes the profile after asking.
+
+**Local-only is deliberate.** Nothing about the student is stored on a server,
+and there is no account, which is consistent with the non-goal of integrating
+university student records. To keep it that way, the app no longer creates a
+server-side profile. It sends the profile with each request to `POST /gap` and
+`POST /recommendations`, which compute the figures and store nothing. The
+stored-profile endpoints under `/profiles` stay in the API for scripted use; the
+app does not call them. Accounts, and sync across devices, are future work.
+Checking this found a small rounding bug. The API's percentages rounded halves
+to even, so 12.5% read 12 while the app showed 13%. Halves now round up in both.
+
+Verified headlessly by 50 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not
@@ -444,6 +460,8 @@ against the live backend.
 - Live scraping of job boards
 - Web or desktop builds
 - Integration with university student records
+- Accounts, sync, or any server-side copy of a student's profile: the profile
+  stays on the device (see Phase 4). Accounts are future work
 - Training a custom NER model
 
 ## Definition of done for the demo

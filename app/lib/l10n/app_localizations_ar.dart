@@ -131,7 +131,78 @@ class AppLocalizationsAr extends AppLocalizations {
   String get submit => 'اعرض جاهزيتي';
 
   @override
-  String get submitFailed => 'تعذّر حفظ ملفك. تحقق من الاتصال وحاول مرة أخرى.';
+  String get submitFailed => 'تعذّر حفظ ملفك على هذا الجهاز. حاول مرة أخرى.';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get editProfileTitle => 'تعديل ملفك';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get settingsProfile => 'الملف الشخصي';
+
+  @override
+  String settingsCourses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقرر مكتمل',
+      many: '$count مقررًا مكتملًا',
+      few: '$count مقررات مكتملة',
+      two: 'مقرران مكتملان',
+      one: 'مقرر مكتمل واحد',
+      zero: 'لا مقررات مكتملة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String settingsSkills(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مهارة ذكرتها بنفسك',
+      many: '$count مهارة ذكرتها بنفسك',
+      few: '$count مهارات ذكرتها بنفسك',
+      two: 'مهارتان ذكرتهما بنفسك',
+      one: 'مهارة واحدة ذكرتها بنفسك',
+      zero: 'لا مهارات ذكرتها بنفسك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsEditProfile => 'تعديل الملف';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsStorage => 'محفوظ على هذا الجهاز';
+
+  @override
+  String get settingsLocalOnly =>
+      'يُحفظ ملفك على هذا الجهاز فقط. لا يُخزَّن شيء عنك على أي خادم، ولا يوجد حساب، لذا فإن حذف التطبيق يحذف ملفك أيضًا.';
+
+  @override
+  String get settingsDelete => 'حذف الملف';
+
+  @override
+  String get settingsDeleteTitle => 'حذف ملفك؟';
+
+  @override
+  String get settingsDeleteBody =>
+      'سيُحذف من هذا الجهاز ما اخترته من مهن ومقررات ومهارات، وستبدأ من جديد.';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get delete => 'حذف';
 
   @override
   String get nextToSkills => 'التالي: مهارات أخرى';

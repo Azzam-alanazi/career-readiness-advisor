@@ -1,37 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile.dart';
+part of 'gap_query.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
-  id: json['id'] as String,
+_GapQuery _$GapQueryFromJson(Map<String, dynamic> json) => _GapQuery(
   career: json['career'] as String,
-  otherCareers:
-      (json['other_careers'] as List<dynamic>?)
+  completedCourses:
+      (json['completed_courses'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
       const <String>[],
-  major: json['major'] as String?,
-  completedCourses: (json['completed_courses'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
   selfReportedSkills:
       (json['self_reported_skills'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
       const <String>[],
-  createdAt: json['created_at'] as String,
 );
 
-Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
-  'id': instance.id,
+Map<String, dynamic> _$GapQueryToJson(_GapQuery instance) => <String, dynamic>{
   'career': instance.career,
-  'other_careers': instance.otherCareers,
-  'major': instance.major,
   'completed_courses': instance.completedCourses,
   'self_reported_skills': instance.selfReportedSkills,
-  'created_at': instance.createdAt,
 };

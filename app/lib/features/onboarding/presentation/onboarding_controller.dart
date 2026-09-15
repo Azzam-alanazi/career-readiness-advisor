@@ -1,12 +1,24 @@
 import 'package:career_readiness/features/onboarding/domain/onboarding_state.dart';
-import 'package:career_readiness/features/profile/data/profile_repository.dart';
-import 'package:career_readiness/features/profile/domain/profile_draft.dart';
-import 'package:career_readiness/features/profile/presentation/current_profile.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
+import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// The profile being written, first in onboarding and later when it is edited
+/// from settings. Nothing leaves the device: finishing saves it locally.
 class OnboardingController extends Notifier<OnboardingState> {
   @override
   OnboardingState build() => const OnboardingState();
+
+  /// Starts editing [profile]: the form opens holding everything it says.
+  void startEditing(StudentProfile profile) => state = OnboardingState(
+        major: profile.major ?? '',
+        careers: [...profile.careers],
+        courses: {...profile.completedCourses},
+        selfReported: {...profile.selfReportedSkills},
+        editing: true,
+        // A new revision rebuilds the fields that keep their own text.
+        revision: state.revision + 1,
+      );
 
   void setMajor(String value) => state = state.copyWith(major: value);
 
@@ -40,42 +52,35 @@ class OnboardingController extends Notifier<OnboardingState> {
     state = state.copyWith(selfReported: skills);
   }
 
-  /// Saves the profile and makes it current. Returns the new profile id, or
-  /// null on failure -- the error stays in state for the screen to show.
+  /// Saves the profile on this device. Returns whether it was saved; on a
+  /// failure the error stays in state for the screen to show.
   ///
   /// Self-reported skills go as ticked. If one is also taught by a chosen
   /// course, the backend credits it to the course: the academic record wins.
-  Future<String?> submit() async {
-    if (!state.canSubmit) return null;
+  Future<bool> finish() async {
+    if (!state.canSubmit) return false;
     state = state.copyWith(submitting: true, error: null);
     final major = state.major.trim();
     try {
-      final profile = await ref.read(profileRepositoryProvider).create(
-            ProfileDraft(
-              // The first chosen is the main target; the rest are compared with it.
-              career: state.careers.first,
-              otherCareers: state.careers.skip(1).toList(),
-              completedCourses: state.courses.toList()..sort(),
-              selfReportedSkills: state.selfReported.toList()..sort(),
-              // A blank field means "not given", not a major called "".
-              major: major.isEmpty ? null : major,
-            ),
-          );
-      if (!ref.mounted) return null;
-      ref.read(currentProfileProvider.notifier).set(profile.id);
-      state = state.copyWith(submitting: false);
-      return profile.id;
+      await ref.read(savedProfileProvider.notifier).save(StudentProfile(
+            careers: [...state.careers],
+            completedCourses: state.courses.toList()..sort(),
+            selfReportedSkills: state.selfReported.toList()..sort(),
+            // A blank field means "not given", not a major called "".
+            major: major.isEmpty ? null : major,
+          ));
+      if (!ref.mounted) return false;
+      // Saved: the draft has done its job. Editing again starts from the profile.
+      reset();
+      return true;
     } catch (e) {
       if (ref.mounted) state = state.copyWith(submitting: false, error: e);
-      return null;
+      return false;
     }
   }
 
-  /// Start over: forget the draft and the current profile.
-  void reset() {
-    ref.read(currentProfileProvider.notifier).clear();
-    state = OnboardingState(revision: state.revision + 1);
-  }
+  /// Forgets the draft.
+  void reset() => state = OnboardingState(revision: state.revision + 1);
 }
 
 final onboardingControllerProvider =

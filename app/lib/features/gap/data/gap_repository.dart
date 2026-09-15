@@ -1,4 +1,5 @@
 import 'package:career_readiness/core/api/api_client.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,11 +8,10 @@ class GapRepository {
 
   final ApiClient _api;
 
-  /// The profile read against [career], one of its careers; its first when null.
-  Future<GapReport> fetch(String profileId, {String? career}) async => GapReport.fromJson(
-        await _api.get('/profiles/${Uri.encodeComponent(profileId)}/gap'
-            '${career == null ? '' : '?career=${Uri.encodeComponent(career)}'}') as Json,
-      );
+  /// The gap for [query]. The profile travels in the request; the server
+  /// stores nothing.
+  Future<GapReport> fetch(GapQuery query) async =>
+      GapReport.fromJson(await _api.post('/gap', query.toJson()) as Json);
 }
 
 final gapRepositoryProvider =

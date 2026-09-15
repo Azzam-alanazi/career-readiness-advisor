@@ -8,7 +8,8 @@ part 'gap_report.g.dart';
 @freezed
 abstract class GapReport with _$GapReport {
   const factory GapReport({
-    required String profileId,
+    /// Null when the profile travelled with the request, as the app sends it.
+    String? profileId,
     required String career,
 
     /// Demand-weighted share of the career's required skills the student has,

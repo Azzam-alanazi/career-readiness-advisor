@@ -6,52 +6,65 @@ import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/gap/domain/skill_entry.dart';
 import 'package:career_readiness/features/gap/presentation/gap_providers.dart';
 import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
+import 'package:career_readiness/features/profile/domain/student_profile.dart';
+import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:career_readiness/features/recommendations/presentation/recommendations_screen.dart';
+import 'package:career_readiness/features/settings/presentation/settings_screen.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// The saved profile's readiness. With two or three target careers, they are
+/// shown side by side above the details of one of them.
 class ReadinessScreen extends ConsumerStatefulWidget {
-  const ReadinessScreen({super.key, required this.profileId, required this.careers});
-
-  final String profileId;
-
-  /// The profile's target careers, in the order chosen. With two or three,
-  /// they are shown side by side above the details of one of them.
-  final List<String> careers;
+  const ReadinessScreen({super.key});
 
   @override
   ConsumerState<ReadinessScreen> createState() => _ReadinessScreenState();
 }
 
 class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
-  // The career whose details are shown: the first chosen, until another is tapped.
-  late String _focus = widget.careers.first;
+  // The career whose details are shown: the main one, until another is tapped.
+  String? _focus;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final key = (profileId: widget.profileId, career: _focus);
+    final profile = ref.watch(savedProfileProvider);
+    if (profile == null) return const SizedBox.shrink();
+    final careers = profile.careers;
+    // An edited profile may no longer name the career that was in focus.
+    final focus = careers.contains(_focus) ? _focus! : careers.first;
+    final query = gapQueryFor(profile, focus);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.readinessTitle),
-        actions: const [LanguageToggle()],
+        actions: [
+          const LanguageToggle(),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l.settingsTitle,
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
+            ),
+          ),
+        ],
       ),
       body: AsyncView(
-        asyncValue: ref.watch(gapReportProvider(key)),
-        onRetry: () => ref.invalidate(gapReportProvider(key)),
+        asyncValue: ref.watch(gapReportProvider(query)),
+        onRetry: () => ref.invalidate(gapReportProvider(query)),
         data: (report) => _Report(
           report: report,
-          comparison: widget.careers.length < 2
+          comparison: careers.length < 2
               ? null
               : _Comparison(
-                  profileId: widget.profileId,
-                  careers: widget.careers,
-                  focus: _focus,
+                  profile: profile,
+                  focus: focus,
                   onFocus: (career) => setState(() => _focus = career),
                 ),
         ),
@@ -61,10 +74,7 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
           padding: const EdgeInsets.all(16),
           child: FilledButton.icon(
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) =>
-                    RecommendationsScreen(profileId: widget.profileId, career: _focus),
-              ),
+              MaterialPageRoute<void>(builder: (_) => RecommendationsScreen(career: focus)),
             ),
             icon: const Icon(Icons.school_outlined),
             label: Text(l.seeRecommendations),
@@ -139,24 +149,18 @@ class _Report extends StatelessWidget {
 /// Two or three careers side by side, so the student can see which path they
 /// are closest to. Tapping one shows its details below.
 class _Comparison extends ConsumerWidget {
-  const _Comparison({
-    required this.profileId,
-    required this.careers,
-    required this.focus,
-    required this.onFocus,
-  });
+  const _Comparison({required this.profile, required this.focus, required this.onFocus});
 
-  final String profileId;
-  final List<String> careers;
+  final StudentProfile profile;
   final String focus;
   final ValueChanged<String> onFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
+    final careers = profile.careers;
     final reports = [
-      for (final career in careers)
-        ref.watch(gapReportProvider((profileId: profileId, career: career))),
+      for (final career in careers) ref.watch(gapReportProvider(gapQueryFor(profile, career))),
     ];
     // "Closest" only once every score is in, and only when they differ: the
     // figures as shown, so two careers that both read 31% are not split.

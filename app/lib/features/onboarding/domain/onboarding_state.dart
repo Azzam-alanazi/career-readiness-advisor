@@ -20,6 +20,8 @@ abstract class OnboardingState with _$OnboardingState {
     /// Skill ids the student holds from outside coursework. Unverified, and
     /// empty until they tick one.
     @Default(<String>{}) Set<String> selfReported,
+    /// True while a saved profile is being edited from settings.
+    @Default(false) bool editing,
     @Default(false) bool submitting,
     Object? error,
 

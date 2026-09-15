@@ -3,7 +3,8 @@ import 'package:career_readiness/core/l10n/career_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
-import 'package:career_readiness/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:career_readiness/features/gap/domain/gap_query.dart';
+import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:career_readiness/features/recommendations/presentation/recommendations_providers.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
@@ -11,9 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecommendationsScreen extends ConsumerWidget {
-  const RecommendationsScreen({super.key, required this.profileId, required this.career});
-
-  final String profileId;
+  const RecommendationsScreen({super.key, required this.career});
 
   /// The career the suggestions close gaps for: one of the profile's.
   final String career;
@@ -21,29 +20,18 @@ class RecommendationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final key = (profileId: profileId, career: career);
+    final profile = ref.watch(savedProfileProvider);
+    if (profile == null) return const SizedBox.shrink();
+    final query = gapQueryFor(profile, career);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.recommendationsTitle),
         actions: const [LanguageToggle()],
       ),
       body: AsyncView(
-        asyncValue: ref.watch(recommendationsProvider(key)),
-        onRetry: () => ref.invalidate(recommendationsProvider(key)),
+        asyncValue: ref.watch(recommendationsProvider(query)),
+        onRetry: () => ref.invalidate(recommendationsProvider(query)),
         data: (report) => _Suggestions(report: report, career: career),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: OutlinedButton.icon(
-            onPressed: () {
-              ref.read(onboardingControllerProvider.notifier).reset();
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            },
-            icon: const Icon(Icons.restart_alt),
-            label: Text(l.startOver),
-          ),
-        ),
       ),
     );
   }
