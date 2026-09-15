@@ -17,6 +17,11 @@ abstract class StudentProfile with _$StudentProfile {
 
     /// Skill ids held from outside coursework. Unverified.
     @Default(<String>[]) List<String> selfReportedSkills,
+
+    /// Courses the student plans to take. Never part of the record: they count
+    /// only in the what-if projection. A profile saved before planning existed
+    /// loads with none.
+    @Default(<String>[]) List<String> plannedCourses,
     String? major,
   }) = _StudentProfile;
 

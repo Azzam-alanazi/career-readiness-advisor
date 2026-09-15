@@ -306,6 +306,74 @@ class AppLocalizationsAr extends AppLocalizations {
   String get seeRecommendations => 'المقررات المقترحة';
 
   @override
+  String get planTitle => 'خطط لمقرراتك';
+
+  @override
+  String get planIntro =>
+      'حدّد المقررات التي تنوي أخذها. يحتسبها التوقع كأنها مكتملة، ويبقى سجلك كما هو.';
+
+  @override
+  String get planNow => 'الآن';
+
+  @override
+  String planWith(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'إذا أخذت ما خططت له من مقررات ($count)',
+      one: 'إذا أخذت المقرر الذي خططت له',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String planPoints(int points) {
+    return '+$points نقطة';
+  }
+
+  @override
+  String get planNothingYet => 'حدّد مقررات أدناه لترى ما ستضيفه.';
+
+  @override
+  String planClosesCount(int closed, int missing) {
+    return 'تسد خطتك $closed من أصل $missing فجوة.';
+  }
+
+  @override
+  String get planCoursesTitle => 'مقررات يمكنك أخذها';
+
+  @override
+  String get planExplained =>
+      'يعرض كل مقرر الفجوات التي يسدها لهذه المهنة، الأكثر طلبًا أولًا. والفجوة التي يسدها مقرران تُحتسب مرة واحدة.';
+
+  @override
+  String get planCompletedNote =>
+      'المقررات المكتملة محتسبة أصلًا، لذا لا تظهر هنا.';
+
+  @override
+  String planCloses(String skills) {
+    return 'يسد: $skills';
+  }
+
+  @override
+  String get planClosesNone => 'لا يسد أيًا من فجواتك الحالية لهذه المهنة.';
+
+  @override
+  String planPlannedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقرر مخطط له',
+      many: '$count مقررًا مخططًا له',
+      few: '$count مقررات مخطط لها',
+      two: 'مقرران مخطط لهما',
+      one: 'مقرر واحد مخطط له',
+      zero: 'لا مقررات مخطط لها',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get compareTitle => 'مهنك جنبًا إلى جنب';
 
   @override

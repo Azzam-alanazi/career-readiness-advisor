@@ -382,7 +382,20 @@ app does not call them. Accounts, and sync across devices, are future work.
 Checking this found a small rounding bug. The API's percentages rounded halves
 to even, so 12.5% read 12 while the app showed 13%. Halves now round up in both.
 
-Verified headlessly by 50 tests and `flutter analyze`, and by a contract check
+**What-if planning, 2026-09-15.** Alongside completed courses, a student can
+mark courses as planned, on a planning screen reached from readiness.
+- **The projection** is the same readiness calculation with completed and
+  planned courses together. The backend is unchanged: the app sends both as
+  taken. It stands beside today's figure — "31% now, 48% if you take your 3
+  planned courses" — on the planning and readiness screens.
+- **It is explainable.** Every course not yet taken lists the current gaps it
+  would close, most in demand first, from the catalog's own course-to-skill
+  mapping. The plan's total counts a gap once even when two courses close it.
+  The contract check confirms the projection adds exactly those gaps.
+- **Planned courses persist with the profile,** on the device. Marking one as
+  completed takes it off the plan.
+
+Verified headlessly by 57 tests and `flutter analyze`, and by a contract check
 that runs the definition-of-done scenario against the live backend through the
 app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not

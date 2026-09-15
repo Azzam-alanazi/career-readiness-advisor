@@ -22,7 +22,7 @@ class RecommendationsScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final profile = ref.watch(savedProfileProvider);
     if (profile == null) return const SizedBox.shrink();
-    final query = gapQueryFor(profile, career);
+    final query = gapQueryFor(profile, career: career);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.recommendationsTitle),

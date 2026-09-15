@@ -19,7 +19,10 @@ mixin _$StudentProfile {
 /// Target careers in the order chosen, one to three. The first is the main
 /// one, which the app opens on.
  List<String> get careers; List<String> get completedCourses;/// Skill ids held from outside coursework. Unverified.
- List<String> get selfReportedSkills; String? get major;
+ List<String> get selfReportedSkills;/// Courses the student plans to take. Never part of the record: they count
+/// only in the what-if projection. A profile saved before planning existed
+/// loads with none.
+ List<String> get plannedCourses; String? get major;
 /// Create a copy of StudentProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,20 +36,20 @@ $StudentProfileCopyWith<StudentProfile> get copyWith => _$StudentProfileCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as StudentProfile;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StudentProfile&&const DeepCollectionEquality().equals(other.careers, _this.careers)&&const DeepCollectionEquality().equals(other.completedCourses, _this.completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _this.selfReportedSkills)&&(identical(other.major, _this.major) || other.major == _this.major));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StudentProfile&&const DeepCollectionEquality().equals(other.careers, _this.careers)&&const DeepCollectionEquality().equals(other.completedCourses, _this.completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _this.selfReportedSkills)&&const DeepCollectionEquality().equals(other.plannedCourses, _this.plannedCourses)&&(identical(other.major, _this.major) || other.major == _this.major));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as StudentProfile;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.careers),const DeepCollectionEquality().hash(_this.completedCourses),const DeepCollectionEquality().hash(_this.selfReportedSkills),_this.major);
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.careers),const DeepCollectionEquality().hash(_this.completedCourses),const DeepCollectionEquality().hash(_this.selfReportedSkills),const DeepCollectionEquality().hash(_this.plannedCourses),_this.major);
 }
 
 @override
 String toString() {
   final _this = this as StudentProfile;
-  return 'StudentProfile(careers: ${_this.careers}, completedCourses: ${_this.completedCourses}, selfReportedSkills: ${_this.selfReportedSkills}, major: ${_this.major})';
+  return 'StudentProfile(careers: ${_this.careers}, completedCourses: ${_this.completedCourses}, selfReportedSkills: ${_this.selfReportedSkills}, plannedCourses: ${_this.plannedCourses}, major: ${_this.major})';
 }
 
 
@@ -57,7 +60,7 @@ abstract mixin class $StudentProfileCopyWith<$Res>  {
   factory $StudentProfileCopyWith(StudentProfile value, $Res Function(StudentProfile) _then) = _$StudentProfileCopyWithImpl;
 @useResult
 $Res call({
- List<String> careers, List<String> completedCourses, List<String> selfReportedSkills, String? major
+ List<String> careers, List<String> completedCourses, List<String> selfReportedSkills, List<String> plannedCourses, String? major
 });
 
 
@@ -74,11 +77,12 @@ class _$StudentProfileCopyWithImpl<$Res>
 
 /// Create a copy of StudentProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? careers = null,Object? completedCourses = null,Object? selfReportedSkills = null,Object? major = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? careers = null,Object? completedCourses = null,Object? selfReportedSkills = null,Object? plannedCourses = null,Object? major = freezed,}) {
   return _then(StudentProfile(
 careers: null == careers ? _self.careers : careers // ignore: cast_nullable_to_non_nullable
 as List<String>,completedCourses: null == completedCourses ? _self.completedCourses : completedCourses // ignore: cast_nullable_to_non_nullable
 as List<String>,selfReportedSkills: null == selfReportedSkills ? _self.selfReportedSkills : selfReportedSkills // ignore: cast_nullable_to_non_nullable
+as List<String>,plannedCourses: null == plannedCourses ? _self.plannedCourses : plannedCourses // ignore: cast_nullable_to_non_nullable
 as List<String>,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -165,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  String? major)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  List<String> plannedCourses,  String? major)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StudentProfile() when $default != null:
-return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.major);case _:
+return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.plannedCourses,_that.major);case _:
   return orElse();
 
 }
@@ -186,10 +190,10 @@ return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  String? major)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  List<String> plannedCourses,  String? major)  $default,) {final _that = this;
 switch (_that) {
 case _StudentProfile():
-return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.major);case _:
+return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.plannedCourses,_that.major);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +210,10 @@ return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  String? major)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> careers,  List<String> completedCourses,  List<String> selfReportedSkills,  List<String> plannedCourses,  String? major)?  $default,) {final _that = this;
 switch (_that) {
 case _StudentProfile() when $default != null:
-return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.major);case _:
+return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_that.plannedCourses,_that.major);case _:
   return null;
 
 }
@@ -221,7 +225,7 @@ return $default(_that.careers,_that.completedCourses,_that.selfReportedSkills,_t
 @JsonSerializable()
 
 class _StudentProfile extends StudentProfile {
-  const _StudentProfile({required  List<String> careers,  List<String> completedCourses = const <String>[],  List<String> selfReportedSkills = const <String>[], this.major}): _careers = careers,_completedCourses = completedCourses,_selfReportedSkills = selfReportedSkills,super._();
+  const _StudentProfile({required  List<String> careers,  List<String> completedCourses = const <String>[],  List<String> selfReportedSkills = const <String>[],  List<String> plannedCourses = const <String>[], this.major}): _careers = careers,_completedCourses = completedCourses,_selfReportedSkills = selfReportedSkills,_plannedCourses = plannedCourses,super._();
   factory _StudentProfile.fromJson(Map<String, dynamic> json) => _$StudentProfileFromJson(json);
 
 /// Target careers in the order chosen, one to three. The first is the main
@@ -251,6 +255,19 @@ class _StudentProfile extends StudentProfile {
   return EqualUnmodifiableListView(_selfReportedSkills);
 }
 
+/// Courses the student plans to take. Never part of the record: they count
+/// only in the what-if projection. A profile saved before planning existed
+/// loads with none.
+ final  List<String> _plannedCourses;
+/// Courses the student plans to take. Never part of the record: they count
+/// only in the what-if projection. A profile saved before planning existed
+/// loads with none.
+@override@JsonKey() List<String> get plannedCourses {
+  if (_plannedCourses is EqualUnmodifiableListView) return _plannedCourses;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_plannedCourses);
+}
+
 @override final  String? major;
 
 /// Create a copy of StudentProfile
@@ -266,18 +283,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StudentProfile&&const DeepCollectionEquality().equals(other.careers, _careers)&&const DeepCollectionEquality().equals(other.completedCourses, _completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _selfReportedSkills)&&(identical(other.major, major) || other.major == major));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StudentProfile&&const DeepCollectionEquality().equals(other.careers, _careers)&&const DeepCollectionEquality().equals(other.completedCourses, _completedCourses)&&const DeepCollectionEquality().equals(other.selfReportedSkills, _selfReportedSkills)&&const DeepCollectionEquality().equals(other.plannedCourses, _plannedCourses)&&(identical(other.major, major) || other.major == major));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_careers),const DeepCollectionEquality().hash(_completedCourses),const DeepCollectionEquality().hash(_selfReportedSkills),major);
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_careers),const DeepCollectionEquality().hash(_completedCourses),const DeepCollectionEquality().hash(_selfReportedSkills),const DeepCollectionEquality().hash(_plannedCourses),major);
 }
 
 @override
 String toString() {
-    return 'StudentProfile(careers: $careers, completedCourses: $completedCourses, selfReportedSkills: $selfReportedSkills, major: $major)';
+    return 'StudentProfile(careers: $careers, completedCourses: $completedCourses, selfReportedSkills: $selfReportedSkills, plannedCourses: $plannedCourses, major: $major)';
 }
 
 
@@ -288,7 +305,7 @@ abstract mixin class _$StudentProfileCopyWith<$Res> implements $StudentProfileCo
   factory _$StudentProfileCopyWith(_StudentProfile value, $Res Function(_StudentProfile) _then) = __$StudentProfileCopyWithImpl;
 @override @useResult
 $Res call({
- List<String> careers, List<String> completedCourses, List<String> selfReportedSkills, String? major
+ List<String> careers, List<String> completedCourses, List<String> selfReportedSkills, List<String> plannedCourses, String? major
 });
 
 
@@ -305,11 +322,12 @@ class __$StudentProfileCopyWithImpl<$Res>
 
 /// Create a copy of StudentProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? careers = null,Object? completedCourses = null,Object? selfReportedSkills = null,Object? major = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? careers = null,Object? completedCourses = null,Object? selfReportedSkills = null,Object? plannedCourses = null,Object? major = freezed,}) {
   return _then(_StudentProfile(
 careers: null == careers ? _self._careers : careers // ignore: cast_nullable_to_non_nullable
 as List<String>,completedCourses: null == completedCourses ? _self._completedCourses : completedCourses // ignore: cast_nullable_to_non_nullable
 as List<String>,selfReportedSkills: null == selfReportedSkills ? _self._selfReportedSkills : selfReportedSkills // ignore: cast_nullable_to_non_nullable
+as List<String>,plannedCourses: null == plannedCourses ? _self._plannedCourses : plannedCourses // ignore: cast_nullable_to_non_nullable
 as List<String>,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

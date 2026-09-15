@@ -11,6 +11,7 @@ import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/gap/domain/skill_entry.dart';
 import 'package:career_readiness/features/gap/presentation/gap_providers.dart';
 import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
+import 'package:career_readiness/features/planning/presentation/planning_screen.dart';
 import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:career_readiness/features/recommendations/presentation/recommendations_screen.dart';
@@ -20,7 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// The saved profile's readiness. With two or three target careers, they are
-/// shown side by side above the details of one of them.
+/// shown side by side above the details of one of them; with courses planned,
+/// the projection stands beside today's figure.
 class ReadinessScreen extends ConsumerStatefulWidget {
   const ReadinessScreen({super.key});
 
@@ -40,7 +42,10 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
     final careers = profile.careers;
     // An edited profile may no longer name the career that was in focus.
     final focus = careers.contains(_focus) ? _focus! : careers.first;
-    final query = gapQueryFor(profile, focus);
+    final query = gapQueryFor(profile, career: focus);
+    final projected = profile.plannedCourses.isEmpty
+        ? null
+        : ref.watch(gapReportProvider(gapQueryFor(profile, career: focus, withPlanned: true)));
     return Scaffold(
       appBar: AppBar(
         title: Text(l.readinessTitle),
@@ -60,6 +65,8 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
         onRetry: () => ref.invalidate(gapReportProvider(query)),
         data: (report) => _Report(
           report: report,
+          projected: projected,
+          plannedCount: profile.plannedCourses.length,
           comparison: careers.length < 2
               ? null
               : _Comparison(
@@ -72,12 +79,28 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: FilledButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => RecommendationsScreen(career: focus)),
-            ),
-            icon: const Icon(Icons.school_outlined),
-            label: Text(l.seeRecommendations),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => PlanningScreen(career: focus)),
+                  ),
+                  icon: const Icon(Icons.event_note_outlined),
+                  label: Text(l.planTitle),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => RecommendationsScreen(career: focus)),
+                  ),
+                  icon: const Icon(Icons.school_outlined),
+                  label: Text(l.seeRecommendations),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -86,9 +109,18 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
 }
 
 class _Report extends StatelessWidget {
-  const _Report({required this.report, this.comparison});
+  const _Report({
+    required this.report,
+    required this.projected,
+    required this.plannedCount,
+    this.comparison,
+  });
 
   final GapReport report;
+
+  /// The same reading with the planned courses counted, when any are planned.
+  final AsyncValue<GapReport>? projected;
+  final int plannedCount;
 
   /// The careers side by side, when the profile names more than one.
   final Widget? comparison;
@@ -109,7 +141,7 @@ class _Report extends StatelessWidget {
           style: text.titleLarge,
         ),
         const SizedBox(height: 8),
-        _ScoreCard(report: report),
+        _ScoreCard(report: report, projected: projected, plannedCount: plannedCount),
         SectionHeader(l.coveredTitle(report.covered.length)),
         if (report.covered.isEmpty)
           Text(l.noneCovered)
@@ -160,7 +192,8 @@ class _Comparison extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final careers = profile.careers;
     final reports = [
-      for (final career in careers) ref.watch(gapReportProvider(gapQueryFor(profile, career))),
+      for (final career in careers)
+        ref.watch(gapReportProvider(gapQueryFor(profile, career: career))),
     ];
     // "Closest" only once every score is in, and only when they differ: the
     // figures as shown, so two careers that both read 31% are not split.
@@ -315,22 +348,29 @@ class _Figures extends StatelessWidget {
 }
 
 class _ScoreCard extends StatelessWidget {
-  const _ScoreCard({required this.report});
+  const _ScoreCard({required this.report, required this.projected, required this.plannedCount});
 
   final GapReport report;
+  final AsyncValue<GapReport>? projected;
+  final int plannedCount;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
     final text = Theme.of(context).textTheme;
+    final projected = this.projected;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(formatPercent(report.readiness, lang), style: text.displayMedium),
+            // With a plan, today's figure and the projection side by side.
+            if (projected == null)
+              Text(formatPercent(report.readiness, lang), style: text.displayMedium)
+            else
+              NowAndPlanned(now: report, projected: projected, plannedCount: plannedCount),
             const SizedBox(height: 8),
             LinearProgressIndicator(
               value: report.readiness.clamp(0.0, 1.0).toDouble(),

@@ -121,7 +121,13 @@ void main() {
       'completed_courses': ['IS 230', 'IS 240'],
       'self_reported_skills': ['SK85'],
     });
-    expect(gapQueryFor(profile, 'Software Developer').career, 'Software Developer');
+    expect(gapQueryFor(profile, career: 'Software Developer').career, 'Software Developer');
+    // A plan is sent as if taken, once each, and only for the projection.
+    final planned = profile.copyWith(plannedCourses: ['IS 350', 'IS 230']);
+    expect(gapQueryFor(planned, withPlanned: true).completedCourses,
+        ['IS 230', 'IS 240', 'IS 350']);
+    expect(gapQueryFor(planned).completedCourses, ['IS 230', 'IS 240'],
+        reason: 'the record alone');
     // Compared by value, so one provider serves each profile content.
     expect(gapQueryFor(profile), gapQueryFor(profile.copyWith(completedCourses: ['IS 230', 'IS 240'])));
   });

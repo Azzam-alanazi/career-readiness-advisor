@@ -19,8 +19,17 @@ abstract class GapQuery with _$GapQuery {
 }
 
 /// [profile] read against [career], or against its main career.
-GapQuery gapQueryFor(StudentProfile profile, [String? career]) => GapQuery(
+///
+/// With [withPlanned], the planned courses are sent as if completed: the
+/// what-if projection is the same readiness calculation over completed and
+/// planned courses together.
+GapQuery gapQueryFor(StudentProfile profile, {String? career, bool withPlanned = false}) =>
+    GapQuery(
       career: career ?? profile.primaryCareer,
-      completedCourses: [...profile.completedCourses]..sort(),
+      completedCourses: {
+        ...profile.completedCourses,
+        if (withPlanned) ...profile.plannedCourses,
+      }.toList()
+        ..sort(),
       selfReportedSkills: [...profile.selfReportedSkills]..sort(),
     );

@@ -40,6 +40,10 @@ class SettingsScreen extends ConsumerWidget {
               icon: Icons.person_outline,
               text: l.settingsSkills(profile.selfReportedSkills.length),
             ),
+            _Line(
+              icon: Icons.event_note_outlined,
+              text: l.planPlannedCount(profile.plannedCourses.length),
+            ),
             const SizedBox(height: 8),
             Align(
               alignment: AlignmentDirectional.centerStart,

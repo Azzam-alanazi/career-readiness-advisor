@@ -4,6 +4,37 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-15 — What-if course planning
+
+A student can mark courses as planned, alongside the completed ones.
+- **The projection** is the existing readiness calculation run over completed
+  and planned courses together. The app sends both as taken, so the backend is
+  unchanged. It stands beside today's figure on the planning and readiness
+  screens.
+- **It is explainable.** Every course not yet taken lists the current gaps it
+  would close, most in demand first, read from the catalog's course-to-skill
+  mapping. The plan's total counts a gap once even when two courses close it.
+- **Planned courses persist with the profile,** on the device. Marking one as
+  completed takes it off the plan.
+
+Checked on the live backend, for the demo scenario (Business Analyst, six
+courses) with the three top suggested courses planned:
+- **Readiness goes from 31% now to 53% with the plan.**
+- **The plan closes 5 gaps:**
+  - CIS 508 Business Intelligence: Business intelligence, ETL / data
+    integration, Reporting
+  - CIS 501 Decision Support Systems: Business intelligence, Reporting
+  - CIS 516 Project Management in Information Systems: Agile/Scrum, Project
+    coordination
+
+  Business intelligence and Reporting are each closed by two of the courses, so
+  they count once. The projection drops exactly these 5 gaps from the missing
+  list, no more and no fewer.
+
+App tests: 50 → 57.
+
+---
+
 ## 2026-09-15 — The profile is kept on the device
 
 The app saves the student's profile and language on the device. It sends the

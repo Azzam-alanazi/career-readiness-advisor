@@ -29,6 +29,7 @@ import 'package:career_readiness/features/onboarding/domain/course.dart';
 import 'package:career_readiness/features/onboarding/domain/course_groups.dart';
 import 'package:career_readiness/features/onboarding/domain/skill.dart';
 import 'package:career_readiness/features/onboarding/domain/skill_groups.dart';
+import 'package:career_readiness/features/planning/domain/plan.dart';
 import 'package:career_readiness/features/recommendations/domain/recommendation.dart';
 import 'package:http/http.dart' as http;
 
@@ -151,6 +152,30 @@ Future<void> main(List<String> args) async {
             storedGap.missing.map((s) => s.id).join(',') == gap.missing.map((s) => s.id).join(',') &&
             storedRecs.recommendations.length == recs.recommendations.length,
         '/profiles/{id} reads exactly as the stateless endpoints do');
+
+    // What-if planning: the demo's six courses with three more planned. The
+    // projection is the same reading with the plan counted as taken, and what
+    // it adds must be exactly the gaps the planned courses teach.
+    print('\nplanning');
+    const plan = ['CIS 508', 'CIS 501', 'CIS 516'];
+    final projected = await gapFor(GapQuery(
+      career: 'Business Analyst',
+      completedCourses: [...sixCourses, ...plan]..sort(),
+    ));
+    final byCode = {for (final c in courses) c.code: c};
+    final closedByPlan = gapsClosedByPlan([for (final code in plan) byCode[code]!], gap);
+    final closedByProjection = {for (final s in gap.missing) s.id}
+        .difference({for (final s in projected.missing) s.id});
+    check(projected.readiness > gap.readiness,
+        'Business Analyst: ${gap.readinessPercent}% now, ${projected.readinessPercent}% '
+        'with ${plan.join(', ')} planned');
+    check(closedByPlan.length == closedByProjection.length &&
+            closedByPlan.containsAll(closedByProjection),
+        'the projection adds exactly the gaps the planned courses teach (${closedByPlan.length})');
+    for (final code in plan) {
+      check(true, '$code ${byCode[code]!.name} closes '
+          '${gapsClosedBy(byCode[code]!, gap).map((s) => s.en).join(', ')}');
+    }
 
     // Self-reported skills: the taxonomy the skills step offers, then the same
     // six courses plus two claimed skills -- the top missing one, and one a

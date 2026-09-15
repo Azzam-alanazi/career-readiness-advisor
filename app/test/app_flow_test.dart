@@ -8,6 +8,7 @@ import 'package:career_readiness/features/gap/presentation/readiness_screen.dart
 import 'package:career_readiness/features/onboarding/data/catalog_repository.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:career_readiness/features/onboarding/presentation/skills_screen.dart';
+import 'package:career_readiness/features/planning/presentation/planning_screen.dart';
 import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/profile/data/profile_store.dart';
 import 'package:career_readiness/features/profile/domain/student_profile.dart';
@@ -388,6 +389,78 @@ void main() {
     expect(find.byType(OnboardingScreen), findsOneWidget);
     expect(find.text('Information Systems'), findsNothing, reason: 'the form starts blank');
     expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull);
+  });
+
+  testWidgets('Planning: tick a course, see the gaps it closes and the projection beside today',
+      (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Business Analyst'],
+        completedCourses: ['IS 230'],
+      );
+    await _pumpApp(tester, w);
+
+    await tester.tap(find.text('Plan courses'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanningScreen), findsOneWidget);
+    expect(find.text('Tick courses below to see what they would add.'), findsOneWidget);
+
+    // Completed courses are not offered; each other course says what it closes.
+    expect(find.widgetWithText(CheckboxListTile, 'Database Management Systems'), findsNothing);
+    expect(find.text('Closes: Business process modelling (in 50% of postings)'), findsOneWidget);
+    expect(find.text('Closes none of your current gaps for this career.'), findsNWidgets(3));
+
+    await tester.tap(find.text('Business Process Management'));
+    await tester.pumpAndSettle();
+    expect(w.store.profile!.plannedCourses, ['IS 350']);
+    // The projection is the same reading with the plan counted as taken.
+    expect(w.gap.queries.last,
+        const GapQuery(career: 'Business Analyst', completedCourses: ['IS 230', 'IS 350']));
+    expect(find.text('10%'), findsOneWidget);
+    expect(find.text('26%'), findsOneWidget);
+    expect(find.text('now'), findsOneWidget);
+    expect(find.text('if you take your planned course'), findsOneWidget);
+    expect(find.text('+16 points'), findsOneWidget);
+    expect(find.text('Your plan closes 1 of your 3 gaps.'), findsOneWidget);
+
+    // Back on readiness: now and projected side by side.
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('if you take your planned course'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('10%')).dy, tester.getTopLeft(find.text('26%')).dy);
+    expect(tester.getTopLeft(find.text('10%')).dx,
+        lessThan(tester.getTopLeft(find.text('26%')).dx));
+
+    // Taking it off the plan takes the projection away.
+    await tester.tap(find.text('Plan courses'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Business Process Management'));
+    await tester.pumpAndSettle();
+    expect(w.store.profile!.plannedCourses, isEmpty);
+    expect(find.text('26%'), findsNothing);
+  });
+
+  testWidgets('Planning in Arabic: right to left, with what each course closes', (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Business Analyst'],
+        completedCourses: ['IS 230'],
+        plannedCourses: ['IS 350'],
+      )
+      ..store.lang = 'ar';
+    await _pumpApp(tester, w);
+
+    // The projection is on readiness already, beside today's figure.
+    expect(find.text('إذا أخذت المقرر الذي خططت له'), findsOneWidget);
+    await tester.tap(find.text('خطط لمقرراتك'));
+    await tester.pumpAndSettle();
+
+    expect(Directionality.of(tester.element(find.byType(PlanningScreen))), TextDirection.rtl);
+    expect(find.textContaining('يسد: نمذجة عمليات الأعمال'), findsOneWidget);
+    expect(find.text('+16 نقطة'), findsOneWidget);
+    // Right to left: today's figure on the right, the projection to its left.
+    expect(tester.getTopLeft(find.text('الآن')).dx,
+        greaterThan(tester.getTopLeft(find.text('إذا أخذت المقرر الذي خططت له')).dx));
   });
 
   testWidgets('The language chosen is remembered for the next launch', (tester) async {

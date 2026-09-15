@@ -66,6 +66,12 @@ class OnboardingController extends Notifier<OnboardingState> {
             careers: [...state.careers],
             completedCourses: state.courses.toList()..sort(),
             selfReportedSkills: state.selfReported.toList()..sort(),
+            // The plan carries over an edit, less any course now marked completed.
+            plannedCourses: [
+              for (final code
+                  in ref.read(savedProfileProvider)?.plannedCourses ?? const <String>[])
+                if (!state.courses.contains(code)) code,
+            ],
             // A blank field means "not given", not a major called "".
             major: major.isEmpty ? null : major,
           ));

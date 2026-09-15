@@ -554,6 +554,84 @@ abstract class AppLocalizations {
   /// **'Suggested courses'**
   String get seeRecommendations;
 
+  /// No description provided for @planTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan courses'**
+  String get planTitle;
+
+  /// No description provided for @planIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark courses you plan to take. The projection counts them as if completed; your record stays as it is.'**
+  String get planIntro;
+
+  /// No description provided for @planNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get planNow;
+
+  /// No description provided for @planWith.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{if you take your planned course} other{if you take your {count} planned courses}}'**
+  String planWith(int count);
+
+  /// No description provided for @planPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'+{points} points'**
+  String planPoints(int points);
+
+  /// No description provided for @planNothingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick courses below to see what they would add.'**
+  String get planNothingYet;
+
+  /// No description provided for @planClosesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan closes {closed} of your {missing} gaps.'**
+  String planClosesCount(int closed, int missing);
+
+  /// No description provided for @planCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses you could take'**
+  String get planCoursesTitle;
+
+  /// No description provided for @planExplained.
+  ///
+  /// In en, this message translates to:
+  /// **'Each course lists the gaps it would close for this career, most in demand first. A gap two courses close counts once.'**
+  String get planExplained;
+
+  /// No description provided for @planCompletedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed courses already count, so they are not listed.'**
+  String get planCompletedNote;
+
+  /// No description provided for @planCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes: {skills}'**
+  String planCloses(String skills);
+
+  /// No description provided for @planClosesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes none of your current gaps for this career.'**
+  String get planClosesNone;
+
+  /// No description provided for @planPlannedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No planned courses} =1{1 planned course} other{{count} planned courses}}'**
+  String planPlannedCount(int count);
+
   /// No description provided for @compareTitle.
   ///
   /// In en, this message translates to:

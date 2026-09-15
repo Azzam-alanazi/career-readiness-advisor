@@ -21,6 +21,11 @@ _StudentProfile _$StudentProfileFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const <String>[],
+      plannedCourses:
+          (json['planned_courses'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       major: json['major'] as String?,
     );
 
@@ -29,5 +34,6 @@ Map<String, dynamic> _$StudentProfileToJson(_StudentProfile instance) =>
       'careers': instance.careers,
       'completed_courses': instance.completedCourses,
       'self_reported_skills': instance.selfReportedSkills,
+      'planned_courses': instance.plannedCourses,
       'major': instance.major,
     };

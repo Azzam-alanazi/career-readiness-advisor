@@ -31,6 +31,17 @@ void main() {
     expect((await launch({PrefsProfileStore.profileKey: '{"careers": []}'})).load(), isNull);
   });
 
+  test('a profile saved before planning existed loads with nothing planned', () async {
+    final store = await launch({
+      PrefsProfileStore.profileKey:
+          '{"careers": ["Business Analyst"], "completed_courses": ["IS 230"], '
+              '"self_reported_skills": [], "major": null}',
+    });
+    final loaded = store.load()!;
+    expect(loaded.completedCourses, ['IS 230']);
+    expect(loaded.plannedCourses, isEmpty);
+  });
+
   test('deleting the profile keeps the language', () async {
     final store = await launch({});
     await store.save(profile);

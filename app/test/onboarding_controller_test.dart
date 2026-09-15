@@ -137,6 +137,30 @@ void main() {
     expect(state().editing, isFalse);
   });
 
+  test('an edit keeps the plan, less any planned course now marked completed', () async {
+    await container.read(savedProfileProvider.notifier).save(const StudentProfile(
+          careers: ['Business Analyst'],
+          completedCourses: ['IS 230'],
+          plannedCourses: ['IS 240', 'IS 350'],
+        ));
+    controller()
+      ..startEditing(container.read(savedProfileProvider)!)
+      ..toggleCourse('IS 240');
+    await controller().finish();
+    expect(store.profile!.completedCourses, ['IS 230', 'IS 240']);
+    expect(store.profile!.plannedCourses, ['IS 350']);
+  });
+
+  test('planning a course saves at once; planning it again takes it off', () async {
+    final saved = container.read(savedProfileProvider.notifier);
+    await saved.save(const StudentProfile(careers: ['Business Analyst']));
+    await saved.togglePlanned('IS 350');
+    await saved.togglePlanned('IS 240');
+    expect(store.profile!.plannedCourses, ['IS 240', 'IS 350']);
+    await saved.togglePlanned('IS 350');
+    expect(store.profile!.plannedCourses, ['IS 240']);
+  });
+
   test('reset clears the draft', () {
     controller()
       ..toggleCareer('Business Analyst')

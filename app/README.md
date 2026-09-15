@@ -29,6 +29,12 @@ from the readiness screen, edits the profile, switches language, or deletes the
 profile after asking. Nothing about the student is stored on a server: each
 request carries the profile, and the backend keeps nothing.
 
+**What-if planning.** On the planning screen, reached from readiness, a student
+ticks courses they plan to take. Each course not yet taken lists the gaps it
+would close. The projection — the same readiness reading, with the planned
+courses counted as taken — stands beside today's figure there and on the
+readiness screen. The plan is saved with the profile.
+
 ## What the numbers are — read this first
 
 The skill matcher behind every figure **failed its Phase 0 validation gate**:
@@ -137,7 +143,7 @@ postings.
 flutter test
 ```
 
-50 tests, no device needed:
+57 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -155,6 +161,12 @@ flutter test
 - **persistence and settings** — a saved profile skips onboarding, settings
   edits it and deletes it after asking, and the language is remembered across
   launches
+- **planning** — a course closes the current gaps it teaches, in demand order,
+  and a gap two planned courses close counts once. Planning saves at once, and
+  an edit keeps the plan, less any course now completed. The planning screen
+  hides completed courses, shows what each course closes, and puts the
+  projection beside today's figure, on readiness too. In Arabic the layout runs
+  right to left
 - **skill groups** — categories in taxonomy order, search in either language,
   the skills the chosen courses teach
 - **the full flow, in English and in Arabic** — courses, then other skills, then

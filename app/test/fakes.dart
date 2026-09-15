@@ -505,6 +505,32 @@ class InMemoryProfileStore implements ProfileStore {
   Future<void> saveLanguage(String languageCode) async => lang = languageCode;
 }
 
+// Business Analyst with IS 350 counted as taken, as a plan projects it: Business
+// process modelling closes, and readiness goes from 10% to 26%.
+final gapAnalystPlannedJson = <String, dynamic>{
+  ...gapJson,
+  'readiness': 0.2581,
+  'readiness_percent': 26,
+  'readiness_from_courses': 0.2105,
+  'readiness_from_courses_percent': 21,
+  'covered': [
+    ...gapJson['covered'] as List,
+    {
+      'id': 'SK04',
+      'en': 'Business process modelling',
+      'ar': 'نمذجة عمليات الأعمال',
+      'category': 'business_analysis',
+      'demand': 0.5,
+      'demand_percent': 50,
+      'source': 'courses',
+    },
+  ],
+  'missing': [
+    for (final s in gapJson['missing'] as List)
+      if ((s as Map)['id'] != 'SK04') s,
+  ],
+};
+
 class FakeGapRepository implements GapRepository {
   final queries = <GapQuery>[];
 
@@ -516,6 +542,7 @@ class FakeGapRepository implements GapRepository {
     return GapReport.fromJson(switch (query.career) {
       'Software Developer' => gapDeveloperJson,
       'Data Analyst' => gapDataJson,
+      _ when query.completedCourses.contains('IS 350') => gapAnalystPlannedJson,
       _ => gapJson,
     });
   }

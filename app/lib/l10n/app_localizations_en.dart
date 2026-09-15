@@ -299,6 +299,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeRecommendations => 'Suggested courses';
 
   @override
+  String get planTitle => 'Plan courses';
+
+  @override
+  String get planIntro =>
+      'Mark courses you plan to take. The projection counts them as if completed; your record stays as it is.';
+
+  @override
+  String get planNow => 'now';
+
+  @override
+  String planWith(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'if you take your $count planned courses',
+      one: 'if you take your planned course',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String planPoints(int points) {
+    return '+$points points';
+  }
+
+  @override
+  String get planNothingYet => 'Tick courses below to see what they would add.';
+
+  @override
+  String planClosesCount(int closed, int missing) {
+    return 'Your plan closes $closed of your $missing gaps.';
+  }
+
+  @override
+  String get planCoursesTitle => 'Courses you could take';
+
+  @override
+  String get planExplained =>
+      'Each course lists the gaps it would close for this career, most in demand first. A gap two courses close counts once.';
+
+  @override
+  String get planCompletedNote =>
+      'Completed courses already count, so they are not listed.';
+
+  @override
+  String planCloses(String skills) {
+    return 'Closes: $skills';
+  }
+
+  @override
+  String get planClosesNone =>
+      'Closes none of your current gaps for this career.';
+
+  @override
+  String planPlannedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count planned courses',
+      one: '1 planned course',
+      zero: 'No planned courses',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get compareTitle => 'Your careers side by side';
 
   @override

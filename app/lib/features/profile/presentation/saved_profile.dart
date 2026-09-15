@@ -14,6 +14,15 @@ class SavedProfile extends Notifier<StudentProfile?> {
     state = profile;
   }
 
+  /// Plans [code], or takes it off the plan. Saved at once.
+  Future<void> togglePlanned(String code) async {
+    final profile = state;
+    if (profile == null) return;
+    final planned = {...profile.plannedCourses};
+    if (!planned.remove(code)) planned.add(code);
+    await save(profile.copyWith(plannedCourses: planned.toList()..sort()));
+  }
+
   Future<void> clear() async {
     await ref.read(profileStoreProvider).clear();
     state = null;
