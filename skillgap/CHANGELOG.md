@@ -33,13 +33,20 @@ threshold or engine decision.
   succeed.
 - **A stored profile whose first career left the corpus** is read against the
   next, as the README already said. Before, it returned 409.
+- **The cache key covers the service's extraction step.** It hashed
+  skillgap.py but not how `backend/engine.py` groups and cleans postings before
+  extraction. A change there would have served profiles built the old way. That
+  step is now its own function, `_extract`, whose source is part of the key.
+  Other serving code in engine.py still changes without a rebuild. Rebuilt with
+  the real model: 130 s, and the profiles and course map came out identical to
+  the previous cache.
 - **Smaller fixes.** Request fields are capped. `online sync` on an empty file
   writes its header. `/curriculum/gap` answers on an empty corpus. Two quick
   plan taps both count. Online courses open in the browser. Headings are marked
   for screen readers. No screen overflows at twice the text size in Arabic on a
   360-wide phone.
 
-Backend tests: 101 → 108. App tests: 59 → 68.
+Backend tests: 101 → 110. App tests: 59 → 68.
 
 ---
 

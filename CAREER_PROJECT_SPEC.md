@@ -437,7 +437,7 @@ the engine's measurements. It fixed these:
   `/curriculum/gap` answers on an empty corpus. `validate.load_labeled` accepts
   a labelled CSV that has a header and no rows yet.
 
-Verified by 108 backend tests, 68 app tests, `flutter analyze`, and the contract
+Verified by 110 backend tests, 68 app tests, `flutter analyze`, and the contract
 check against the live backend.
 
 **Found, not changed: hyphens split chunks.** `split_chunks` splits on every

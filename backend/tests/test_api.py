@@ -168,6 +168,40 @@ def test_changed_config_invalidates_the_cache(world, embedder):
     assert embedder.instances == 2
 
 
+def test_changed_posting_text_invalidates_the_cache_and_relabelling_does_not(world, embedder):
+    import csv
+
+    def rewrite(change):
+        with world.postings.open(encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.DictReader(f))
+        change(rows[0])
+        with world.postings.open("w", encoding="utf-8-sig", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+
+    build_state(world, embedder)
+    # A label is not something extraction reads.
+    rewrite(lambda r: r.update(skill_ids="SQ"))
+    assert build_state(world, embedder).built_from_cache is True
+    rewrite(lambda r: r.update(posting_text=r["posting_text"] + " | Also Python."))
+    assert build_state(world, embedder).built_from_cache is False
+
+
+def test_changing_how_the_service_extracts_invalidates_the_cache(world, embedder, monkeypatch):
+    from backend import engine
+    first = build_state(world, embedder)
+    original = engine._extract
+
+    def extract_another_way(*args):     # other source, same result
+        return original(*args)
+
+    monkeypatch.setattr(engine, "_extract", extract_another_way)
+    rebuilt = build_state(world, embedder)
+    assert rebuilt.built_from_cache is False and rebuilt.cache_key != first.cache_key
+    assert rebuilt.profiles == first.profiles and rebuilt.courses == first.courses
+
+
 def test_stale_config_refuses_startup_before_loading_anything(tmp_path, embedder):
     paths = write_world(tmp_path / "stale", make_config(taxonomy_skills=19))
     with pytest.raises(sg.StaleConfigError):

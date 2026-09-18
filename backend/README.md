@@ -80,7 +80,9 @@ because the catalog is.
   so the model is needed only to build profiles, never to answer a request
   (spec item 12).
 - **Profiles persist, keyed by their inputs** (spec item 6). The cache key hashes
-  the taxonomy, config, posting text, course text, model name and engine source.
+  the taxonomy, config, posting text, course text, model name and engine source,
+  and the source of the service's own extraction step (`_extract`), so other
+  serving code in `engine.py` can change without a rebuild, and that step cannot.
   Relabelling a posting does not invalidate it; changing anything extraction reads
   does. A stale profile cannot be served.
 - **Startup refuses a stale config.** A `StaleConfigError` from the engine stops
@@ -136,7 +138,7 @@ because the catalog is.
 python -m pytest
 ```
 
-108 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+110 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 

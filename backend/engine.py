@@ -8,7 +8,8 @@ request, so the model is never reloaded (spec item 12).
 
 Profiles and the course map are also persisted to disk (spec item 6), under a key
 that hashes everything able to change them: taxonomy, matching config, posting
-text, course text, model name, and the engine source itself. A restart with
+text, course text, model name, the engine source itself, and the source of this
+service's extraction step (_extract). A restart with
 unchanged inputs skips extraction and never loads the model. Any change produces
 a new key, so a stale profile cannot be served -- the same rule StaleConfigError
 enforces for matching parameters.
@@ -365,12 +366,37 @@ def _course_labels(rows: list[dict[str, str]], valid_ids: set[str],
     return labels
 
 
+def _extract(postings: list[dict], course_rows: list[dict], tax: sg.Taxonomy,
+             posting_params: dict[str, Any], course_params: dict[str, Any],
+             ) -> tuple[dict[str, sg.CareerProfile], dict[str, tuple[str, ...]]]:
+    """
+    Everything the cache stores: each career's demand profile, and the skills
+    extraction finds in each course. The engine's side of it lives in
+    skillgap.py; this is the service's side -- how postings are grouped and
+    cleaned on the way in. Both sources are part of the cache key, so a change
+    to either rebuilds rather than serving profiles made the old way.
+    """
+    by_career: dict[str, list[str]] = {}
+    for r in postings:
+        by_career.setdefault(r["career"], []).append(r["posting_text"].strip())
+    profiles = {career: sg.build_career_profile(career, texts, tax, posting_params)
+                for career, texts in sorted(by_career.items())}
+    extracted = {
+        r["course_code"]: tuple(sorted(sg.skills_from_courses(
+            [r["course_text"].strip()], tax, course_params)))
+        for r in course_rows}
+    return profiles, extracted
+
+
 def _cache_key(paths: Paths, postings: list[dict], course_rows: list[dict],
                model: str) -> str:
     h = hashlib.sha256()
     h.update(f"v{CACHE_VERSION}|{model}".encode())
     for p in (paths.taxonomy, paths.config, ENGINE_DIR / "skillgap.py"):
         h.update(p.read_bytes())
+    # The service's half of extraction, by its source: serving code elsewhere in
+    # this file can change without a rebuild, and this cannot.
+    h.update(inspect.getsource(_extract).encode())
     # Only the fields extraction reads. Relabelling a posting or a course does
     # not change what extraction finds, so it must not invalidate the cache.
     for r in postings:
@@ -441,17 +467,8 @@ def build_state(paths: Paths | None = None,
     else:
         embedder = (embedder_factory or sg.Embedder)(model)
         tax = sg.Taxonomy(str(paths.taxonomy), embedder)
-
-        by_career: dict[str, list[str]] = {}
-        for r in postings:
-            by_career.setdefault(r["career"], []).append(r["posting_text"].strip())
-        profiles = {career: sg.build_career_profile(career, texts, tax, posting_params)
-                    for career, texts in sorted(by_career.items())}
-
-        extracted = {
-            r["course_code"]: tuple(sorted(sg.skills_from_courses(
-                [r["course_text"].strip()], tax, course_params)))
-            for r in course_rows}
+        profiles, extracted = _extract(postings, course_rows, tax,
+                                       posting_params, course_params)
         _save_cache(cache_file, key, profiles, extracted, names)
         from_cache = False
 
