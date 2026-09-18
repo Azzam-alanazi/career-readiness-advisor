@@ -1,4 +1,5 @@
 import 'package:career_readiness/core/api/api_client.dart';
+import 'package:career_readiness/features/onboarding/domain/served_ids.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +37,7 @@ class _ErrorPanel extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final message = switch (error) {
       ApiException(unreachable: true) => l.errorUnreachable,
+      CareerNotServed() => l.errorCareerGone,
       _ => l.errorServer,
     };
     return Center(
@@ -47,8 +49,12 @@ class _ErrorPanel extends StatelessWidget {
             const Icon(Icons.cloud_off_outlined, size: 40),
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center),
-            const SizedBox(height: 16),
-            FilledButton.tonal(onPressed: onRetry, child: Text(l.retry)),
+            // Asking again cannot bring back a career the postings dropped;
+            // the message says what will.
+            if (error is! CareerNotServed) ...[
+              const SizedBox(height: 16),
+              FilledButton.tonal(onPressed: onRetry, child: Text(l.retry)),
+            ],
           ],
         ),
       ),

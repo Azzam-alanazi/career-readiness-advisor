@@ -1,4 +1,5 @@
 import 'package:career_readiness/features/onboarding/domain/onboarding_state.dart';
+import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
 import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/profile/presentation/saved_profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,16 +10,23 @@ class OnboardingController extends Notifier<OnboardingState> {
   @override
   OnboardingState build() => const OnboardingState();
 
-  /// Starts editing [profile]: the form opens holding everything it says.
-  void startEditing(StudentProfile profile) => state = OnboardingState(
-        major: profile.major ?? '',
-        careers: [...profile.careers],
-        courses: {...profile.completedCourses},
-        selfReported: {...profile.selfReportedSkills},
-        editing: true,
-        // A new revision rebuilds the fields that keep their own text.
-        revision: state.revision + 1,
-      );
+  /// Starts editing [profile]: the form opens holding everything it says that
+  /// the backend still serves. A career, course or skill it has since dropped
+  /// would have no chip or box to untick, and would be saved back unseen.
+  void startEditing(StudentProfile profile) {
+    // Already fetched for home's readiness; not worth a request of its own.
+    final served = ref.exists(servedIdsProvider) ? ref.read(servedIdsProvider).value : null;
+    final stillServed = served == null ? profile : served.restrictProfile(profile);
+    state = OnboardingState(
+      major: stillServed.major ?? '',
+      careers: [...stillServed.careers],
+      courses: {...stillServed.completedCourses},
+      selfReported: {...stillServed.selfReportedSkills},
+      editing: true,
+      // A new revision rebuilds the fields that keep their own text.
+      revision: state.revision + 1,
+    );
+  }
 
   void setMajor(String value) => state = state.copyWith(major: value);
 
@@ -66,10 +74,11 @@ class OnboardingController extends Notifier<OnboardingState> {
             careers: [...state.careers],
             completedCourses: state.courses.toList()..sort(),
             selfReportedSkills: state.selfReported.toList()..sort(),
-            // The plan carries over an edit, less any course now marked completed.
+            // The plan carries over an edit, less any course now marked completed
+            // or no longer in the catalog.
             plannedCourses: [
               for (final code
-                  in ref.read(savedProfileProvider)?.plannedCourses ?? const <String>[])
+                  in ref.read(servedProfileProvider)?.plannedCourses ?? const <String>[])
                 if (!state.courses.contains(code)) code,
             ],
             // A blank field means "not given", not a major called "".

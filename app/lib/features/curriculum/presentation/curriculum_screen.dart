@@ -6,6 +6,7 @@ import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
+import 'package:career_readiness/core/widgets/share_bar.dart';
 import 'package:career_readiness/features/curriculum/domain/curriculum_gap.dart';
 import 'package:career_readiness/features/curriculum/presentation/curriculum_providers.dart';
 import 'package:career_readiness/features/onboarding/domain/career.dart';
@@ -206,10 +207,7 @@ class _CoverageCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(formatPercent(gap.coverage, lang), style: text.displayMedium),
             const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: gap.coverage.clamp(0.0, 1.0).toDouble(),
-              minHeight: 8,
-            ),
+            ShareBar(gap.coverage, minHeight: 8),
             const SizedBox(height: 8),
             Text(l.curriculumCoverageLine(
               gap.taught,
@@ -320,7 +318,7 @@ class _UncoveredRow extends StatelessWidget {
           ),
           if (showCareers) Text(l.curriculumAskedIn(careers), style: small),
           const SizedBox(height: 4),
-          LinearProgressIndicator(value: skill.demand.clamp(0.0, 1.0).toDouble()),
+          ShareBar(skill.demand),
         ],
       ),
     );
@@ -356,7 +354,7 @@ class _CareerRow extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          LinearProgressIndicator(value: coverage.coverage.clamp(0.0, 1.0).toDouble()),
+          ShareBar(coverage.coverage),
           const SizedBox(height: 2),
           Text(
             l.curriculumCareerLine(

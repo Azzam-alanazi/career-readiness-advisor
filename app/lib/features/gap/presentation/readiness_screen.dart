@@ -6,6 +6,7 @@ import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
+import 'package:career_readiness/core/widgets/share_bar.dart';
 import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/gap/domain/skill_entry.dart';
@@ -37,7 +38,7 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final profile = ref.watch(savedProfileProvider);
+    final profile = ref.watch(servedProfileProvider);
     if (profile == null) return const SizedBox.shrink();
     final careers = profile.careers;
     // An edited profile may no longer name the career that was in focus.
@@ -62,7 +63,7 @@ class _ReadinessScreenState extends ConsumerState<ReadinessScreen> {
       ),
       body: AsyncView(
         asyncValue: ref.watch(gapReportProvider(query)),
-        onRetry: () => ref.invalidate(gapReportProvider(query)),
+        onRetry: () => retryGap(ref, query),
         data: (report) => _Report(
           report: report,
           projected: projected,
@@ -311,7 +312,7 @@ class _Figures extends StatelessWidget {
       children: [
         Text(formatPercent(report.readiness, lang), style: theme.textTheme.headlineMedium),
         const SizedBox(height: 4),
-        LinearProgressIndicator(value: report.readiness.clamp(0.0, 1.0).toDouble()),
+        ShareBar(report.readiness),
         const SizedBox(height: 8),
         Text(l.compareCovered(report.covered.length)),
         Text(l.compareMissing(report.missing.length)),
@@ -372,10 +373,7 @@ class _ScoreCard extends StatelessWidget {
             else
               NowAndPlanned(now: report, projected: projected, plannedCount: plannedCount),
             const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: report.readiness.clamp(0.0, 1.0).toDouble(),
-              minHeight: 8,
-            ),
+            ShareBar(report.readiness, minHeight: 8),
             // The academic record on its own, whenever self-reported skills
             // make the two differ.
             if (report.coveredSelfReported.isNotEmpty) ...[
@@ -429,22 +427,29 @@ class DemandRow extends StatelessWidget {
     final lang = Localizations.localeOf(context).languageCode;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text(name)),
-              const SizedBox(width: 8),
-              Text(
-                l.demandShare(formatPercent(demand, lang)),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          LinearProgressIndicator(value: demand.clamp(0.0, 1.0).toDouble()),
-        ],
+      // Read as one line: the skill, then how many postings ask for it.
+      child: MergeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Name and share on one line when they fit; at large text sizes
+            // the share moves under the name instead of overflowing.
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              children: [
+                Text(name),
+                Text(
+                  l.demandShare(formatPercent(demand, lang)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            ShareBar(demand),
+          ],
+        ),
       ),
     );
   }

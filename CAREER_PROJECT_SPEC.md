@@ -413,6 +413,41 @@ app's own models, then repeats it with self-reported skills. The Android
 toolchain is now installed and a debug APK builds. These checks have not
 launched the app on a device or an emulator.
 
+**Review fixes, 2026-09-18.** A review of the whole project found no fault in
+the engine's measurements. It fixed these:
+- **A profile that outlives the catalog.** The profile on the device can name a
+  course, skill or career the backend has since dropped. `POST /gap` refuses such
+  a request, so every screen failed and "try again" could never succeed. The app
+  now reads the profile as the backend serves it, as the backend does for a
+  stored profile:
+  - A dropped course, skill or planned course stops counting.
+  - A dropped main career gives way to the next.
+  - Editing starts without any of them.
+  - Only a profile left with no career at all gets a message, which says how to
+    fix it.
+- **Halves round up even through float noise.** 6 of 16 postings' weight comes
+  out as 0.37499999999999994, and the API read that as 37 while the app, from
+  the 4-decimal share, showed 38. Every 1-, 2- and 3-course reading on the real
+  data already agreed, so this was latent.
+- **Smaller fixes.** Two quick taps on the plan no longer lose the first. Online
+  courses open in the browser. Headings are marked for screen readers. At twice
+  the text size in Arabic on a 360-wide phone, no screen overflows. Request
+  fields are capped. A stored profile whose first career left the corpus is read
+  against the next. `online sync` on an empty file writes its header.
+  `/curriculum/gap` answers on an empty corpus. `validate.load_labeled` accepts
+  a labelled CSV that has a header and no rows yet.
+
+Verified by 108 backend tests, 68 app tests, `flutter analyze`, and the contract
+check against the live backend.
+
+**Found, not changed: hyphens split chunks.** `split_chunks` splits on every
+hyphen, including inside words. 655 intra-word hyphens in 77 of the 82 postings
+cut phrases such as "end-to-end" and "hands-on" apart. About 2,000 characters
+fall under the 15-character floor and are never matched. The measured thresholds
+were swept with this chunker, and Phase 0 does not reopen, so it stays as it is.
+It is a candidate for the evaluation chapter's limitations, and for any future
+re-measurement.
+
 ## Department view — curriculum gaps
 17. For one career or across all five: the skills postings demand that no
     course teaches, ranked by demand; the skills the curriculum teaches that no

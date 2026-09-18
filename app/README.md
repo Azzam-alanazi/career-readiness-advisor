@@ -51,7 +51,7 @@ Suggested courses are labelled as suggestions, not verdicts — it is the first
 thing on that screen. University and online courses are shown apart, and every
 card says whether it counts toward the degree: a university course does, an
 online course does not. Online courses appear only for skills no university
-course teaches.
+course teaches, and each opens in the browser in one tap.
 
 Skills a student reports from outside coursework are shown apart from those
 their courses teach. Whenever the two figures differ, readiness from the courses
@@ -89,6 +89,10 @@ your machine's address:
 flutter run --dart-define=API_BASE_URL=http://192.168.1.20:8000
 ```
 
+The backend must then listen beyond the host itself: start it with
+`--host 0.0.0.0`. That opens it to the whole local network, so do it only on a
+network you trust.
+
 Debug builds allow plain HTTP so they can reach the local backend. Release
 builds keep Android's default and require HTTPS.
 
@@ -109,7 +113,7 @@ flutter gen-l10n
 lib/
   main.dart, app.dart
   home_shell.dart       the two tabs, student and department, each with its own navigation stack
-  core/                 api client, locale, formatting, shared widgets
+  core/                 api client, locale, formatting, opening links, shared widgets
   features/
     onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
     home/               the dashboard a saved profile opens on
@@ -151,7 +155,7 @@ postings.
 flutter test
 ```
 
-59 tests, no device needed:
+68 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -208,6 +212,14 @@ flutter test
   self-reported skills lift a score. Tapping a career switches the details and
   the suggestions to it. In Arabic on a 360-wide phone, three columns lay out
   right to left without overflowing
+- **a profile that outlived the catalog** — the screens read the profile as the
+  backend serves it: a dropped course, skill or planned course stops counting,
+  a dropped main career gives way to the next, and editing starts without them.
+  A profile with no career left says how to fix it, without a pointless retry. Two quick taps on the plan both count, and a
+  failed write puts the plan back
+- **large text** — in Arabic at twice the text size on a 360-wide phone,
+  onboarding, home, planning, readiness, suggestions and the department view
+  all lay out without overflowing
 - **the department view** — its own tab, fetched only when opened, with no step
   of the student flow behind it; switching tabs keeps the student where they
   were. The sample-size caveat, with the real counts, comes above every figure.

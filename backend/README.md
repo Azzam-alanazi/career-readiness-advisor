@@ -39,6 +39,10 @@ python -m pip install -r backend/requirements.txt
 C:/Users/azzam/.venvs/skillgap/Scripts/python.exe -m uvicorn backend.main:app --port 8000
 ```
 
+To reach it from a phone on the same network rather than the emulator, add
+`--host 0.0.0.0`. That exposes it to the whole network, so only on one you
+trust.
+
 The first start builds career profiles and course maps with the real model and
 caches them in `backend/.cache/`. Later starts with unchanged inputs read the
 cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
@@ -60,7 +64,9 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 | GET | `/curriculum/gap` | the department's view, for one `career` or all when omitted: demanded skills no course teaches, ranked by their share of postings, with the careers asking; taught skills no posting names, with their courses; skills named by too few postings to count (`below_threshold`), with their courses; coverage (taught / demanded) for the scope and for every career, with the postings a skill needs there (`min_postings`); `sample_note` on how few postings this rests on |
 
 Unknown careers, course codes and skill ids are rejected with a 422 naming the
-offending value, and so is a `career` the profile does not name. Skill entries carry both `en` and `ar`. Course names are English only,
+offending value, and so is a `career` the profile does not name. A request may
+carry at most 200 course codes and 200 skill ids, and no id, `career` or `major`
+longer than 200 characters. Skill entries carry both `en` and `ar`. Course names are English only,
 because the catalog is.
 
 ## Design decisions
@@ -101,7 +107,9 @@ because the catalog is.
   from the same courses and self-reported skills, computed exactly as for a
   profile targeting that career alone. Nothing new is computed to compare them:
   the client asks for each career's gap. A stored career that later leaves the
-  posting corpus is dropped, as a dropped course is.
+  posting corpus is dropped, as a dropped course is; when it was the first, the
+  next one still served takes its place. Only a profile left with no career is
+  refused (409).
 - **The curriculum view reuses the student view's numbers.** It reads the served
   course mapping (the hand labels) and the career profiles, nothing new. A skill
   is demanded exactly when a student's gap would count it, at the engine's
@@ -128,7 +136,7 @@ because the catalog is.
 python -m pytest
 ```
 
-101 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+108 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
@@ -147,7 +155,11 @@ exactly as a profile targeting it alone, and a career the profile does not name
 refused; the curriculum view reading the labels, pooling
 postings across careers, ranking by demand, and agreeing with what a student
 with every course still misses, and listing the skills too few postings name
-rather than dropping them; and the reports below.
+rather than dropping them; percentages rounding a half up even when float
+arithmetic leaves it a hair short; request size caps; a stored profile whose
+first career left the corpus read against the next; `sync` on an empty
+online-courses file writing the header the loader needs; an empty posting corpus
+answered, not a server error; and the reports below.
 
 ## Online courses
 

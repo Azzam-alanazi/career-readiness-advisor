@@ -146,6 +146,8 @@
   "countsTowardDegree": "Counts toward your degree",
   "notTowardDegree": "Doesn't count toward your degree",
   "free": "Free",
+  "openCourse": "Open course",
+  "openCourseFailed": "The link could not be opened.",
   "paid": "Paid",
   "noOnlineCourses": "No online course is listed yet for the skills your university doesn't teach.",
   "uncoveredTitle": "No course listed yet ({count})",
@@ -161,6 +163,7 @@
 
   "errorUnreachable": "Can't reach the server. Is the backend running?",
   "errorServer": "The server couldn't answer that request.",
+  "errorCareerGone": "A career in your profile is no longer in the job postings. Edit your profile to choose another.",
   "retry": "Try again",
 
   "navStudent": "Student",

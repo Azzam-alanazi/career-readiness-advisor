@@ -33,8 +33,13 @@ def percent(share: float) -> int:
     A share as a whole percentage, halves rounded up, as the app displays them.
     Python's round() goes to the even neighbour, so a readiness of exactly 12.5%
     came back as 12 while the app, formatting the same share, showed 13.
+
+    The share is a ratio of float demand weights, so an exact half can arrive a
+    hair below it: 6 of 16 postings' weight is 0.37499999999999994, not 0.375.
+    Rounding that noise away first keeps it at 38, which is also what the app
+    shows from the 4-decimal `readiness` it is sent.
     """
-    return math.floor(share * 100 + 0.5)
+    return math.floor(round(share * 100, 9) + 0.5)
 
 
 def create_app(state_factory: Callable[[], EngineState] = build_state,
@@ -149,17 +154,21 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         if prof is None:
             raise HTTPException(404, detail=f"no profile {profile_id!r}")
         eng = engine(request)
-        if prof["career"] not in eng.profiles:
+        # A career, course or skill dropped from the corpus, catalog or taxonomy
+        # after the profile was saved simply stops counting; it is not an error
+        # the student can fix. When the first career goes, the next one still
+        # served takes its place. Only a profile left with no career at all
+        # cannot be read.
+        careers = [c for c in (prof["career"], *prof["other_careers"])
+                   if c in eng.profiles]
+        if not careers:
             raise HTTPException(409, detail=(f"career {prof['career']!r} is no "
                                              f"longer in the posting corpus"))
-        # A course dropped from the catalog, or a skill dropped from the
-        # taxonomy, after the profile was saved simply stops counting; it is not
-        # an error the student can fix.
+        prof["career"], prof["other_careers"] = careers[0], careers[1:]
         prof["completed_courses"] = [c for c in prof["completed_courses"]
                                      if c in eng.courses]
         prof["self_reported_skills"] = [s for s in prof["self_reported_skills"]
                                         if s in eng.skills]
-        prof["other_careers"] = [c for c in prof["other_careers"] if c in eng.profiles]
         return eng, prof
 
     def profile_out(prof: dict) -> S.ProfileOut:
@@ -271,6 +280,8 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
 
     def sample_note(eng: EngineState) -> str:
         per = sorted(p.posting_count for p in eng.profiles.values())
+        if not per:
+            return "Based on no job postings: there is nothing to compare the catalog with."
         spread = f"{per[0]}" if per[0] == per[-1] else f"{per[0]} to {per[-1]}"
         return (f"Based on {sum(per)} job postings, {spread} per career. At this size "
                 f"the gaps are indicative: a skill one or two postings mention can "

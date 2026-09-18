@@ -17,7 +17,7 @@ class SettingsScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
     final scheme = Theme.of(context).colorScheme;
-    final profile = ref.watch(savedProfileProvider);
+    final profile = ref.watch(servedProfileProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.settingsTitle)),
       body: ListView(
@@ -108,7 +108,8 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (yes != true) return;
+    // The screen may have gone while the dialog was open, and its ref with it.
+    if (yes != true || !context.mounted) return;
     await ref.read(savedProfileProvider.notifier).clear();
     ref.read(onboardingControllerProvider.notifier).reset();
     // With no profile, the student tab's first screen is onboarding again.

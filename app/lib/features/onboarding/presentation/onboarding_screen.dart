@@ -282,32 +282,45 @@ class _NextBar extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
+            // One line when it fits; at large text sizes the buttons move to a
+            // line of their own rather than squeezing the count to nothing.
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                const Icon(Icons.checklist, size: 20),
-                const SizedBox(width: 8),
-                Expanded(child: Text(l.selectedCourses(count))),
-                TextButton(
-                  onPressed: count == 0
-                      ? null
-                      : () => showModalBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            useSafeArea: true,
-                            builder: (_) => const _ReviewSheet(),
-                          ),
-                  child: Text(l.coursesReview),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.checklist, size: 20),
+                    const SizedBox(width: 8),
+                    Flexible(child: Text(l.selectedCourses(count))),
+                  ],
                 ),
-                TextButton(
-                  onPressed: count == 0
-                      ? null
-                      : () => _clearWithUndo(
-                            ScaffoldMessenger.of(context),
-                            l,
-                            ref.read(onboardingControllerProvider.notifier),
-                            state.courses,
-                          ),
-                  child: Text(l.coursesClear),
+                Wrap(
+                  children: [
+                    TextButton(
+                      onPressed: count == 0
+                          ? null
+                          : () => showModalBottomSheet<void>(
+                                context: context,
+                                isScrollControlled: true,
+                                useSafeArea: true,
+                                builder: (_) => const _ReviewSheet(),
+                              ),
+                      child: Text(l.coursesReview),
+                    ),
+                    TextButton(
+                      onPressed: count == 0
+                          ? null
+                          : () => _clearWithUndo(
+                                ScaffoldMessenger.of(context),
+                                l,
+                                ref.read(onboardingControllerProvider.notifier),
+                                state.courses,
+                              ),
+                      child: Text(l.coursesClear),
+                    ),
+                  ],
                 ),
               ],
             ),

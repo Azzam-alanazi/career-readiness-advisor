@@ -148,3 +148,11 @@ def test_the_view_says_how_small_the_sample_is_and_carries_the_quality_flag(dept
     assert "should not drive curriculum decisions on their own" in v["sample_note"]
     assert v["min_demand"] == 0.15
     assert v["validation"]["gate_passed"] is False
+
+
+def test_no_postings_at_all_is_an_empty_view_not_a_server_error(make_client, tmp_path):
+    with make_client(write_world(tmp_path / "empty", postings=[])) as c:
+        r = c.get("/curriculum/gap")
+    assert r.status_code == 200, r.text
+    v = r.json()
+    assert (v["posting_count"], v["demanded"], v["uncovered"], v["per_career"]) == (0, 0, [], [])

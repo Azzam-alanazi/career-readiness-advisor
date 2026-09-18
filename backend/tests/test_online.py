@@ -100,6 +100,14 @@ def test_sync_matches_placeholders_to_the_gaps_and_never_touches_a_filled_row(tm
     assert catalog.placeholders == 1
 
 
+def test_sync_on_an_empty_file_writes_the_header_the_loader_needs(tmp_path):
+    path = tmp_path / "online.csv"
+    path.write_bytes(b"")
+    assert sync(path, ["CM", "PY"]) == (["CM", "PY"], [])
+    catalog = load_online_courses(path, {"CM", "PY"})
+    assert (list(catalog.courses), catalog.placeholders) == ([], 2)
+
+
 # ---- the loader fails loudly ------------------------------------------------------
 
 def test_unknown_skill_id_fails_loudly_with_its_line(tmp_path):

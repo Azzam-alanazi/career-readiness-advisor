@@ -87,6 +87,24 @@ def test_a_stored_career_that_left_the_corpus_is_ignored(client, tmp_path):
     assert r.status_code == 422 and r.json()["detail"]["careers"] == ["Analyst"]
 
 
+def test_when_the_first_career_leaves_the_corpus_the_next_takes_its_place(client, tmp_path):
+    old = ProfileStore(tmp_path / "profiles.sqlite3").create(
+        "Retired", None, ["IS230"], (), ["Developer"])
+    gap = client.get(f"/profiles/{old['id']}/gap")
+    assert gap.status_code == 200, gap.text
+    assert gap.json()["career"] == "Developer"
+    assert client.get(f"/profiles/{old['id']}/gap",
+                      params={"career": "Developer"}).status_code == 200
+    assert client.get(f"/profiles/{old['id']}/recommendations").json()["career"] == "Developer"
+
+
+def test_a_profile_with_no_career_left_cannot_be_read(client, tmp_path):
+    old = ProfileStore(tmp_path / "profiles.sqlite3").create(
+        "Retired", None, [], (), ["Gone"])
+    for path in ("gap", "recommendations"):
+        assert client.get(f"/profiles/{old['id']}/{path}").status_code == 409
+
+
 def test_profiles_saved_before_other_careers_still_load(tmp_path):
     db = tmp_path / "old.sqlite3"
     con = sqlite3.connect(db)

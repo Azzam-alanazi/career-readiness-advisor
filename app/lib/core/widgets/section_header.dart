@@ -8,6 +8,10 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 8),
-        child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        // A heading to screen readers too, so TalkBack can jump between sections.
+        child: Semantics(
+          header: true,
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        ),
       );
 }

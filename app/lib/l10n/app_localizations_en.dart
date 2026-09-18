@@ -461,6 +461,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get free => 'Free';
 
   @override
+  String get openCourse => 'Open course';
+
+  @override
+  String get openCourseFailed => 'The link could not be opened.';
+
+  @override
   String get paid => 'Paid';
 
   @override
@@ -501,6 +507,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorServer => 'The server couldn\'t answer that request.';
+
+  @override
+  String get errorCareerGone =>
+      'A career in your profile is no longer in the job postings. Edit your profile to choose another.';
 
   @override
   String get retry => 'Try again';

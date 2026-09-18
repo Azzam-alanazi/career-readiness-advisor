@@ -136,8 +136,11 @@ def load_labeled(path: str, valid_ids: set[str]) -> tuple[list, int]:
     rows, bad, pending = [], [], 0
     # utf-8-sig so the file round-trips through Excel without mangling Arabic.
     with f.open(encoding="utf-8-sig", newline="") as fh:
-        all_rows = list(csv.DictReader(fh))
-        cols = list(all_rows[0].keys()) if all_rows else []
+        reader = csv.DictReader(fh)
+        all_rows = list(reader)
+        # The header, not the first row: a file with a header and no rows yet
+        # is "nothing labelled", not "no text column".
+        cols = list(reader.fieldnames or [])
 
     text_col = next((c for c in TEXT_COLUMNS if c in cols), None)
     if text_col is None:

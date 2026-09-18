@@ -470,6 +470,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get free => 'مجانية';
 
   @override
+  String get openCourse => 'افتح الدورة';
+
+  @override
+  String get openCourseFailed => 'تعذّر فتح الرابط.';
+
+  @override
   String get paid => 'مدفوعة';
 
   @override
@@ -510,6 +516,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorServer => 'لم يتمكن الخادم من الإجابة عن هذا الطلب.';
+
+  @override
+  String get errorCareerGone =>
+      'إحدى المهن في ملفك لم تعد ضمن إعلانات الوظائف. عدّل ملفك لاختيار مهنة أخرى.';
 
   @override
   String get retry => 'حاول مرة أخرى';

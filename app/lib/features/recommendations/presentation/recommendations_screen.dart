@@ -1,4 +1,5 @@
 import 'package:career_readiness/core/format.dart';
+import 'package:career_readiness/core/links.dart';
 import 'package:career_readiness/core/l10n/career_names.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
@@ -20,7 +21,7 @@ class RecommendationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final profile = ref.watch(savedProfileProvider);
+    final profile = ref.watch(servedProfileProvider);
     if (profile == null) return const SizedBox.shrink();
     final query = gapQueryFor(profile, career: career);
     return Scaffold(
@@ -30,7 +31,7 @@ class RecommendationsScreen extends ConsumerWidget {
       ),
       body: AsyncView(
         asyncValue: ref.watch(recommendationsProvider(query)),
-        onRetry: () => ref.invalidate(recommendationsProvider(query)),
+        onRetry: () => retryRecommendations(ref, query),
         data: (report) => _Suggestions(report: report, career: career),
       ),
     );
@@ -255,13 +256,23 @@ class _UniversityCard extends StatelessWidget {
   }
 }
 
-class _OnlineCard extends StatelessWidget {
+class _OnlineCard extends ConsumerWidget {
   const _OnlineCard({required this.course});
 
   final OnlineRecommendation course;
 
+  Future<void> _open(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final failed = AppLocalizations.of(context).openCourseFailed;
+    if (!await ref.read(linkOpenerProvider)(course.url)) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(failed)));
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return Card(
@@ -300,7 +311,14 @@ class _OnlineCard extends StatelessWidget {
                           ?.copyWith(color: theme.colorScheme.primary),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
+                  // One tap to the course, rather than copying the address by hand.
+                  TextButton.icon(
+                    icon: const Icon(Icons.open_in_new, size: 18),
+                    label: Text(l.openCourse),
+                    onPressed: () => _open(context, ref),
+                  ),
+                  const SizedBox(height: 4),
                   Text(l.couldHelpWith, style: theme.textTheme.labelMedium),
                   const SizedBox(height: 4),
                   _SkillChips(course.closes),

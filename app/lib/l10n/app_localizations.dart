@@ -788,6 +788,18 @@ abstract class AppLocalizations {
   /// **'Free'**
   String get free;
 
+  /// No description provided for @openCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Open course'**
+  String get openCourse;
+
+  /// No description provided for @openCourseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The link could not be opened.'**
+  String get openCourseFailed;
+
   /// No description provided for @paid.
   ///
   /// In en, this message translates to:
@@ -853,6 +865,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The server couldn\'t answer that request.'**
   String get errorServer;
+
+  /// No description provided for @errorCareerGone.
+  ///
+  /// In en, this message translates to:
+  /// **'A career in your profile is no longer in the job postings. Edit your profile to choose another.'**
+  String get errorCareerGone;
 
   /// No description provided for @retry.
   ///

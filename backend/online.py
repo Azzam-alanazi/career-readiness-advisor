@@ -153,6 +153,14 @@ def _filled(row: dict[str, str]) -> bool:
     return any((row.get(c) or "").strip() for c in COLUMNS[1:])
 
 
+def _header(path: Path) -> list[str] | None:
+    """The file's columns, or None when there is no file or it is empty."""
+    if not path.exists():
+        return None
+    with path.open(encoding="utf-8-sig", newline="") as f:
+        return csv.DictReader(f).fieldnames
+
+
 def sync(path: Path, skill_ids: list[str]) -> tuple[list[str], list[str]]:
     """
     Match the placeholder rows to `skill_ids`: add one for each id with no row,
@@ -169,14 +177,14 @@ def sync(path: Path, skill_ids: list[str]) -> tuple[list[str], list[str]]:
     if not added and not removed:
         return [], []
 
-    if removed or not path.exists():
-        # Rewrite with the file's own columns, so nothing a person added is lost.
+    fields = _header(path)
+    if removed or fields is None:
+        # Rewrite with the file's own columns, so nothing a person added is lost;
+        # a missing or empty file gets the standard ones. Appending to an empty
+        # file would leave rows with no header, which startup then refuses.
         # Written in place: OneDrive refuses the delete a rename-over needs.
-        with path.open(encoding="utf-8-sig", newline="") if path.exists() else open(
-                __file__, encoding="utf-8") as probe:
-            fields = (csv.DictReader(probe).fieldnames if path.exists() else None) or list(COLUMNS)
         with path.open("w", encoding="utf-8-sig", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+            w = csv.DictWriter(f, fieldnames=fields or list(COLUMNS), extrasaction="ignore")
             w.writeheader()
             w.writerows(keep)
             w.writerows({"skill_id": s} for s in added)

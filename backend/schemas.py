@@ -41,19 +41,14 @@ class SkillOut(BaseModel):
     category: str
 
 
-class ProfileIn(BaseModel):
-    career: str
-    completed_courses: list[str] = Field(default_factory=list,
-                                         description="Course codes from GET /courses")
-    self_reported_skills: list[str] = Field(
-        default_factory=list,
-        description="Skill ids from GET /skills that the student holds from outside "
-                    "coursework: self-study, certifications, work experience. Unverified.")
-    other_careers: list[str] = Field(
-        default_factory=list, max_length=2,
-        description="Up to two more target careers from GET /careers, to compare with "
-                    "`career` side by side. Repeats, and `career` itself, are dropped")
-    major: str | None = None
+# Caps on what a request may carry. Generous against the real sizes (a catalog
+# of 33 courses, a taxonomy of 91 skills, ids of a few characters), and there
+# so that no field the service stores, or names back in a 422, can be unbounded.
+MAX_IDS = 200
+MAX_TEXT = 200
+
+# A course code, skill id or career name.
+Id = Annotated[str, Field(max_length=MAX_TEXT)]
 
 
 class StudentIn(BaseModel):
@@ -61,12 +56,22 @@ class StudentIn(BaseModel):
     A student's profile sent with the request, for a reading that stores
     nothing. The app keeps the profile on the device and sends this each time.
     """
-    career: str
-    completed_courses: list[str] = Field(default_factory=list,
-                                         description="Course codes from GET /courses")
-    self_reported_skills: list[str] = Field(
-        default_factory=list,
-        description="Skill ids from GET /skills held from outside coursework. Unverified.")
+    career: Id
+    completed_courses: list[Id] = Field(default_factory=list, max_length=MAX_IDS,
+                                        description="Course codes from GET /courses")
+    self_reported_skills: list[Id] = Field(
+        default_factory=list, max_length=MAX_IDS,
+        description="Skill ids from GET /skills that the student holds from outside "
+                    "coursework: self-study, certifications, work experience. Unverified.")
+
+
+class ProfileIn(StudentIn):
+    """A profile to store, for scripted use: a StudentIn, and more to compare."""
+    other_careers: list[Id] = Field(
+        default_factory=list, max_length=2,
+        description="Up to two more target careers from GET /careers, to compare with "
+                    "`career` side by side. Repeats, and `career` itself, are dropped")
+    major: str | None = Field(None, max_length=MAX_TEXT)
 
 
 class ProfileOut(BaseModel):
@@ -162,8 +167,9 @@ class RecommendationsOut(BaseModel):
     career: str
     recommendations: list[Recommendation] = Field(description=(
         "University courses first, then online courses, each ranked by the demand "
-        "they close. Every missing skill is closed by at least one of them or is "
-        "listed in `uncovered`."))
+        "they close. Without `limit`, every missing skill is closed by at least one "
+        "of them or is listed in `uncovered`. With it, a skill that only courses past "
+        "the cap close is in neither: it is covered, just not listed."))
     uncovered: list[SkillRef] = Field(description=(
         "Missing skills that no university course teaches and no online course is "
         "listed for yet, ranked by demand"))

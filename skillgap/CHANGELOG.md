@@ -4,6 +4,45 @@ Running record of what changed, when, and why.
 
 ---
 
+## 2026-09-18 — Project review: fixes, one finding left alone
+
+A review of the whole project. Nothing it found changes a measured figure,
+threshold or engine decision.
+
+**Engine side.**
+- **`validate.load_labeled` reads the header, not the first row.** A labelled
+  CSV with a header and no rows yet stopped with "no text column" instead of
+  taking the "nothing labelled" path. It is a reading fix only: no parameter or
+  measurement changes.
+- **Found, not changed: hyphens split chunks.** `split_chunks` splits on every
+  hyphen, including inside words. 655 intra-word hyphens in 77 of the 82
+  postings cut "end-to-end" or "hands-on" into fragments. About 2,000
+  characters fall under the 15-character floor and are never matched. The
+  thresholds were swept with this chunker, and Phase 0 does not reopen, so it
+  stays. A candidate for the evaluation chapter's limitations.
+
+**API and app.**
+- **Halves round up through float noise.** 6 of 16 postings' weight comes out
+  as 0.37499999999999994, and the API read it as 37 while the app, from the
+  4-decimal share, showed 38. Every 1-, 2- and 3-course reading on the real
+  data (48,136) already agreed, so this was latent.
+- **A saved profile that outlived the catalog.** The app now reads the profile
+  as the backend serves it. A dropped course, skill or planned course stops
+  counting, a dropped main career gives way to the next, and editing starts
+  without them. Before, every screen failed with a "try again" that could not
+  succeed.
+- **A stored profile whose first career left the corpus** is read against the
+  next, as the README already said. Before, it returned 409.
+- **Smaller fixes.** Request fields are capped. `online sync` on an empty file
+  writes its header. `/curriculum/gap` answers on an empty corpus. Two quick
+  plan taps both count. Online courses open in the browser. Headings are marked
+  for screen readers. No screen overflows at twice the text size in Arabic on a
+  360-wide phone.
+
+Backend tests: 101 → 108. App tests: 59 → 68.
+
+---
+
 ## 2026-09-15 — Home dashboard
 
 Once a profile is saved, the student tab opens on a home screen. Onboarding runs

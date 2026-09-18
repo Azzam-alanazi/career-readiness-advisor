@@ -4,6 +4,7 @@ import 'package:career_readiness/core/widgets/async_view.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
+import 'package:career_readiness/core/widgets/share_bar.dart';
 import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/gap/domain/gap_report.dart';
 import 'package:career_readiness/features/gap/presentation/gap_providers.dart';
@@ -25,7 +26,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
-    final profile = ref.watch(savedProfileProvider);
+    final profile = ref.watch(servedProfileProvider);
     if (profile == null) return const SizedBox.shrink();
     final query = gapQueryFor(profile);
     final projected = profile.plannedCourses.isEmpty
@@ -47,7 +48,7 @@ class DashboardScreen extends ConsumerWidget {
       ),
       body: AsyncView(
         asyncValue: ref.watch(gapReportProvider(query)),
-        onRetry: () => ref.invalidate(gapReportProvider(query)),
+        onRetry: () => retryGap(ref, query),
         data: (report) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -122,10 +123,7 @@ class _ReadinessCard extends StatelessWidget {
             else
               NowAndPlanned(now: report, projected: projected, plannedCount: plannedCount),
             const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: report.readiness.clamp(0.0, 1.0).toDouble(),
-              minHeight: 8,
-            ),
+            ShareBar(report.readiness, minHeight: 8),
           ],
         ),
       ),

@@ -36,7 +36,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final profile = ref.watch(savedProfileProvider);
+    final profile = ref.watch(servedProfileProvider);
     if (profile == null) return const SizedBox.shrink();
     final wanted = _focus ?? widget.career;
     final focus = profile.careers.contains(wanted) ? wanted! : profile.primaryCareer;
@@ -51,7 +51,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen> {
         onRetry: () => ref.invalidate(coursesProvider),
         data: (catalog) => AsyncView(
           asyncValue: ref.watch(gapReportProvider(nowQuery)),
-          onRetry: () => ref.invalidate(gapReportProvider(nowQuery)),
+          onRetry: () => retryGap(ref, nowQuery),
           data: (now) => _Plan(
             profile: profile,
             catalog: catalog,
@@ -133,11 +133,25 @@ class _Plan extends ConsumerWidget {
               course: course,
               closes: gapsClosedBy(course, now),
               planned: planned.contains(course.code),
-              onChanged: () => ref.read(savedProfileProvider.notifier).togglePlanned(course.code),
+              onChanged: () => _toggle(context, ref, course.code),
             ),
         ],
       ],
     );
+  }
+
+  /// Plans a course or takes it off the plan. A failed write has already put
+  /// the plan back; the student is told rather than left guessing.
+  Future<void> _toggle(BuildContext context, WidgetRef ref, String code) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l = AppLocalizations.of(context);
+    try {
+      await ref.read(savedProfileProvider.notifier).togglePlanned(code);
+    } catch (_) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l.submitFailed)));
+    }
   }
 }
 

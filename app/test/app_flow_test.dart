@@ -1,5 +1,6 @@
 import 'package:career_readiness/app.dart';
 import 'package:career_readiness/core/api/api_client.dart';
+import 'package:career_readiness/core/links.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/features/curriculum/data/curriculum_repository.dart';
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
@@ -15,6 +16,7 @@ import 'package:career_readiness/features/gap/domain/gap_query.dart';
 import 'package:career_readiness/features/profile/data/profile_store.dart';
 import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
+import 'package:career_readiness/features/recommendations/presentation/recommendations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +29,10 @@ class _World {
   final gap = FakeGapRepository();
   final recommendations = FakeRecommendationsRepository();
   final curriculum = FakeCurriculumRepository();
+
+  /// Links the app asked the browser to open, and whether the browser obliges.
+  final opened = <String>[];
+  var browserAccepts = true;
 }
 
 Future<void> _pumpApp(WidgetTester tester, _World w) async {
@@ -43,6 +49,10 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
       gapRepositoryProvider.overrideWithValue(w.gap),
       recommendationsRepositoryProvider.overrideWithValue(w.recommendations),
       curriculumRepositoryProvider.overrideWithValue(w.curriculum),
+      linkOpenerProvider.overrideWithValue((url) async {
+        w.opened.add(url);
+        return w.browserAccepts;
+      }),
     ],
     child: const CareerReadinessApp(),
   ));
@@ -936,5 +946,178 @@ void main() {
     expect(find.text('ناقصة: 4'), findsOneWidget);
     expect(find.textContaining('الأقرب'), findsOneWidget);
     expect(find.textContaining('فارق بضع نقاط لا يعني فرقًا حقيقيًا'), findsOneWidget);
+  });
+
+
+  testWidgets('A saved profile naming what the backend has since dropped still opens',
+      (tester) async {
+    // Saved before a catalog, taxonomy and corpus change: Retired, OLD 101,
+    // OLD 202 and SK99 are no longer served, and the backend refuses a request
+    // naming any of them.
+    final w = _World()
+      ..store.profile = const StudentProfile(
+        careers: ['Retired', 'Business Analyst'],
+        completedCourses: ['IS 230', 'OLD 101'],
+        selfReportedSkills: ['SK85', 'SK99'],
+        plannedCourses: ['IS 350', 'OLD 202'],
+      );
+    await _pumpApp(tester, w);
+
+    // The main career is gone, so the next takes its place, as the backend
+    // does for a stored profile. Only what is still served is sent, and the
+    // plan counts the one planned course that still exists.
+    expect(find.text('Readiness for Business Analyst'), findsOneWidget);
+    expect(find.text('if you take your planned course'), findsOneWidget);
+    expect(w.gap.queries.toSet(), {
+      const GapQuery(
+          career: 'Business Analyst', completedCourses: ['IS 230'], selfReportedSkills: ['SK85']),
+      const GapQuery(
+          career: 'Business Analyst',
+          completedCourses: ['IS 230', 'IS 350'],
+          selfReportedSkills: ['SK85']),
+    });
+
+    // With one career still served, there is nothing to compare it with.
+    await tester.tap(find.text('Full readiness'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ReadinessScreen), findsOneWidget);
+    expect(find.text('Your careers side by side'), findsNothing);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    // Editing starts from what is still served, so nothing sits ticked unseen,
+    // and saving writes the profile back without it.
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Edit profile'));
+    await tester.pumpAndSettle();
+    expect(find.text('Completed courses (1 selected)'), findsOneWidget);
+    await tester.tap(button('Next: other skills'));
+    await tester.pumpAndSettle();
+    expect(find.text('Selected: 1'), findsOneWidget);
+    await tester.tap(button('Save changes'));
+    await tester.pumpAndSettle();
+    expect(
+        w.store.profile,
+        const StudentProfile(
+          careers: ['Business Analyst'],
+          completedCourses: ['IS 230'],
+          selfReportedSkills: ['SK85'],
+          plannedCourses: ['IS 350'],
+        ));
+  });
+
+  testWidgets('A profile whose every career left the postings says how to fix it',
+      (tester) async {
+    final w = _World()
+      ..store.profile = const StudentProfile(careers: ['Retired'], completedCourses: ['IS 230']);
+    await _pumpApp(tester, w);
+
+    expect(
+        find.text('A career in your profile is no longer in the job postings. '
+            'Edit your profile to choose another.'),
+        findsOneWidget);
+    expect(w.gap.queries, isEmpty, reason: 'a request the backend would refuse is not sent');
+    expect(find.text('Try again'), findsNothing, reason: 'asking again cannot bring it back');
+  });
+
+  testWidgets('An online course opens in the browser in one tap', (tester) async {
+    final w = _World()
+      ..store.profile =
+          const StudentProfile(careers: ['Business Analyst'], completedCourses: ['IS 230']);
+    await _pumpApp(tester, w);
+    await tester.tap(find.text('Full readiness'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Suggested courses'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Open course'));
+    await tester.pump();
+    expect(w.opened, ['https://example.com/functional-specs']);
+    expect(find.text('The link could not be opened.'), findsNothing);
+
+    // No browser to take it: the student is told, not left tapping.
+    w.browserAccepts = false;
+    await tester.tap(find.text('Open course'));
+    await tester.pump();
+    expect(find.text('The link could not be opened.'), findsOneWidget);
+  });
+
+  testWidgets('Arabic at twice the text size on a phone: every screen lays out',
+      (tester) async {
+    final w = _World();
+    await _pumpApp(tester, w);
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3.0;
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('العربية'));
+    await tester.pumpAndSettle();
+    // At this size most of the form is below the fold.
+    for (final label in [
+      'محلل أعمال',
+      'مطور برمجيات',
+      'Database Management Systems',
+      'Systems Analysis and Design',
+    ]) {
+      await tester.scrollUntilVisible(find.text(label), 200,
+          scrollable: find
+              .descendant(of: find.byType(OnboardingScreen), matching: find.byType(Scrollable))
+              .first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(label));
+      await tester.pumpAndSettle();
+    }
+    // The review sheet, over the course list.
+    await tester.tap(find.text('مراجعة'));
+    await tester.pumpAndSettle();
+    expect(find.text('المقررات المختارة'), findsOneWidget);
+    await tester.tap(find.text('تم'));
+    await tester.pumpAndSettle();
+    await tester.tap(button('التالي: مهارات أخرى'));
+    await tester.pumpAndSettle();
+    await tester.tap(button('اعرض جاهزيتي'));
+    await tester.pumpAndSettle();
+    expect(find.byType(DashboardScreen), findsOneWidget);
+
+    // In the order home lists them: the scroll only moves down.
+    for (final (screen, open) in [
+      (PlanningScreen, 'خطط لمقرراتك'),
+      (ReadinessScreen, 'الجاهزية الكاملة'),
+    ]) {
+      final entry = find.text(open);
+      await tester.scrollUntilVisible(entry, 200,
+          scrollable: find
+              .descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable))
+              .first);
+      await tester.tap(entry);
+      await tester.pumpAndSettle();
+      expect(find.byType(screen), findsOneWidget);
+      // pageBack() looks for an English "Back" tooltip; this one is in Arabic.
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+    }
+
+    // Suggestions, from the full readiness view.
+    await tester.tap(find.text('الجاهزية الكاملة'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('المقررات المقترحة'));
+    await tester.pumpAndSettle();
+    expect(find.byType(RecommendationsScreen), findsOneWidget);
+
+    // Settings, from the readiness view's top bar.
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('الإعدادات'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsOneWidget);
+
+    // And the department's view, in its own tab.
+    await tester.tap(find.text('القسم'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CurriculumScreen), findsOneWidget);
+    // Overflow is reported as an error, which fails the test on its own.
   });
 }
