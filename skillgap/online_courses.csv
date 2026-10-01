@@ -42,7 +42,7 @@ SK85,Coursera,Improving Communication Skills,https://www.coursera.org/learn/whar
 SK34,freeCodeCamp,JavaScript Algorithms and Data Structures Certification,https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/,yes
 SK58,PeopleCert,ITIL 4 Foundation,https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil-4-foundation-2565,no
 SK80,Coursera,Human Resource Management: HR for People Managers Specialization,https://www.coursera.org/specializations/human-resource-management,no
-SK50,,,,
-SK60,,,,
-SK63,,,,
-SK67,,,,
+SK50,Microsoft Learn,Active Directory Domain Services,https://learn.microsoft.com/en-us/training/paths/active-directory-domain-services/,yes
+SK60,Cisco Networking Academy,IT Support Essentials,https://www.netacad.com/courses/it-support-essentials,yes
+SK63,Microsoft Learn,Windows Server update management,https://learn.microsoft.com/en-us/training/modules/windows-server-update-management/,yes
+SK67,Cisco Networking Academy,CyberOps Associate,https://www.netacad.com/courses/cyberops-associate,yes

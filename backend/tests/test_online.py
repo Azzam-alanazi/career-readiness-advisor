@@ -1,9 +1,10 @@
 """Online courses: the fallback for skills no university course teaches."""
 import csv
+import json
 
 import pytest
 
-from backend.engine import build_state
+from backend.engine import Paths, build_state
 from backend.online import (COLUMNS, OnlineCatalog, OnlineCoursesError, gap_skills,
                             load_online_courses, sync)
 from backend.tests.world import COURSES, write_world
@@ -172,3 +173,11 @@ def test_bad_online_courses_refuse_startup_before_the_model_loads(tmp_path, embe
     with pytest.raises(OnlineCoursesError):
         build_state(paths, embedder)
     assert embedder.instances == 0
+
+
+def test_the_shipped_file_loads_with_every_row_filled_in():
+    paths = Paths()
+    ids = {s["id"] for s in json.loads(paths.taxonomy.read_text(encoding="utf-8"))["skills"]}
+    catalog = load_online_courses(paths.online_courses, ids)
+    assert catalog.placeholders == 0
+    assert sum(len(c.skills) for c in catalog.courses) == 47
