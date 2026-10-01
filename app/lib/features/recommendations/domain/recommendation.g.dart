@@ -71,7 +71,6 @@ Map<String, dynamic> _$OnlineRecommendationToJson(
 _RecommendationsReport _$RecommendationsReportFromJson(
   Map<String, dynamic> json,
 ) => _RecommendationsReport(
-  profileId: json['profile_id'] as String?,
   career: json['career'] as String,
   recommendations: (json['recommendations'] as List<dynamic>)
       .map((e) => Recommendation.fromJson(e as Map<String, dynamic>))
@@ -87,7 +86,6 @@ _RecommendationsReport _$RecommendationsReportFromJson(
 Map<String, dynamic> _$RecommendationsReportToJson(
   _RecommendationsReport instance,
 ) => <String, dynamic>{
-  'profile_id': instance.profileId,
   'career': instance.career,
   'recommendations': instance.recommendations.map((e) => e.toJson()).toList(),
   'uncovered': instance.uncovered.map((e) => e.toJson()).toList(),

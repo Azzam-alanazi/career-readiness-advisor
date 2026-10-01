@@ -16,15 +16,14 @@ def world(tmp_path):
 
 
 @pytest.fixture
-def make_client(world, embedder, tmp_path):
+def make_client(world, embedder):
     from fastapi.testclient import TestClient
 
     from backend.engine import build_state
     from backend.main import create_app
 
-    def _make(paths=None, db=None):
-        app = create_app(state_factory=lambda: build_state(paths or world, embedder),
-                         db_path=db or tmp_path / "profiles.sqlite3")
+    def _make(paths=None):
+        app = create_app(state_factory=lambda: build_state(paths or world, embedder))
         return TestClient(app)
 
     return _make

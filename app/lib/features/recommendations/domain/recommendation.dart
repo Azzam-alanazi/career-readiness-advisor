@@ -60,8 +60,6 @@ abstract class RecommendationsReport with _$RecommendationsReport {
   const RecommendationsReport._();
 
   const factory RecommendationsReport({
-    /// Null when the profile travelled with the request, as the app sends it.
-    String? profileId,
     required String career,
 
     /// University courses first, then online ones, each ranked by value.

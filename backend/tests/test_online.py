@@ -17,10 +17,10 @@ SPEAKING = ("CM", "Example Academy", "Speaking with confidence",
 SQL_ONLINE = ("SQ", "Example Academy", "SQL basics", "https://example.com/sql", "no")
 
 
-def create(client, career, courses) -> str:
-    r = client.post("/profiles", json={"career": career, "completed_courses": courses})
-    assert r.status_code == 201, r.text
-    return r.json()["id"]
+def recommendations(client, career, **params) -> dict:
+    r = client.post("/recommendations", params=params, json={"career": career})
+    assert r.status_code == 200, r.text
+    return r.json()
 
 
 def csv_file(tmp_path, *rows):
@@ -37,7 +37,7 @@ def csv_file(tmp_path, *rows):
 def test_online_courses_only_for_skills_no_university_course_teaches(make_client, tmp_path):
     paths = write_world(tmp_path / "w", courses=NO_BUS210, online=[SPEAKING, SQL_ONLINE])
     with make_client(paths=paths) as c:
-        body = c.get(f"/profiles/{create(c, 'Analyst', [])}/recommendations").json()
+        body = recommendations(c, "Analyst")
     recs = body["recommendations"]
     # SQL is taught by IS230, so its online course is never offered.
     # Communication is taught by nothing in the catalog, so it gets one.
@@ -53,7 +53,7 @@ def test_online_courses_only_for_skills_no_university_course_teaches(make_client
 def test_a_gap_neither_source_covers_is_listed_not_dropped(make_client, tmp_path):
     paths = write_world(tmp_path / "w", courses=NO_BUS210)
     with make_client(paths=paths) as c:
-        body = c.get(f"/profiles/{create(c, 'Analyst', [])}/recommendations").json()
+        body = recommendations(c, "Analyst")
     assert [r["code"] for r in body["recommendations"]] == ["IS230"]
     assert [(s["id"], s["demand_percent"]) for s in body["uncovered"]] == [("CM", 50)]
 
@@ -62,9 +62,8 @@ def test_limit_caps_each_list_on_its_own(make_client, tmp_path):
     second = ("CM", "Example Academy", "Presenting data", "https://example.com/present", "no")
     paths = write_world(tmp_path / "w", courses=NO_BUS210, online=[SPEAKING, second])
     with make_client(paths=paths) as c:
-        pid = create(c, "Analyst", [])
-        everything = c.get(f"/profiles/{pid}/recommendations").json()["recommendations"]
-        capped = c.get(f"/profiles/{pid}/recommendations?limit=1").json()["recommendations"]
+        everything = recommendations(c, "Analyst")["recommendations"]
+        capped = recommendations(c, "Analyst", limit=1)["recommendations"]
     assert [r["source"] for r in everything] == ["university", "online", "online"]
     assert [r["source"] for r in capped] == ["university", "online"]
 

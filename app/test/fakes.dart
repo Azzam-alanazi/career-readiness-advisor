@@ -121,7 +121,6 @@ const _communication = <String, dynamic>{
 // One skill from a course, one self-reported, so both halves of the readiness
 // screen have something to show.
 const gapJson = <String, dynamic>{
-  'profile_id': 'p1',
   'career': 'Business Analyst',
   'readiness': 0.0968,
   'readiness_percent': 10,
@@ -197,7 +196,6 @@ const _javascript = <String, dynamic>{
 // the furthest along (35% against 10% and 20%), so a comparison has a closest
 // career to mark, and every count differs: 2, 3 and 1 covered; 3, 2 and 4 missing.
 const gapDeveloperJson = <String, dynamic>{
-  'profile_id': 'p1',
   'career': 'Software Developer',
   'readiness': 0.35,
   'readiness_percent': 35,
@@ -222,7 +220,6 @@ const gapDeveloperJson = <String, dynamic>{
 };
 
 const gapDataJson = <String, dynamic>{
-  'profile_id': 'p1',
   'career': 'Data Analyst',
   'readiness': 0.2,
   'readiness_percent': 20,
@@ -248,7 +245,6 @@ const gapDataJson = <String, dynamic>{
 // course for one it does not, and a skill with neither. The online course is a
 // placeholder, not a real listing.
 const recsJson = <String, dynamic>{
-  'profile_id': 'p1',
   'career': 'Business Analyst',
   'recommendations': [
     {

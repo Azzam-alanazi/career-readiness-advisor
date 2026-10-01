@@ -131,9 +131,4 @@ void main() {
     // Compared by value, so one provider serves each profile content.
     expect(gapQueryFor(profile), gapQueryFor(profile.copyWith(completedCourses: ['IS 230', 'IS 240'])));
   });
-
-  test('a report read from a profile sent with the request has no profile id', () {
-    expect(GapReport.fromJson({...gapJson, 'profile_id': null}).profileId, isNull);
-    expect(RecommendationsReport.fromJson({...recsJson, 'profile_id': null}).profileId, isNull);
-  });
 }

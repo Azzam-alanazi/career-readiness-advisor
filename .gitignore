@@ -37,8 +37,9 @@ desktop.ini
 .idea/
 .vscode/
 
-# Backend runtime state. Both regenerate: the engine cache from the committed
-# inputs it is keyed on, the profile database through use.
+# Backend runtime state: the engine cache, regenerated from the committed
+# inputs it is keyed on. backend/data/ held the old server-side profile
+# database; it stays ignored so a leftover copy is never committed.
 backend/.cache/
 backend/data/
 .pytest_cache/

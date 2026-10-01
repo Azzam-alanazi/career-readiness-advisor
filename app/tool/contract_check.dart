@@ -90,7 +90,6 @@ Future<void> main(List<String> args) async {
     const demo = GapQuery(career: 'Business Analyst', completedCourses: sixCourses);
     final gap = await gapFor(demo);
     print('\nreadiness');
-    check(gap.profileId == null, 'read from the profile in the request: nothing stored, no profile id');
     check(true, 'readiness ${gap.readinessPercent}% '
         '(${gap.covered.length} covered, ${gap.missing.length} missing)');
     check(gap.readinessPercent == (gap.readiness * 100).round(),
@@ -136,22 +135,6 @@ Future<void> main(List<String> args) async {
     check(online.every((r) => r.url.startsWith('http')),
         '${online.length} online courses, each with a web address');
     check(!recs.validation.gatePassed, 'quality flag present on suggestions too');
-
-    // The stored-profile endpoints, kept for scripted use, must read the same.
-    print('\nstored profiles');
-    final stored = await post('/profiles', {
-      'career': demo.career,
-      'completed_courses': demo.completedCourses,
-    }) as Map<String, dynamic>;
-    final storedGap = GapReport.fromJson(
-        await get('/profiles/${stored['id']}/gap') as Map<String, dynamic>);
-    final storedRecs = RecommendationsReport.fromJson(
-        await get('/profiles/${stored['id']}/recommendations') as Map<String, dynamic>);
-    check(
-        storedGap.readiness == gap.readiness &&
-            storedGap.missing.map((s) => s.id).join(',') == gap.missing.map((s) => s.id).join(',') &&
-            storedRecs.recommendations.length == recs.recommendations.length,
-        '/profiles/{id} reads exactly as the stateless endpoints do');
 
     // What-if planning: the demo's six courses with three more planned. The
     // projection is the same reading with the plan counted as taken, and what

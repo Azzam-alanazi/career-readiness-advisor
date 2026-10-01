@@ -11,21 +11,16 @@ travels with the data it qualifies, so the app can show it beside the numbers
 instead of leaving it in a changelog.
 
 The app keeps the student's profile on the device and sends it with each
-request to POST /gap and POST /recommendations, which store nothing. The
-stored-profile endpoints under /profiles remain for scripted use.
+request to POST /gap and POST /recommendations, which store nothing.
 """
 import math
 from contextlib import asynccontextmanager
-from pathlib import Path
 from typing import Callable
 
 from fastapi import FastAPI, HTTPException, Query, Request
 
 from . import schemas as S
-from .engine import MIN_DEMAND, REPO, EngineState, build_state
-from .store import ProfileStore
-
-DEFAULT_DB = REPO / "backend" / "data" / "profiles.sqlite3"
+from .engine import MIN_DEMAND, EngineState, build_state
 
 
 def percent(share: float) -> int:
@@ -42,8 +37,7 @@ def percent(share: float) -> int:
     return math.floor(round(share * 100, 9) + 0.5)
 
 
-def create_app(state_factory: Callable[[], EngineState] = build_state,
-               db_path: Path = DEFAULT_DB) -> FastAPI:
+def create_app(state_factory: Callable[[], EngineState] = build_state) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -52,17 +46,13 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         # better no service than one applying parameters measured against
         # another taxonomy, or quietly skipping courses it could not read.
         app.state.engine = state_factory()
-        app.state.store = ProfileStore(db_path)
         yield
 
-    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.5.0",
+    app = FastAPI(title="Career-Readiness Skill-Gap API", version="0.6.0",
                   lifespan=lifespan)
 
     def engine(request: Request) -> EngineState:
         return request.app.state.engine
-
-    def store(request: Request) -> ProfileStore:
-        return request.app.state.store
 
     def validation(eng: EngineState) -> S.ValidationInfo:
         v = eng.validation()
@@ -102,12 +92,12 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
                                              "unknown": unknown})
         return codes, reported
 
-    def gap_out(eng: EngineState, career: str, courses: list[str], reported: list[str],
-                profile_id: str | None = None) -> S.GapOut:
+    def gap_out(eng: EngineState, career: str, courses: list[str],
+                reported: list[str]) -> S.GapOut:
         g = eng.gap_by_source(career, courses, reported)
         covered = [(s, w, g.source(s)) for s, w in g.combined.covered]
         return S.GapOut(
-            profile_id=profile_id, career=career,
+            career=career,
             readiness=round(g.combined.readiness, 4),
             readiness_percent=percent(g.combined.readiness),
             readiness_from_courses=round(g.from_courses.readiness, 4),
@@ -122,8 +112,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
             validation=validation(eng))
 
     def recommendations_out(eng: EngineState, career: str, courses: list[str],
-                            reported: list[str], limit: int | None,
-                            profile_id: str | None = None) -> S.RecommendationsOut:
+                            reported: list[str], limit: int | None) -> S.RecommendationsOut:
         # Skills the student reports having are not gaps, so nothing is
         # suggested for them.
         g = eng.gap(career, courses, reported)
@@ -144,48 +133,10 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
                                    is_free=o.is_free, closes=refs(closes),
                                    value=round(value, 4))
             for o, closes, value in found.online]
-        return S.RecommendationsOut(profile_id=profile_id, career=career,
-                                    recommendations=recs,
+        return S.RecommendationsOut(career=career, recommendations=recs,
                                     uncovered=refs(found.uncovered),
                                     validation=validation(eng))
 
-    def load_profile(request: Request, profile_id: str) -> tuple[EngineState, dict]:
-        prof = store(request).get(profile_id)
-        if prof is None:
-            raise HTTPException(404, detail=f"no profile {profile_id!r}")
-        eng = engine(request)
-        # A career, course or skill dropped from the corpus, catalog or taxonomy
-        # after the profile was saved simply stops counting; it is not an error
-        # the student can fix. When the first career goes, the next one still
-        # served takes its place. Only a profile left with no career at all
-        # cannot be read.
-        careers = [c for c in (prof["career"], *prof["other_careers"])
-                   if c in eng.profiles]
-        if not careers:
-            raise HTTPException(409, detail=(f"career {prof['career']!r} is no "
-                                             f"longer in the posting corpus"))
-        prof["career"], prof["other_careers"] = careers[0], careers[1:]
-        prof["completed_courses"] = [c for c in prof["completed_courses"]
-                                     if c in eng.courses]
-        prof["self_reported_skills"] = [s for s in prof["self_reported_skills"]
-                                        if s in eng.skills]
-        return eng, prof
-
-    def profile_out(prof: dict) -> S.ProfileOut:
-        return S.ProfileOut(**prof, careers=[prof["career"], *prof["other_careers"]])
-
-    def target_career(prof: dict, career: str | None) -> str:
-        """The career to read a profile against: its first, or another it names."""
-        if career is None:
-            return prof["career"]
-        careers = [prof["career"], *prof["other_careers"]]
-        if career not in careers:
-            raise HTTPException(422, detail={"error": "career not in this profile",
-                                             "career": career, "careers": careers})
-        return career
-
-    career_query = Query(None, description="One of the profile's careers; its first "
-                                           "when omitted")
     limit_query = Query(None, ge=1, le=50,
                         description="Cap on each list, university and online; all when "
                                     "omitted")
@@ -217,7 +168,7 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
     def skills(request: Request) -> list[S.SkillOut]:
         return [S.SkillOut(id=sid, **meta) for sid, meta in engine(request).skills.items()]
 
-    # ---- a profile sent with the request: what the app uses --------------------
+    # ---- the student's profile, sent with each request --------------------------
 
     @app.post("/gap", response_model=S.GapOut)
     def gap_for(body: S.StudentIn, request: Request) -> S.GapOut:
@@ -235,46 +186,6 @@ def create_app(state_factory: Callable[[], EngineState] = build_state,
         codes, reported = checked(eng, body.career, body.completed_courses,
                                   body.self_reported_skills)
         return recommendations_out(eng, body.career, codes, reported, limit)
-
-    # ---- stored profiles: kept for scripted use --------------------------------
-
-    @app.post("/profiles", response_model=S.ProfileOut, status_code=201)
-    def create_profile(body: S.ProfileIn, request: Request) -> S.ProfileOut:
-        eng = engine(request)
-        codes, reported = checked(eng, body.career, body.completed_courses,
-                                  body.self_reported_skills)
-        others = [c for c in dict.fromkeys(body.other_careers) if c != body.career]
-        unknown = [c for c in others if c not in eng.profiles]
-        if unknown:
-            raise HTTPException(422, detail={"error": "unknown careers",
-                                             "unknown": unknown,
-                                             "known": [c for c, _ in eng.careers()]})
-        return profile_out(store(request).create(body.career, body.major, codes,
-                                                 reported, others))
-
-    @app.get("/profiles/{profile_id}", response_model=S.ProfileOut)
-    def get_profile(profile_id: str, request: Request) -> S.ProfileOut:
-        prof = store(request).get(profile_id)
-        if prof is None:
-            raise HTTPException(404, detail=f"no profile {profile_id!r}")
-        return profile_out(prof)
-
-    @app.get("/profiles/{profile_id}/gap", response_model=S.GapOut)
-    def gap(profile_id: str, request: Request,
-            career: str | None = career_query) -> S.GapOut:
-        eng, prof = load_profile(request, profile_id)
-        return gap_out(eng, target_career(prof, career), prof["completed_courses"],
-                       prof["self_reported_skills"], profile_id)
-
-    @app.get("/profiles/{profile_id}/recommendations",
-             response_model=S.RecommendationsOut)
-    def recommendations(profile_id: str, request: Request,
-                        career: str | None = career_query,
-                        limit: int | None = limit_query) -> S.RecommendationsOut:
-        eng, prof = load_profile(request, profile_id)
-        return recommendations_out(eng, target_career(prof, career),
-                                   prof["completed_courses"], prof["self_reported_skills"],
-                                   limit, profile_id)
 
     # ---- the department's view --------------------------------------------------
 

@@ -55,18 +55,13 @@ cache and never load the model. Interactive docs: http://127.0.0.1:8000/docs
 | GET | `/careers` | careers with their posting counts |
 | GET | `/courses` | catalog: code, official title, the skill ids it teaches and how many, whether they come from hand labels or extraction, and the catalog `track` (college, core, an elective track) for grouping on screen |
 | GET | `/skills` | the taxonomy, in its order: id, English and Arabic names, category. These are the skills a student can self-report |
-| POST | `/gap` | the gap for a profile sent in the body — `career`, `completed_courses`, `self_reported_skills` — in the same shape as `/profiles/{id}/gap`, with `profile_id` null. Stores nothing. This is what the app calls |
-| POST | `/recommendations` | suggestions for a profile sent in the body, in the same shape as `/profiles/{id}/recommendations`. Stores nothing. Optional `limit` |
-| POST | `/profiles` | kept for scripted use, not called by the app: create a stored student profile: `career`, `completed_courses` (codes), optional `major`, optional `self_reported_skills` (taxonomy ids), optional `other_careers` (up to two more, to compare side by side). The response lists all of them as `careers`, first first |
-| GET | `/profiles/{id}` | the stored profile |
-| GET | `/profiles/{id}/gap` | for `career`, one of the profile's (its first when omitted): readiness % from all acquired skills and `readiness_from_courses` from the courses alone; covered skills, each with its `source`, also split into `covered_from_courses` and `covered_self_reported`; missing skills ranked by demand |
-| GET | `/profiles/{id}/recommendations` | for every missing skill, a university course if the catalog teaches it, otherwise an online course, each marked by `source`; skills with neither listed as `uncovered`. Optional `career` as for the gap; optional `limit` caps each list |
+| POST | `/gap` | for a profile sent in the body — `career`, `completed_courses` (codes), `self_reported_skills` (taxonomy ids): readiness % from all acquired skills and `readiness_from_courses` from the courses alone; covered skills, each with its `source`, also split into `covered_from_courses` and `covered_self_reported`; missing skills ranked by demand. Stores nothing |
+| POST | `/recommendations` | for the same body: for every missing skill, a university course if the catalog teaches it, otherwise an online course, each marked by `source`; skills with neither listed as `uncovered`. Optional `limit` caps each list. Stores nothing |
 | GET | `/curriculum/gap` | the department's view, for one `career` or all when omitted: demanded skills no course teaches, ranked by their share of postings, with the careers asking; taught skills no posting names, with their courses; skills named by too few postings to count (`below_threshold`), with their courses; coverage (taught / demanded) for the scope and for every career, with the postings a skill needs there (`min_postings`); `sample_note` on how few postings this rests on |
 
 Unknown careers, course codes and skill ids are rejected with a 422 naming the
-offending value, and so is a `career` the profile does not name. A request may
-carry at most 200 course codes and 200 skill ids, and no id, `career` or `major`
-longer than 200 characters. Skill entries carry both `en` and `ar`. Course names are English only,
+offending value. A request may carry at most 200 course codes and 200 skill ids,
+and no id or `career` longer than 200 characters. Skill entries carry both `en` and `ar`. Course names are English only,
 because the catalog is.
 
 ## Design decisions
@@ -97,21 +92,15 @@ because the catalog is.
   `courses` or `self_reported`, and a course outranks a claim for the same skill.
   `readiness_from_courses` keeps the academic-record figure visible beside the
   combined one. Self-reported skills are unverified, so they reach nothing else:
-  no mapping, validation figure or cache key. A stored skill that later leaves
-  the taxonomy is ignored rather than failing the profile.
+  no mapping, validation figure or cache key.
 - **The student's profile lives on the device.** The app keeps it locally and
   sends it with each request to `POST /gap` and `POST /recommendations`, which
-  validate it exactly as `POST /profiles` does, compute the same figures, and
-  store nothing. No student data accumulates on the server, and there is no
-  account. The `/profiles` endpoints remain for scripted clients.
-- **Several careers, one record.** A profile names up to three careers: `career`
-  and up to two `other_careers`. The gap and suggestions for any of them come
-  from the same courses and self-reported skills, computed exactly as for a
-  profile targeting that career alone. Nothing new is computed to compare them:
-  the client asks for each career's gap. A stored career that later leaves the
-  posting corpus is dropped, as a dropped course is; when it was the first, the
-  next one still served takes its place. Only a profile left with no career is
-  refused (409).
+  validate it, compute the figures, and store nothing. No student data
+  accumulates on the server, and there is no account.
+- **Several careers, one record.** Comparing careers needs nothing new from the
+  service: the app asks for each career's gap with the same courses and
+  self-reported skills, so each reads exactly as a profile targeting that career
+  alone.
 - **The curriculum view reuses the student view's numbers.** It reads the served
   course mapping (the hand labels) and the career profiles, nothing new. A skill
   is demanded exactly when a student's gap would count it, at the engine's
@@ -121,10 +110,6 @@ because the catalog is.
   it: 82 postings, 10 or 11 per career, is too few for these gaps to drive a
   curriculum decision on
   their own.
-- **SQLite with a TRUNCATE journal.** The repo sits in OneDrive, which can refuse
-  the journal deletes SQLite's default mode relies on. A profiles table from
-  before self-reported skills or compared careers gains those columns in place
-  on the next start.
 - **Engine defaults pass through untouched.** `analyze_gap`'s `min_demand=0.15`
   has never been validated. The API uses it as-is rather than burying a second
   unvalidated number in the service layer. It is a share of a career's postings,
@@ -138,28 +123,24 @@ because the catalog is.
 python -m pytest
 ```
 
-110 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
+95 tests, offline, a few seconds. A stand-in bag-of-words embedder replaces
 the 1 GB model, over a four-skill fixture world small enough that every expected
 value can be checked by hand.
 
 Covered: the failed gate reaching every response; demand-weighted readiness and
-ranking; bilingual names; rejection of unknown careers, courses and profiles;
-profiles surviving a restart; the model loading once and never per request; a
+ranking; bilingual names; rejection of unknown careers, courses and skills; the
+model loading once and never per request; a
 warm restart skipping the model entirely; cache invalidation on a config change;
 startup refusing a stale config or a bad online-courses file before any model
 work; hand labels overriding extraction, and relabelling without a rebuild;
 online courses offered only where no university course teaches the skill;
-self-reported skills stored deduplicated, validated, counted in readiness but
-reported apart, with a course outranking a claim for the same skill; an old
-profiles table migrated in place; the stateless endpoints reading exactly as a
-stored profile does and storing nothing; up to three careers per profile, each read
-exactly as a profile targeting it alone, and a career the profile does not name
-refused; the curriculum view reading the labels, pooling
+self-reported skills deduplicated, validated, counted in readiness but reported
+apart, with a course outranking a claim for the same skill; the shipped
+online-courses file loading with every row filled in; the curriculum view reading the labels, pooling
 postings across careers, ranking by demand, and agreeing with what a student
 with every course still misses, and listing the skills too few postings name
 rather than dropping them; percentages rounding a half up even when float
-arithmetic leaves it a hair short; request size caps; a stored profile whose
-first career left the corpus read against the next; `sync` on an empty
+arithmetic leaves it a hair short; request size caps; `sync` on an empty
 online-courses file writing the header the loader needs; an empty posting corpus
 answered, not a server error; and the reports below.
 

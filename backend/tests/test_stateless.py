@@ -1,41 +1,22 @@
-"""The app keeps the profile on the device; these endpoints read it and store nothing."""
-import sqlite3
+"""The app keeps the profile on the device and sends it with each request."""
 
 
-def stored_rows(tmp_path) -> int:
-    con = sqlite3.connect(tmp_path / "profiles.sqlite3")
-    try:
-        return con.execute("SELECT COUNT(*) FROM profiles").fetchone()[0]
-    finally:
-        con.close()
-
-
-def test_a_gap_for_a_profile_sent_with_the_request_matches_a_stored_one(client):
+def test_a_gap_for_a_profile_sent_with_the_request(client):
     body = {"career": "Analyst", "completed_courses": ["IS230"], "self_reported_skills": ["CM"]}
-    stateless = client.post("/gap", json=body)
-    assert stateless.status_code == 200, stateless.text
-    stored = client.post("/profiles", json=body).json()
-    via_store = client.get(f"/profiles/{stored['id']}/gap").json()
-    got = stateless.json()
-    assert got["profile_id"] is None and via_store["profile_id"] == stored["id"]
-    for key in ("career", "readiness", "readiness_from_courses", "covered",
-                "covered_from_courses", "covered_self_reported", "missing", "validation"):
-        assert got[key] == via_store[key]
+    r = client.post("/gap", json=body)
+    assert r.status_code == 200, r.text
+    got = r.json()
+    assert (got["career"], got["readiness_percent"], got["readiness_from_courses_percent"]) == (
+        "Analyst", 100, 67)
+    assert "profile_id" not in got
 
 
 def test_suggestions_for_a_profile_sent_with_the_request(client):
     # Analyst, no courses, communication reported: only SQL is missing.
     recs = client.post("/recommendations",
                        json={"career": "Analyst", "self_reported_skills": ["CM"]}).json()
-    assert (recs["profile_id"], recs["career"]) == (None, "Analyst")
+    assert recs["career"] == "Analyst" and "profile_id" not in recs
     assert [r["code"] for r in recs["recommendations"]] == ["IS230"]
-
-
-def test_nothing_is_stored(client, tmp_path):
-    assert client.post("/gap", json={"career": "Analyst",
-                                     "completed_courses": ["IS230"]}).status_code == 200
-    assert client.post("/recommendations", json={"career": "Developer"}).status_code == 200
-    assert stored_rows(tmp_path) == 0
 
 
 def test_unknown_values_are_refused_by_name(client):
@@ -73,8 +54,6 @@ def test_a_request_cannot_carry_an_unbounded_list(client):
     for path in ("/gap", "/recommendations"):
         for field in ("completed_courses", "self_reported_skills"):
             assert client.post(path, json={"career": "Analyst", field: many}).status_code == 422
-    r = client.post("/profiles", json={"career": "Analyst", "major": "x" * 10_000})
-    assert r.status_code == 422
 
 
 def test_a_request_cannot_carry_an_unbounded_id(client):
@@ -85,8 +64,6 @@ def test_a_request_cannot_carry_an_unbounded_id(client):
                  {"career": "Analyst", "completed_courses": [long]},
                  {"career": "Analyst", "self_reported_skills": [long]}):
         assert client.post("/gap", json=body).status_code == 422
-    r = client.post("/profiles", json={"career": "Analyst", "other_careers": [long]})
-    assert r.status_code == 422
 
 
 def test_a_repeated_course_counts_once(client):

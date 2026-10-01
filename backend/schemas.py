@@ -65,28 +65,6 @@ class StudentIn(BaseModel):
                     "coursework: self-study, certifications, work experience. Unverified.")
 
 
-class ProfileIn(StudentIn):
-    """A profile to store, for scripted use: a StudentIn, and more to compare."""
-    other_careers: list[Id] = Field(
-        default_factory=list, max_length=2,
-        description="Up to two more target careers from GET /careers, to compare with "
-                    "`career` side by side. Repeats, and `career` itself, are dropped")
-    major: str | None = Field(None, max_length=MAX_TEXT)
-
-
-class ProfileOut(BaseModel):
-    id: str
-    career: str
-    major: str | None
-    completed_courses: list[str]
-    self_reported_skills: list[str]
-    other_careers: list[str]
-    careers: list[str] = Field(
-        description="`career` first, then `other_careers`: every career the profile's "
-                    "gap and suggestions can be read against")
-    created_at: str
-
-
 class SkillEntry(BaseModel):
     id: str
     en: str
@@ -104,9 +82,6 @@ class CoveredSkill(SkillEntry):
 
 
 class GapOut(BaseModel):
-    profile_id: str | None = Field(
-        None, description="The stored profile read; null when the profile came with the "
-                          "request (POST /gap), which stores nothing")
     career: str
     readiness: float = Field(
         description="Demand-weighted share of required skills held, from courses and "
@@ -161,9 +136,6 @@ Recommendation = Annotated[UniversityRecommendation | OnlineRecommendation,
 
 
 class RecommendationsOut(BaseModel):
-    profile_id: str | None = Field(
-        None, description="The stored profile read; null when the profile came with the "
-                          "request (POST /recommendations), which stores nothing")
     career: str
     recommendations: list[Recommendation] = Field(description=(
         "University courses first, then online courses, each ranked by the demand "

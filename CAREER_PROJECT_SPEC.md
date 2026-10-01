@@ -377,8 +377,9 @@ and there is no account, which is consistent with the non-goal of integrating
 university student records. To keep it that way, the app no longer creates a
 server-side profile. It sends the profile with each request to `POST /gap` and
 `POST /recommendations`, which compute the figures and store nothing. The
-stored-profile endpoints under `/profiles` stay in the API for scripted use; the
-app does not call them. Accounts, and sync across devices, are future work.
+stored-profile endpoints under `/profiles` were kept for scripted use at first,
+then removed on 2026-10-01 along with the server's profile database. Accounts,
+and sync across devices, are future work.
 Checking this found a small rounding bug. The API's percentages rounded halves
 to even, so 12.5% read 12 while the app showed 13%. Halves now round up in both.
 
@@ -510,8 +511,8 @@ its gate. Verified by 80 backend tests, 33 app tests, and the contract check
 against the live backend.
 
 ## Conventions
-- Feature-first: `lib/features/{onboarding,profile,gap,recommendations,curriculum}/`
-- Each feature: `data/`, `domain/`, `presentation/`
+- Feature-first: `lib/features/{onboarding,profile,home,gap,planning,recommendations,curriculum,settings}/`
+- Each feature: `data/`, `domain/`, `presentation/`, only the layers it needs (`home/` and `settings/` are presentation only; `planning/` has no `data/`, as it reuses the gap call)
 - Models via `freezed` + `json_serializable`
 - No business logic in widgets
 - Backend: type hints throughout, `pytest` for the engine

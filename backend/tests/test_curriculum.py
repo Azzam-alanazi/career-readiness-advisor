@@ -83,8 +83,8 @@ def test_every_careers_coverage_comes_with_any_scope(dept):
 def test_a_careers_gaps_are_what_a_student_with_every_course_still_misses(dept):
     every = [code for code, *_ in LABELLED]
     for career in ("Analyst", "Developer"):
-        prof = dept.post("/profiles", json={"career": career, "completed_courses": every}).json()
-        missing = {s["id"] for s in dept.get(f"/profiles/{prof['id']}/gap").json()["missing"]}
+        gap = dept.post("/gap", json={"career": career, "completed_courses": every}).json()
+        missing = {s["id"] for s in gap["missing"]}
         assert missing == {s["id"] for s in view(dept, career)["uncovered"]}
 
 

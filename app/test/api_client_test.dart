@@ -24,10 +24,10 @@ void main() {
   test('a non-2xx response becomes an ApiException carrying the status', () {
     final api = ApiClient(
       baseUrl: 'http://backend',
-      client: MockClient((_) async => http.Response('{"detail": "no profile"}', 404)),
+      client: MockClient((_) async => http.Response('{"detail": "Not Found"}', 404)),
     );
     expect(
-      () => api.get('/profiles/nope/gap'),
+      () => api.get('/nope'),
       throwsA(isA<ApiException>()
           .having((e) => e.statusCode, 'statusCode', 404)
           .having((e) => e.unreachable, 'unreachable', isFalse)),
@@ -51,12 +51,12 @@ void main() {
       baseUrl: 'http://backend',
       client: MockClient((request) async {
         sent = request;
-        return http.Response('{"id": "p1"}', 201);
+        return http.Response('{"career": "Business Analyst"}', 200);
       }),
     );
-    await api.post('/profiles', {'career': 'Business Analyst'});
+    await api.post('/gap', {'career': 'Business Analyst'});
     expect(sent.method, 'POST');
-    expect(sent.url.toString(), 'http://backend/profiles');
+    expect(sent.url.toString(), 'http://backend/gap');
     expect(sent.headers['Content-Type'], startsWith('application/json'));
     expect(jsonDecode(sent.body), {'career': 'Business Analyst'});
   });

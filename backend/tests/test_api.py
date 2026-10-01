@@ -7,12 +7,15 @@ from backend.engine import build_state, sg
 from backend.tests.world import make_config, write_world
 
 
-def create(client, career, courses, major=None) -> str:
-    r = client.post("/profiles", json={"career": career,
-                                       "completed_courses": courses,
-                                       "major": major})
-    assert r.status_code == 201, r.text
-    return r.json()["id"]
+def gap(client, career, courses) -> dict:
+    r = client.post("/gap", json={"career": career, "completed_courses": courses})
+    assert r.status_code == 200, r.text
+    return r.json()
+
+
+def recommendations(client, career, courses, **params):
+    return client.post("/recommendations", params=params,
+                       json={"career": career, "completed_courses": courses})
 
 
 # ---- the failed gate travels with the data ---------------------------------
@@ -30,9 +33,9 @@ def test_health_carries_the_failed_gate(client):
 
 
 def test_every_readiness_figure_is_qualified(client):
-    pid = create(client, "Analyst", ["IS230"])
-    assert client.get(f"/profiles/{pid}/gap").json()["validation"]["gate_passed"] is False
-    assert client.get(f"/profiles/{pid}/recommendations").json()["validation"]["gate_passed"] is False
+    assert gap(client, "Analyst", ["IS230"])["validation"]["gate_passed"] is False
+    recs = recommendations(client, "Analyst", ["IS230"]).json()
+    assert recs["validation"]["gate_passed"] is False
 
 
 # ---- catalogue ---------------------------------------------------------------
@@ -51,41 +54,25 @@ def test_courses_parse_titles_and_map_skills(client):
     assert all(c["skill_count"] == 1 for c in got.values())
 
 
-# ---- profiles ------------------------------------------------------------------
-
-def test_profile_round_trip(client):
-    pid = create(client, "Analyst", ["IS230", "IS230"], major="Information Systems")
-    body = client.get(f"/profiles/{pid}").json()
-    assert body["career"] == "Analyst"
-    assert body["major"] == "Information Systems"
-    assert body["completed_courses"] == ["IS230"]        # deduplicated
-
+# ---- the profile sent with a request ---------------------------------------------
 
 def test_unknown_career_is_rejected(client):
-    r = client.post("/profiles", json={"career": "Astronaut", "completed_courses": []})
+    r = client.post("/gap", json={"career": "Astronaut", "completed_courses": []})
     assert r.status_code == 422
     assert r.json()["detail"]["known"] == ["Analyst", "Developer"]
 
 
 def test_unknown_course_is_named(client):
-    r = client.post("/profiles", json={"career": "Analyst",
-                                       "completed_courses": ["IS230", "XX999"]})
+    r = client.post("/gap", json={"career": "Analyst",
+                                  "completed_courses": ["IS230", "XX999"]})
     assert r.status_code == 422
     assert r.json()["detail"]["unknown"] == ["XX999"]
 
 
-def test_unknown_profile_is_404(client):
-    assert client.get("/profiles/nope").status_code == 404
-    assert client.get("/profiles/nope/gap").status_code == 404
-    assert client.get("/profiles/nope/recommendations").status_code == 404
-
-
-def test_profiles_survive_restart(make_client, tmp_path):
-    db = tmp_path / "shared.sqlite3"
-    with make_client(db=db) as c:
-        pid = create(c, "Analyst", ["IS230"])
-    with make_client(db=db) as c:
-        assert c.get(f"/profiles/{pid}").json()["completed_courses"] == ["IS230"]
+def test_the_service_stores_no_profiles(client):
+    # The profile lives on the device and comes with each request.
+    assert client.post("/profiles", json={"career": "Analyst"}).status_code in (404, 405)
+    assert client.get("/profiles/x/gap").status_code == 404
 
 
 # ---- gap analysis ----------------------------------------------------------------
@@ -93,8 +80,7 @@ def test_profiles_survive_restart(make_client, tmp_path):
 def test_readiness_is_demand_weighted(client):
     # Analyst: SQL in 2/2 postings, communication in 1/2. IS230 teaches SQL only,
     # so readiness is 1.0 / (1.0 + 0.5) -- not 1 skill of 2.
-    pid = create(client, "Analyst", ["IS230"])
-    g = client.get(f"/profiles/{pid}/gap").json()
+    g = gap(client, "Analyst", ["IS230"])
     assert g["readiness"] == pytest.approx(2 / 3, abs=1e-4)
     assert g["readiness_percent"] == 67
     assert [s["id"] for s in g["covered"]] == ["SQ"]
@@ -102,24 +88,21 @@ def test_readiness_is_demand_weighted(client):
 
 
 def test_missing_skills_ranked_by_demand(client):
-    pid = create(client, "Developer", [])
-    g = client.get(f"/profiles/{pid}/gap").json()
+    g = gap(client, "Developer", [])
     assert g["readiness"] == 0
     assert [(s["id"], s["demand_percent"]) for s in g["missing"]] == [
         ("PY", 100), ("SQ", 50)]
 
 
 def test_skills_carry_both_languages(client):
-    pid = create(client, "Developer", [])
-    top = client.get(f"/profiles/{pid}/gap").json()["missing"][0]
+    top = gap(client, "Developer", [])["missing"][0]
     assert (top["en"], top["ar"]) == ("python programming", "برمجة بايثون")
 
 
 # ---- recommendations -------------------------------------------------------------
 
 def test_recommendations_close_highest_value_gaps_first(client):
-    pid = create(client, "Developer", [])
-    body = client.get(f"/profiles/{pid}/recommendations").json()
+    body = recommendations(client, "Developer", []).json()
     recs = body["recommendations"]
     assert [(r["source"], r["code"], [s["id"] for s in r["closes"]]) for r in recs] == [
         ("university", "IS210", ["PY"]), ("university", "IS230", ["SQ"])]
@@ -129,25 +112,22 @@ def test_recommendations_close_highest_value_gaps_first(client):
 
 
 def test_recommendation_limit(client):
-    pid = create(client, "Developer", [])
-    recs = client.get(f"/profiles/{pid}/recommendations?limit=1").json()
+    recs = recommendations(client, "Developer", [], limit=1).json()
     assert [r["code"] for r in recs["recommendations"]] == ["IS210"]
-    assert client.get(f"/profiles/{pid}/recommendations?limit=0").status_code == 422
+    assert recommendations(client, "Developer", [], limit=0).status_code == 422
 
 
 def test_completed_course_never_recommended(client):
-    pid = create(client, "Analyst", ["IS230"])
-    recs = client.get(f"/profiles/{pid}/recommendations").json()["recommendations"]
+    recs = recommendations(client, "Analyst", ["IS230"]).json()["recommendations"]
     assert [r["code"] for r in recs] == ["BUS210"]
 
 
 # ---- spec items 6 and 12: nothing recomputed per request ---------------------------
 
 def test_model_loads_once_not_per_request(client, embedder):
-    pid = create(client, "Analyst", ["IS230"])
     for _ in range(5):
-        client.get(f"/profiles/{pid}/gap")
-        client.get(f"/profiles/{pid}/recommendations")
+        gap(client, "Analyst", ["IS230"])
+        recommendations(client, "Analyst", ["IS230"])
     assert embedder.instances == 1
 
 
