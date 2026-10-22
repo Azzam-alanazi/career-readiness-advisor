@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="880" viewBox="0 0 1200 880" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1200" height="880" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Activity diagram: what-if planning saves at once and asks for a projection</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >The plan is shown before the save finishes, so two quick taps never lose the first. A failed save puts the plan back.</text>
+<rect x="24.0" y="76.0" width="330.0" height="784.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="76.0" width="330.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="189.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<rect x="354.0" y="76.0" width="500.0" height="784.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="354.0" y="76.0" width="500.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="604.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">iPhone app</text>
+<rect x="854.0" y="76.0" width="322.0" height="784.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="854.0" y="76.0" width="322.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1015.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">Skill-gap API</text>
+<circle cx="189.0" cy="130" r="9" fill="#1F2328"/>
+<rect x="120.0" y="163.2" width="138.0" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="189.0" y="184.0" font-size="12" text-anchor="middle" fill="#1F2328" >Open “Plan courses”</text>
+<path d="M189.0 139.0 L189.0 163.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="534.0" y="155.5" width="140.1" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="604.0" y="176.2" font-size="12" text-anchor="middle" fill="#1F2328" >Load the catalog and</text>
+<text x="604.0" y="191.8" font-size="12" text-anchor="middle" fill="#1F2328" >today&#x27;s reading</text>
+<path d="M258.0 180.0 L534.0 180.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="964.3" y="155.5" width="101.4" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1015.0" y="176.2" font-size="12" text-anchor="middle" fill="#1F2328" >GET /courses</text>
+<text x="1015.0" y="191.8" font-size="12" text-anchor="middle" fill="#1F2328" >POST /gap</text>
+<path d="M674.0 180.0 L964.3 180.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="500.6" y="230.5" width="206.8" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="604.0" y="251.2" font-size="12" text-anchor="middle" fill="#1F2328" >List the untaken courses by track,</text>
+<text x="604.0" y="266.8" font-size="12" text-anchor="middle" fill="#1F2328" >each with the gaps it closes</text>
+<path d="M1015.0 204.5 L1015.0 255.0 L707.4 255.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M189.0 283.0 L206.0 300 L189.0 317.0 L172.0 300 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M500.6 255.0 L189.0 255.0 L189.0 283.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="115.0" y="343.2" width="148.0" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="189.0" y="364.0" font-size="12" text-anchor="middle" fill="#1F2328" >Tick or untick a course</text>
+<path d="M189.0 317.0 L189.0 343.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="518.0" y="343.2" width="172.1" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="604.0" y="364.0" font-size="12" text-anchor="middle" fill="#1F2328" >Show the new plan at once</text>
+<path d="M263.0 360.0 L518.0 360.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="511.0" y="408.2" width="186.1" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="604.0" y="429.0" font-size="12" text-anchor="middle" fill="#1F2328" >Save the profile on the device</text>
+<path d="M604.0 376.8 L604.0 408.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M604.0 473.0 L621.0 490 L604.0 507.0 L587.0 490 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M604.0 441.8 L604.0 473.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="388.0" y="465.5" width="124.1" height="49.0" rx="12" fill="#FCE8E6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="450.0" y="486.2" font-size="12" text-anchor="middle" fill="#1F2328" >Put the plan back;</text>
+<text x="450.0" y="501.8" font-size="12" text-anchor="middle" fill="#1F2328" >show a message</text>
+<path d="M587.0 490.0 L512.0 490.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="581.0" y="468.0" font-size="11" text-anchor="end" fill="#57606A" >[not saved]</text>
+<path d="M70 473.0 L87.0 490 L70 507.0 L53.0 490 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M388.0 490.0 L87.0 490.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M70.0 473.0 L70.0 300.0 L172.0 300.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M604.0 543.0 L621.0 560 L604.0 577.0 L587.0 560 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M604.0 507.0 L604.0 543.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="612.0" y="523.0" font-size="11" text-anchor="start" fill="#57606A" >[saved]</text>
+<rect x="929.6" y="535.5" width="170.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1015.0" y="556.2" font-size="12" text-anchor="middle" fill="#1F2328" >POST /gap with completed</text>
+<text x="1015.0" y="571.8" font-size="12" text-anchor="middle" fill="#1F2328" >and planned courses</text>
+<path d="M621.0 560.0 L929.6 560.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="775.3" y="552.0" font-size="11" text-anchor="middle" fill="#57606A" >[a course is planned]</text>
+<rect x="391.2" y="623.2" width="157.7" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="644.0" font-size="12" text-anchor="middle" fill="#1F2328" >Show today&#x27;s figure only</text>
+<path d="M587.0 560.0 L470.0 560.0 L470.0 623.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="464.0" y="552.0" font-size="11" text-anchor="end" fill="#57606A" >[plan empty]</text>
+<rect x="594.0" y="607.8" width="236.0" height="64.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="712.0" y="628.5" font-size="12" text-anchor="middle" fill="#1F2328" >Show now and projected side by</text>
+<text x="712.0" y="644.0" font-size="12" text-anchor="middle" fill="#1F2328" >side, the points gained and the</text>
+<text x="712.0" y="659.5" font-size="12" text-anchor="middle" fill="#1F2328" >gaps the plan closes, each once</text>
+<path d="M1015.0 584.5 L1015.0 640.0 L830.0 640.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M604.0 703.0 L621.0 720 L604.0 737.0 L587.0 720 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M470.0 656.8 L470.0 720.0 L587.0 720.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M712.0 672.2 L712.0 720.0 L621.0 720.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M189.0 753.0 L206.0 770 L189.0 787.0 L172.0 770 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M604.0 737.0 L604.0 770.0 L206.0 770.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M172.0 770.0 L70.0 770.0 L70.0 507.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="80.0" y="762.0" font-size="11" text-anchor="start" fill="#57606A" >[plan more]</text>
+<circle cx="189.0" cy="835" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="189.0" cy="835" r="6.5" fill="#1F2328"/>
+<path d="M189.0 787.0 L189.0 824.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="197.0" y="805.0" font-size="11" text-anchor="start" fill="#57606A" >[done]</text>
+</svg>

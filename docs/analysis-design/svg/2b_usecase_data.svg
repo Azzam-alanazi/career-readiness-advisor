@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="950" viewBox="0 0 1440 950" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1440" height="950" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Use case diagram: how the researcher prepares the data the engine serves</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >Offline tools in test/, skillgap/, backend/ and app/tool/. None of them runs inside the app.</text>
+<rect x="250.0" y="80.0" width="920.0" height="840.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.4"/>
+<text x="710.0" y="104.0" font-size="14" text-anchor="middle" fill="#1F2328" font-weight="bold">Data preparation and engine tools</text>
+<circle cx="110" cy="429" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="438.0" x2="110.0" y2="464.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="94.0" y1="447.0" x2="126.0" y2="447.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="464.0" x2="97.0" y2="482.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="464.0" x2="123.0" y2="482.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="110.0" y="498.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">Researcher</text>
+<text x="110.0" y="513.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">(project author)</text>
+<rect x="1230.0" y="128.0" width="170.0" height="47.0" rx="4" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1315.0" y="144.0" font-size="11" text-anchor="middle" fill="#57606A" >«system»</text>
+<text x="1315.0" y="161.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">JSearch API</text>
+<rect x="1230.0" y="622.0" width="190.0" height="62.0" rx="4" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1325.0" y="638.0" font-size="11" text-anchor="middle" fill="#57606A" >«system»</text>
+<text x="1325.0" y="655.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">Hugging Face Hub</text>
+<text x="1325.0" y="670.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">multilingual-e5-base</text>
+<ellipse cx="470" cy="150" rx="81.5" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="146.5" font-size="12" text-anchor="middle" fill="#1F2328" >Collect job postings</text>
+<text x="470.0" y="161.5" font-size="12" text-anchor="middle" fill="#1F2328" >(collect_postings.py)</text>
+<ellipse cx="470" cy="250" rx="83.1" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="246.5" font-size="12" text-anchor="middle" fill="#1F2328" >Hand-label postings</text>
+<text x="470.0" y="261.5" font-size="12" text-anchor="middle" fill="#1F2328" >(evaluation set of 15)</text>
+<ellipse cx="470" cy="350" rx="85.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="346.5" font-size="12" text-anchor="middle" fill="#1F2328" >Label catalog courses</text>
+<text x="470.0" y="361.5" font-size="12" text-anchor="middle" fill="#1F2328" >(33 Shaqra courses)</text>
+<ellipse cx="470" cy="450" rx="85.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="446.5" font-size="12" text-anchor="middle" fill="#1F2328" >Curate online courses</text>
+<text x="470.0" y="461.5" font-size="12" text-anchor="middle" fill="#1F2328" >(online_courses.csv)</text>
+<ellipse cx="470" cy="550" rx="96.1" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="546.5" font-size="12" text-anchor="middle" fill="#1F2328" >Run the validation sweep</text>
+<text x="470.0" y="561.5" font-size="12" text-anchor="middle" fill="#1F2328" >(validate.py)</text>
+<ellipse cx="470" cy="650" rx="87.8" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="646.5" font-size="12" text-anchor="middle" fill="#1F2328" >Start the API and build</text>
+<text x="470.0" y="661.5" font-size="12" text-anchor="middle" fill="#1F2328" >career profiles</text>
+<ellipse cx="470" cy="750" rx="105.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="746.5" font-size="12" text-anchor="middle" fill="#1F2328" >Run reports</text>
+<text x="470.0" y="761.5" font-size="12" text-anchor="middle" fill="#1F2328" >(min-demand, course reach)</text>
+<ellipse cx="470" cy="850" rx="89.4" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="470.0" y="846.5" font-size="12" text-anchor="middle" fill="#1F2328" >Check the API contract</text>
+<text x="470.0" y="861.5" font-size="12" text-anchor="middle" fill="#1F2328" >(contract_check.dart)</text>
+<ellipse cx="900" cy="150" rx="96.5" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="900.0" y="146.5" font-size="12" text-anchor="middle" fill="#1F2328" >Screen postings and</text>
+<text x="900.0" y="161.5" font-size="12" text-anchor="middle" fill="#1F2328" >record the excluded ones</text>
+<ellipse cx="900" cy="250" rx="70.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="900.0" y="246.5" font-size="12" text-anchor="middle" fill="#1F2328" >Merge labels into</text>
+<text x="900.0" y="261.5" font-size="12" text-anchor="middle" fill="#1F2328" >the corpus</text>
+<ellipse cx="900" cy="450" rx="88.2" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="900.0" y="446.5" font-size="12" text-anchor="middle" fill="#1F2328" >Sync placeholder rows</text>
+<text x="900.0" y="461.5" font-size="12" text-anchor="middle" fill="#1F2328" >with the gap skills</text>
+<ellipse cx="900" cy="550" rx="83.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="900.0" y="546.5" font-size="12" text-anchor="middle" fill="#1F2328" >Write config.json with</text>
+<text x="900.0" y="561.5" font-size="12" text-anchor="middle" fill="#1F2328" >gate_passed</text>
+<ellipse cx="900" cy="650" rx="70.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="900.0" y="646.5" font-size="12" text-anchor="middle" fill="#1F2328" >Embed texts with</text>
+<text x="900.0" y="661.5" font-size="12" text-anchor="middle" fill="#1F2328" >the model</text>
+<path d="M130.0 454.0 L392.5 150.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L390.9 250.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L388.1 350.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L388.1 450.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L377.9 550.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L386.2 650.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L368.1 750.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L384.6 850.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M996.5 150.0 L1230.0 151.5" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M970.9 650.0 L1230.0 653.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M551.5 150.0 L803.5 150.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="675.0" y="138.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M553.1 250.0 L829.1 250.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="675.0" y="238.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M811.8 450.0 L555.9 450.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="675.0" y="438.0" font-size="11" text-anchor="middle" fill="#57606A" >«extend»</text>
+<path d="M566.1 550.0 L816.1 550.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="675.0" y="538.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M546.1 572.0 L859.1 628.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="712.0" y="586.0" font-size="11" text-anchor="start" fill="#57606A" >«include»</text>
+<path d="M829.1 650.0 L557.8 650.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="675.0" y="638.0" font-size="11" text-anchor="middle" fill="#57606A" >«extend»</text>
+<text x="675.0" y="670.0" font-size="10.5" text-anchor="middle" fill="#57606A" >[cache miss]</text>
+</svg>

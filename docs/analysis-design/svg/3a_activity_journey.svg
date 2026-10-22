@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1450" viewBox="0 0 1300 1450" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1300" height="1450" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Activity diagram: a student&#x27;s journey, from first launch to the readiness reading</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >Swimlanes show who acts. Diamonds are decisions and merges; guards are in square brackets. Connector A joins the two ends of the loop back to home.</text>
+<rect x="24.0" y="76.0" width="340.0" height="1350.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="76.0" width="340.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<rect x="364.0" y="76.0" width="540.0" height="1350.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="364.0" y="76.0" width="540.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">iPhone app</text>
+<rect x="904.0" y="76.0" width="372.0" height="1350.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="904.0" y="76.0" width="372.0" height="30.0" rx="0" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1090.0" y="96.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">Skill-gap API</text>
+<circle cx="634.0" cy="135" r="9" fill="#1F2328"/>
+<rect x="560.0" y="165.5" width="148.1" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="186.2" font-size="12" text-anchor="middle" fill="#1F2328" >Read the saved profile</text>
+<text x="634.0" y="201.8" font-size="12" text-anchor="middle" fill="#1F2328" >from the device</text>
+<path d="M634.0 144.0 L634.0 165.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M634.0 245.0 L651.0 262 L634.0 279.0 L617.0 262 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M634.0 214.5 L634.0 245.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="392.6" y="310.5" width="214.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="500.0" y="331.2" font-size="12" text-anchor="middle" fill="#1F2328" >Show the profile form</text>
+<text x="500.0" y="346.8" font-size="12" text-anchor="middle" fill="#1F2328" >(careers and courses from the API)</text>
+<path d="M617.0 262.0 L500.0 262.0 L500.0 310.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="494.0" y="256.0" font-size="11" text-anchor="end" fill="#57606A" >[no profile]</text>
+<rect x="121.0" y="380.5" width="146.1" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="401.2" font-size="12" text-anchor="middle" fill="#1F2328" >Choose 1 to 3 careers</text>
+<text x="194.0" y="416.8" font-size="12" text-anchor="middle" fill="#1F2328" >and type a major</text>
+<path d="M392.6 335.0 L194.0 335.0 L194.0 380.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="117.0" y="458.2" width="154.0" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="479.0" font-size="12" text-anchor="middle" fill="#1F2328" >Tick completed courses</text>
+<path d="M194.0 429.5 L194.0 458.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="124.7" y="520.5" width="138.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="541.2" font-size="12" text-anchor="middle" fill="#1F2328" >Tick self-taught skills</text>
+<text x="194.0" y="556.8" font-size="12" text-anchor="middle" fill="#1F2328" >(optional)</text>
+<path d="M194.0 491.8 L194.0 520.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="116.0" y="603.2" width="156.0" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="624.0" font-size="12" text-anchor="middle" fill="#1F2328" >Tap “See my readiness”</text>
+<path d="M194.0 569.5 L194.0 603.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="444.3" y="595.5" width="111.4" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="500.0" y="616.2" font-size="12" text-anchor="middle" fill="#1F2328" >Save the profile</text>
+<text x="500.0" y="631.8" font-size="12" text-anchor="middle" fill="#1F2328" >on the device</text>
+<path d="M272.0 620.0 L444.3 620.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M500 678.0 L517.0 695 L500 712.0 L483.0 695 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M500.0 644.5 L500.0 678.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M483.0 695.0 L194.0 695.0 L194.0 636.8" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="204.0" y="714.0" font-size="11" text-anchor="start" fill="#57606A" >[not saved]</text>
+<path d="M634.0 753.0 L651.0 770 L634.0 787.0 L617.0 770 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M500.0 712.0 L500.0 770.0 L617.0 770.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="506.0" y="728.0" font-size="11" text-anchor="start" fill="#57606A" >[saved]</text>
+<path d="M634.0 279.0 L634.0 753.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="642.0" y="300.0" font-size="11" text-anchor="start" fill="#57606A" >[profile saved]</text>
+<circle cx="740" cy="770" r="11" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+<text x="740.0" y="774.5" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">A</text>
+<path d="M729.0 770.0 L651.0 770.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="548.3" y="818.2" width="171.4" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="839.0" font-size="12" text-anchor="middle" fill="#1F2328" >Show the home dashboard</text>
+<path d="M634.0 787.0 L634.0 818.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="540.0" y="888.2" width="188.1" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="909.0" font-size="12" text-anchor="middle" fill="#1F2328" >Send the profile to POST /gap</text>
+<path d="M634.0 851.8 L634.0 888.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="1002.6" y="872.8" width="174.7" height="64.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1090.0" y="893.5" font-size="12" text-anchor="middle" fill="#1F2328" >Check the ids, read the gap</text>
+<text x="1090.0" y="909.0" font-size="12" text-anchor="middle" fill="#1F2328" >from both sources, attach</text>
+<text x="1090.0" y="924.5" font-size="12" text-anchor="middle" fill="#1F2328" >the validation flag</text>
+<path d="M728.0 905.0 L1002.6 905.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="540.3" y="965.5" width="187.4" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="986.2" font-size="12" text-anchor="middle" fill="#1F2328" >Show readiness, the top three</text>
+<text x="634.0" y="1001.8" font-size="12" text-anchor="middle" fill="#1F2328" >gaps and the quality flag</text>
+<path d="M1090.0 937.2 L1090.0 990.0 L727.7 990.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M194.0 1048.0 L211.0 1065 L194.0 1082.0 L177.0 1065 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M540.3 990.0 L194.0 990.0 L194.0 1048.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M211.0 1065.0 L300.0 1065.0 L300.0 1320.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="519.0" y="1100.5" width="230.0" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="1121.2" font-size="12" text-anchor="middle" fill="#1F2328" >Show full readiness and</text>
+<text x="634.0" y="1136.8" font-size="12" text-anchor="middle" fill="#1F2328" >compare careers</text>
+<path d="M300.0 1125.0 L519.0 1125.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="511.0" y="1119.0" font-size="11" text-anchor="end" fill="#57606A" >[full readiness]</text>
+<rect x="519.0" y="1165.5" width="230.0" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="1186.2" font-size="12" text-anchor="middle" fill="#1F2328" >Show the plan and</text>
+<text x="634.0" y="1201.8" font-size="12" text-anchor="middle" fill="#1F2328" >its projection</text>
+<path d="M300.0 1190.0 L519.0 1190.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="511.0" y="1184.0" font-size="11" text-anchor="end" fill="#57606A" >[plan courses]</text>
+<rect x="519.0" y="1230.5" width="230.0" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="1251.2" font-size="12" text-anchor="middle" fill="#1F2328" >Show suggested courses</text>
+<text x="634.0" y="1266.8" font-size="12" text-anchor="middle" fill="#1F2328" >(POST /recommendations)</text>
+<path d="M300.0 1255.0 L519.0 1255.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="511.0" y="1249.0" font-size="11" text-anchor="end" fill="#57606A" >[suggestions]</text>
+<rect x="519.0" y="1295.5" width="230.0" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="634.0" y="1316.2" font-size="12" text-anchor="middle" fill="#1F2328" >Settings: edit the profile,</text>
+<text x="634.0" y="1331.8" font-size="12" text-anchor="middle" fill="#1F2328" >switch language or delete</text>
+<path d="M300.0 1320.0 L519.0 1320.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="511.0" y="1314.0" font-size="11" text-anchor="end" fill="#57606A" >[settings]</text>
+<path d="M749.0 1125.0 L840.0 1125.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M749.0 1190.0 L840.0 1190.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M749.0 1255.0 L840.0 1255.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M749.0 1320.0 L840.0 1320.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M840.0 1125.0 L840.0 1380.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<circle cx="840" cy="1392" r="11" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+<text x="840.0" y="1396.5" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">A</text>
+<path d="M930 1290 H1120 L1130 1300 V1350.5 H930 Z" fill="#FFFBE6" stroke="#3D444D" stroke-width="1"/>
+<path d="M1120 1290 V1300 H1130" fill="none" stroke="#3D444D" stroke-width="1"/>
+<text x="940.0" y="1307.5" font-size="11.5" text-anchor="start" fill="#1F2328" >After a delete, the student</text>
+<text x="940.0" y="1323.0" font-size="11.5" text-anchor="start" fill="#1F2328" >tab opens on onboarding</text>
+<text x="940.0" y="1338.5" font-size="11.5" text-anchor="start" fill="#1F2328" >again: [no profile].</text>
+<path d="M930.0 1320.0 L749.0 1320.0" fill="none" stroke="#3D444D" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="194.0" cy="1400" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="194.0" cy="1400" r="6.5" fill="#1F2328"/>
+<path d="M194.0 1082.0 L194.0 1389.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="202.0" y="1360.0" font-size="11" text-anchor="start" fill="#57606A" >[done]</text>
+</svg>

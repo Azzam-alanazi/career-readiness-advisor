@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="991" viewBox="0 0 1300 991" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1300" height="991" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Sequence diagram: a planned course is shown at once, saved, then projected</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >togglePlanned() sets the new plan before the write finishes, so a second tap builds on the first.</text>
+<rect x="20.0" y="360.0" width="730.0" height="308.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<line x1="20.0" y1="566.0" x2="750.0" y2="566.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="6 4"/>
+<circle cx="70" cy="89" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="98.0" x2="70.0" y2="124.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="54.0" y1="107.0" x2="86.0" y2="107.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="57.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="83.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="70.0" y="158.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<line x1="70.0" y1="196.0" x2="70.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="206.6" y="84.0" width="106.9" height="28.5" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="260.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">PlanningScreen</text>
+<line x1="260.0" y1="112.5" x2="260.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="435.1" y="84.0" width="89.8" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="480.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">SavedProfile</text>
+<text x="480.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >Notifier</text>
+<line x1="480.0" y1="127.0" x2="480.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="643.5" y="84.0" width="113.0" height="28.5" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="700.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">PrefsProfileStore</text>
+<line x1="700.0" y1="112.5" x2="700.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="858.4" y="84.0" width="123.3" height="28.5" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="920.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">gapReportProvider</text>
+<line x1="920.0" y1="112.5" x2="920.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1104.8" y="84.0" width="90.4" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1150.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Skill-gap API</text>
+<text x="1150.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >POST /gap</text>
+<line x1="1150.0" y1="127.0" x2="1150.0" y2="971.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="695.0" y="332.0" width="10.0" height="276.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="475.0" y="238.0" width="10.0" height="404.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1145.0" y="750.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="915.0" y="703.0" width="10.0" height="119.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="255.0" y="204.0" width="10.0" height="725.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<path d="M70.0 206.0 L255.0 206.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="162.5" y="201.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tick a course</text>
+<path d="M265.0 240.0 L475.0 240.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="370.0" y="235.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">togglePlanned(code)</text>
+<path d="M491.0 274.0 L517.0 274.0 L517.0 296.0 L496.0 296.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="523.0" y="278.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">before = state; state = after</text>
+<text x="523.0" y="291.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(the plan shows at once)</text>
+<path d="M485.0 334.0 L695.0 334.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="590.0" y="329.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">save(after)</text>
+<path d="M695.0 408.0 L485.0 408.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="590.0" y="403.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error</text>
+<path d="M491.0 442.0 L517.0 442.0 L517.0 464.0 L496.0 464.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="523.0" y="446.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">if state is still after:</text>
+<text x="523.0" y="459.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">state = before; rethrow</text>
+<path d="M475.0 502.0 L265.0 502.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="370.0" y="497.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error</text>
+<path d="M255.0 536.0 L70.0 536.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="162.5" y="531.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">toast: could not be saved</text>
+<path d="M695.0 606.0 L485.0 606.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="590.0" y="601.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">ok</text>
+<path d="M475.0 640.0 L265.0 640.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="370.0" y="635.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">done</text>
+<path d="M265.0 705.0 L915.0 705.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="590.0" y="700.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">withPlanned: true))</text>
+<text x="590.0" y="687.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch(gapQueryFor(profile,</text>
+<path d="M925.0 752.0 L1145.0 752.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1035.0" y="747.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">+ planned courses</text>
+<text x="1035.0" y="734.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">POST /gap: completed</text>
+<path d="M1145.0 786.0 L925.0 786.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1035.0" y="781.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">projected GapOut</text>
+<path d="M915.0 820.0 L265.0 820.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="590.0" y="815.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">AsyncData(projected)</text>
+<path d="M271.0 854.0 L297.0 854.0 L297.0 876.0 L276.0 876.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="303.0" y="858.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">gapsClosedByPlan(planned, now):</text>
+<text x="303.0" y="871.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">each gap counted once</text>
+<path d="M255.0 927.0 L70.0 927.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="162.5" y="922.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">+N points, the gaps it closes</text>
+<text x="162.5" y="909.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">“31% now, 53% with 3 planned”,</text>
+<path d="M20 360 H48.99408 V372 L40.99408 380 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="374.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">alt</text>
+<text x="57.0" y="374.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[the write failed]</text>
+<text x="30.0" y="581.0" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[written]</text>
+</svg>

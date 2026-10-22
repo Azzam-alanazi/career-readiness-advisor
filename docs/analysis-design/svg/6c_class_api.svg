@@ -1,0 +1,237 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1010" viewBox="0 0 1560 1010" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1560" height="1010" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Class diagram: the API&#x27;s request and response objects (backend/schemas.py)</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >Pydantic models. Every response that carries a figure also carries ValidationInfo, so the app can show the failed quality gate beside it.</text>
+<rect x="24.0" y="84.0" width="210.0" height="106.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="84.0" width="210.0" height="40.0" rx="0" fill="#EAF5EA" stroke="#3D444D" stroke-width="1.2"/>
+<text x="129.0" y="101.0" font-size="11" text-anchor="middle" fill="#57606A" >«request»</text>
+<text x="129.0" y="116.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">StudentIn</text>
+<text x="32.0" y="140.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ career: str  (≤ 200 chars)</text>
+<text x="32.0" y="156.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ completed_courses: list[str]  (≤ 200)</text>
+<text x="32.0" y="172.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ self_reported_skills: list[str]  (≤ 200)</text>
+<line x1="24.0" y1="180.0" x2="234.0" y2="180.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="330.0" y="84.0" width="118.0" height="76.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="330.0" y="84.0" width="118.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="389.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CareerOut</text>
+<text x="338.0" y="126.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ name: str</text>
+<text x="338.0" y="142.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ posting_count: int</text>
+<line x1="330.0" y1="150.0" x2="448.1" y2="150.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="550.0" y="84.0" width="200.0" height="188.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="550.0" y="84.0" width="200.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="650.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">HealthOut</text>
+<text x="558.0" y="126.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ status: str</text>
+<text x="558.0" y="142.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ model: str</text>
+<text x="558.0" y="158.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ taxonomy_skills: int</text>
+<text x="558.0" y="174.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ careers: int</text>
+<text x="558.0" y="190.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ courses: int</text>
+<text x="558.0" y="206.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ online_courses: int</text>
+<text x="558.0" y="222.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ online_placeholders: int</text>
+<text x="558.0" y="238.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ built_from_cache: bool</text>
+<text x="558.0" y="254.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ validation: ValidationInfo</text>
+<line x1="550.0" y1="262.0" x2="750.0" y2="262.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="900.0" y="84.0" width="142.3" height="60.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="900.0" y="84.0" width="142.3" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="971.2" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">SkillOut</text>
+<text x="908.0" y="126.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar, category: str</text>
+<line x1="900.0" y1="134.0" x2="1042.3" y2="134.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1130.0" y="84.0" width="200.0" height="140.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1130.0" y="84.0" width="200.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1230.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CourseOut</text>
+<text x="1138.0" y="126.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ code: str</text>
+<text x="1138.0" y="142.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ name: str</text>
+<text x="1138.0" y="158.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ skill_count: int</text>
+<text x="1138.0" y="174.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ skills: list[str]</text>
+<text x="1138.0" y="190.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ mapped_by: &quot;labels&quot; | &quot;extraction&quot;</text>
+<text x="1138.0" y="206.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ track: str</text>
+<line x1="1130.0" y1="214.0" x2="1330.0" y2="214.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="24.0" y="320.0" width="219.6" height="204.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="320.0" width="219.6" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="133.8" y="338.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">GapOut</text>
+<text x="32.0" y="362.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ career: str</text>
+<text x="32.0" y="378.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ readiness: float</text>
+<text x="32.0" y="394.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ readiness_percent: int</text>
+<text x="32.0" y="410.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ readiness_from_courses: float</text>
+<text x="32.0" y="426.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ readiness_from_courses_percent: int</text>
+<text x="32.0" y="442.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ covered: list[CoveredSkill]</text>
+<text x="32.0" y="458.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ covered_from_courses: list[SkillEntry]</text>
+<text x="32.0" y="474.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ covered_self_reported: list[SkillEntry]</text>
+<text x="32.0" y="490.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ missing: list[SkillEntry]</text>
+<text x="32.0" y="506.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ validation: ValidationInfo</text>
+<line x1="24.0" y1="514.0" x2="243.6" y2="514.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="545.0" y="470.0" width="210.0" height="124.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="545.0" y="470.0" width="210.0" height="26.0" rx="0" fill="#FFF4E0" stroke="#3D444D" stroke-width="1.2"/>
+<text x="650.0" y="488.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">ValidationInfo</text>
+<text x="553.0" y="512.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ gate_passed: bool</text>
+<text x="553.0" y="528.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ best_f1: float | None</text>
+<text x="553.0" y="544.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ gate_min_f1: float | None</text>
+<text x="553.0" y="560.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ course_mapping_validated: bool</text>
+<text x="553.0" y="576.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ note: str</text>
+<line x1="545.0" y1="584.0" x2="755.0" y2="584.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1000.0" y="320.0" width="236.3" height="108.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1000.0" y="320.0" width="236.3" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1118.1" y="338.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">RecommendationsOut</text>
+<text x="1008.0" y="362.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ career: str</text>
+<text x="1008.0" y="378.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ recommendations: list[Recommendation]</text>
+<text x="1008.0" y="394.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ uncovered: list[SkillRef]</text>
+<text x="1008.0" y="410.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ validation: ValidationInfo</text>
+<line x1="1000.0" y1="418.0" x2="1236.3" y2="418.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1330.0" y="330.0" width="200.0" height="74.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1330.0" y="330.0" width="200.0" height="40.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1430.0" y="347.0" font-size="11" text-anchor="middle" fill="#57606A" >«union»</text>
+<text x="1430.0" y="362.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">Recommendation</text>
+<text x="1338.0" y="386.0" font-size="11.5" text-anchor="start" fill="#1F2328" >discriminator: source</text>
+<line x1="1330.0" y1="394.0" x2="1530.0" y2="394.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1120.0" y="520.0" width="198.0" height="124.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1120.0" y="520.0" width="198.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1219.0" y="538.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">UniversityRecommendation</text>
+<text x="1128.0" y="562.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ source = &quot;university&quot;</text>
+<text x="1128.0" y="578.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ code: str</text>
+<text x="1128.0" y="594.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ name: str</text>
+<text x="1128.0" y="610.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ closes: list[SkillRef]</text>
+<text x="1128.0" y="626.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ value: float</text>
+<line x1="1120.0" y1="634.0" x2="1318.0" y2="634.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1340.0" y="520.0" width="196.0" height="156.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1340.0" y="520.0" width="196.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1438.0" y="538.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">OnlineRecommendation</text>
+<text x="1348.0" y="562.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ source = &quot;online&quot;</text>
+<text x="1348.0" y="578.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ provider: str</text>
+<text x="1348.0" y="594.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ title: str</text>
+<text x="1348.0" y="610.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ url: str</text>
+<text x="1348.0" y="626.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ is_free: bool</text>
+<text x="1348.0" y="642.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ closes: list[SkillRef]</text>
+<text x="1348.0" y="658.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ value: float</text>
+<line x1="1340.0" y1="666.0" x2="1536.0" y2="666.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="1240.0" y="830.0" width="132.7" height="76.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1240.0" y="830.0" width="132.7" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1306.4" y="848.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">SkillRef</text>
+<text x="1248.0" y="872.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar: str</text>
+<text x="1248.0" y="888.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demand_percent: int</text>
+<line x1="1240.0" y1="896.0" x2="1372.7" y2="896.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="24.0" y="600.0" width="142.3" height="92.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="600.0" width="142.3" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="95.2" y="618.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">SkillEntry</text>
+<text x="32.0" y="642.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar, category: str</text>
+<text x="32.0" y="658.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demand: float</text>
+<text x="32.0" y="674.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demand_percent: int</text>
+<line x1="24.0" y1="682.0" x2="166.3" y2="682.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="270.0" y="600.0" width="123.4" height="76.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="270.0" y="600.0" width="123.4" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="331.7" y="618.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CoveredSkill</text>
+<text x="278.0" y="642.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ source: &quot;courses&quot; |</text>
+<text x="278.0" y="658.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  &quot;self_reported&quot;</text>
+<line x1="270.0" y1="666.0" x2="393.4" y2="666.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="505.0" y="680.0" width="290.0" height="252.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="505.0" y="680.0" width="290.0" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="650.0" y="698.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CurriculumGapOut</text>
+<text x="513.0" y="722.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ career: str | None</text>
+<text x="513.0" y="738.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ posting_count: int</text>
+<text x="513.0" y="754.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ min_demand: float</text>
+<text x="513.0" y="770.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demanded: int</text>
+<text x="513.0" y="786.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ taught: int</text>
+<text x="513.0" y="802.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ coverage: float</text>
+<text x="513.0" y="818.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ coverage_percent: int</text>
+<text x="513.0" y="834.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ uncovered: list[CurriculumSkill]</text>
+<text x="513.0" y="850.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ not_asked: list[TaughtSkill]</text>
+<text x="513.0" y="866.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ below_threshold: list[BelowThresholdSkill]</text>
+<text x="513.0" y="882.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ per_career: list[CareerCoverageOut]</text>
+<text x="513.0" y="898.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ sample_note: str</text>
+<text x="513.0" y="914.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ validation: ValidationInfo</text>
+<line x1="505.0" y1="922.0" x2="795.0" y2="922.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="24.0" y="740.0" width="142.3" height="124.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="740.0" width="142.3" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="95.2" y="758.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CurriculumSkill</text>
+<text x="32.0" y="782.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar, category: str</text>
+<text x="32.0" y="798.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ postings: int</text>
+<text x="32.0" y="814.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demand: float</text>
+<text x="32.0" y="830.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demand_percent: int</text>
+<text x="32.0" y="846.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ careers: list[str]</text>
+<line x1="24.0" y1="854.0" x2="166.3" y2="854.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="24.0" y="880.0" width="142.3" height="76.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="880.0" width="142.3" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="95.2" y="898.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">TaughtSkill</text>
+<text x="32.0" y="922.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar, category: str</text>
+<text x="32.0" y="938.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ courses: list[str]</text>
+<line x1="24.0" y1="946.0" x2="166.3" y2="946.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="830.0" y="680.0" width="153.2" height="108.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="830.0" y="680.0" width="153.2" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="906.6" y="698.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">BelowThresholdSkill</text>
+<text x="838.0" y="722.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ id, en, ar, category: str</text>
+<text x="838.0" y="738.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ postings: int</text>
+<text x="838.0" y="754.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ careers: list[str]</text>
+<text x="838.0" y="770.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ courses: list[str]</text>
+<line x1="830.0" y1="778.0" x2="983.2" y2="778.0" stroke="#3D444D" stroke-width="1"/>
+<rect x="830.0" y="820.0" width="153.2" height="140.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="830.0" y="820.0" width="153.2" height="26.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="906.6" y="838.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">CareerCoverageOut</text>
+<text x="838.0" y="862.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ career: str</text>
+<text x="838.0" y="878.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ posting_count: int</text>
+<text x="838.0" y="894.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ demanded · taught: int</text>
+<text x="838.0" y="910.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ coverage: float</text>
+<text x="838.0" y="926.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ coverage_percent: int</text>
+<text x="838.0" y="942.0" font-size="11.5" text-anchor="start" fill="#1F2328" >+ min_postings: int</text>
+<line x1="830.0" y1="950.0" x2="983.2" y2="950.0" stroke="#3D444D" stroke-width="1"/>
+<path d="M650.0 272.0 L650.0 470.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M243.6 480.0 L545.0 480.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M1000.0 400.0 L850.0 400.0 L850.0 520.0 L755.0 520.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M650.0 680.0 L650.0 594.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<text x="658.0" y="650.0" font-size="11" text-anchor="start" fill="#57606A" >every response carries one</text>
+<path d="M1236.3 360.0 L1330.0 360.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<text x="1244.3" y="376.0" font-size="11" text-anchor="start" fill="#1F2328" >0..*</text>
+<path d="M1219.0 520.0 L1219.0 490.0 L1430.0 490.0 L1430.0 404.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#hollow)"/>
+<path d="M1438.0 520.0 L1438.0 490.0 L1430.0 490.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M1438.0 676.0 L1438.0 868.0 L1372.7 868.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M1219.0 644.0 L1219.0 810.0 L1286.4 810.0 L1286.4 830.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<text x="1227.0" y="660.0" font-size="11" text-anchor="start" fill="#57606A" >closes 1..*</text>
+<path d="M1060.0 428.0 L1060.0 878.0 L1240.0 878.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<text x="1066.0" y="444.0" font-size="11" text-anchor="start" fill="#57606A" >uncovered 0..*</text>
+<path d="M80.0 524.0 L80.0 600.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<text x="88.0" y="540.0" font-size="11" text-anchor="start" fill="#57606A" >covered_from_courses,</text>
+<text x="88.0" y="553.0" font-size="11" text-anchor="start" fill="#57606A" >covered_self_reported,</text>
+<text x="88.0" y="566.0" font-size="11" text-anchor="start" fill="#57606A" >missing</text>
+<path d="M270.0 640.0 L166.3 640.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#hollow)"/>
+<path d="M243.6 505.0 L331.7 505.0 L331.7 600.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M505.0 802.0 L166.3 802.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M505.0 918.0 L166.3 918.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M795.0 734.0 L830.0 734.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+<path d="M795.0 890.0 L830.0 890.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#open)" marker-start="url(#diamond)"/>
+</svg>

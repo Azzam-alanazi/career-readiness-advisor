@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1658" viewBox="0 0 1500 1658" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1500" height="1658" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Sequence diagram: onboarding saves the profile on the device, never on the server</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >Synchronous calls have filled heads; replies are dashed. Activation bars show which object is working.</text>
+<rect x="20.0" y="436.0" width="475.0" height="183.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="20.0" y="1108.0" width="1430.0" height="496.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<line x1="20.0" y1="1408.0" x2="1450.0" y2="1408.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="6 4"/>
+<circle cx="70" cy="89" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="98.0" x2="70.0" y2="124.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="54.0" y1="107.0" x2="86.0" y2="107.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="57.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="83.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="70.0" y="158.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<line x1="70.0" y1="196.0" x2="70.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="181.5" y="84.0" width="127.0" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="245.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Onboarding + Skills</text>
+<text x="245.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >screens</text>
+<line x1="245.0" y1="127.0" x2="245.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="376.2" y="84.0" width="137.6" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="445.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">OnboardingController</text>
+<text x="445.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >Notifier</text>
+<line x1="445.0" y1="127.0" x2="445.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="568.7" y="84.0" width="142.7" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="640.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">catalog providers</text>
+<text x="640.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >careers · courses · skills</text>
+<line x1="640.0" y1="127.0" x2="640.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="784.4" y="84.0" width="121.2" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="845.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">CatalogRepository</text>
+<text x="845.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >+ ApiClient</text>
+<line x1="845.0" y1="127.0" x2="845.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="984.8" y="84.0" width="90.4" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1030.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Skill-gap API</text>
+<text x="1030.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >FastAPI</text>
+<line x1="1030.0" y1="127.0" x2="1030.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1170.1" y="84.0" width="89.8" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1215.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">SavedProfile</text>
+<text x="1215.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >Notifier</text>
+<line x1="1215.0" y1="127.0" x2="1215.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1338.9" y="84.0" width="122.3" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1400.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">PrefsProfileStore</text>
+<text x="1400.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >shared_preferences</text>
+<line x1="1400.0" y1="127.0" x2="1400.0" y2="1638.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1025.0" y="306.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="840.0" y="272.0" width="10.0" height="106.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="635.0" y="238.0" width="10.0" height="174.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="440.0" y="529.0" width="10.0" height="82.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="635.0" y="675.0" width="10.0" height="119.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1395.0" y="1020.0" width="10.0" height="138.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1210.0" y="986.0" width="10.0" height="253.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="440.0" y="939.0" width="10.0" height="605.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="240.0" y="204.0" width="10.0" height="1374.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<path d="M70.0 206.0 L240.0 206.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="155.0" y="201.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">open the app (no profile saved)</text>
+<path d="M250.0 240.0 L635.0 240.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="442.5" y="235.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch(careersProvider, coursesProvider)</text>
+<path d="M645.0 274.0 L840.0 274.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="742.5" y="269.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">careers(), courses()</text>
+<path d="M850.0 308.0 L1025.0 308.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="937.5" y="303.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">GET /careers, GET /courses</text>
+<path d="M1025.0 342.0 L850.0 342.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="937.5" y="337.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[CareerOut], [CourseOut]</text>
+<path d="M840.0 376.0 L645.0 376.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="742.5" y="371.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">List&lt;Career&gt;, List&lt;Course&gt;</text>
+<path d="M635.0 410.0 L250.0 410.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="442.5" y="405.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">AsyncData: the profile form</text>
+<path d="M70.0 497.0 L240.0 497.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="155.0" y="492.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">select all shown, a level</text>
+<text x="155.0" y="479.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tap a career, a course,</text>
+<path d="M250.0 531.0 L440.0 531.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="345.0" y="526.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">toggleCareer · toggleCourse · selectCourses</text>
+<path d="M456.0 565.0 L482.0 565.0 L482.0 587.0 L461.0 587.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="488.0" y="569.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">new OnboardingState</text>
+<text x="488.0" y="582.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(max 3 careers)</text>
+<path d="M70.0 643.0 L240.0 643.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="155.0" y="638.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tap “Next: other skills”</text>
+<path d="M250.0 677.0 L635.0 677.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="442.5" y="672.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch(skillsProvider)</text>
+<path d="M645.0 724.0 L1030.0 724.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="837.5" y="719.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">CatalogRepository)</text>
+<text x="837.5" y="706.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">GET /skills (through</text>
+<path d="M1030.0 758.0 L645.0 758.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="837.5" y="753.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[SkillOut]</text>
+<path d="M635.0 792.0 L250.0 792.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="442.5" y="787.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">AsyncData: the skill list</text>
+<path d="M70.0 839.0 L240.0 839.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="155.0" y="834.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(optional)</text>
+<text x="155.0" y="821.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tick self-taught skills</text>
+<path d="M250.0 873.0 L445.0 873.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="347.5" y="868.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">toggleSkill(id)</text>
+<path d="M70.0 907.0 L240.0 907.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="155.0" y="902.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tap “See my readiness”</text>
+<path d="M250.0 941.0 L440.0 941.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="345.0" y="936.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">finish()</text>
+<path d="M450.0 988.0 L1210.0 988.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="830.0" y="983.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">lists sorted, blank major = null)</text>
+<text x="830.0" y="970.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">save(StudentProfile:</text>
+<path d="M1220.0 1022.0 L1395.0 1022.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1307.5" y="1017.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">save(profile)</text>
+<path d="M1411.0 1056.0 L1437.0 1056.0 L1437.0 1078.0 L1416.0 1078.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1396.0" y="1060.0" font-size="11" text-anchor="end" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">setString(&#x27;student_profile&#x27;,</text>
+<text x="1396.0" y="1073.0" font-size="11" text-anchor="end" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">JSON)</text>
+<path d="M1395.0 1156.0 L1220.0 1156.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1307.5" y="1151.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">ok</text>
+<path d="M1226.0 1190.0 L1252.0 1190.0 L1252.0 1212.0 L1231.0 1212.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1258.0" y="1194.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">state = profile</text>
+<path d="M1210.0 1237.0 L450.0 1237.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="830.0" y="1232.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">done</text>
+<path d="M456.0 1271.0 L482.0 1271.0 L482.0 1293.0 L461.0 1293.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="488.0" y="1275.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">reset()</text>
+<path d="M440.0 1318.0 L250.0 1318.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="345.0" y="1313.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">true</text>
+<path d="M256.0 1352.0 L282.0 1352.0 L282.0 1374.0 L261.0 1374.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="288.0" y="1356.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">popUntil(first): the student</text>
+<text x="288.0" y="1369.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tab now shows the dashboard</text>
+<path d="M1400.0 1448.0 L450.0 1448.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="925.0" y="1443.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">StateError: the profile could not be written</text>
+<path d="M456.0 1482.0 L482.0 1482.0 L482.0 1504.0 L461.0 1504.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="488.0" y="1486.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">state.error = e;</text>
+<text x="488.0" y="1499.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">the draft is kept</text>
+<path d="M440.0 1542.0 L250.0 1542.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="345.0" y="1537.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">false</text>
+<path d="M240.0 1576.0 L70.0 1576.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="155.0" y="1571.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">“could not be saved on this device”</text>
+<path d="M20 436 H59.25645 V448 L51.25645 456 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="450.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">loop</text>
+<text x="67.3" y="450.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[choosing careers and courses]</text>
+<path d="M20 1108 H48.99408 V1120 L40.99408 1128 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="1122.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">alt</text>
+<text x="57.0" y="1122.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[written]</text>
+<text x="30.0" y="1423.0" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[the write failed]</text>
+</svg>

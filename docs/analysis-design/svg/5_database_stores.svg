@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1010" viewBox="0 0 1560 1010" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1560" height="1010" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Database diagram: no database server; the data lives in files and on the phone</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >PK identifies a row, FK points at another store, UQ is unique. Crow&#x27;s feet give cardinality: a ring is zero, a bar is one, a fork is many.</text>
+<rect x="24.0" y="84.0" width="340.0" height="240.5" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="84.0" width="340.0" height="40.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">labeled_postings.csv</text>
+<text x="194.0" y="117.0" font-size="10.5" text-anchor="middle" fill="#57606A" >test/ · 82 rows · 15 hand-labelled</text>
+<line x1="58.0" y1="124.0" x2="58.0" y2="324.5" stroke="#3D444D" stroke-width="0.8"/>
+<text x="41.0" y="140.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="66.0" y="140.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">id</text>
+<text x="356.0" y="140.5" font-size="10.5" text-anchor="end" fill="#57606A" >integer</text>
+<text x="66.0" y="158.0" font-size="11.5" text-anchor="start" fill="#1F2328" >career</text>
+<text x="356.0" y="158.0" font-size="10.5" text-anchor="end" fill="#57606A" >8 careers</text>
+<text x="66.0" y="175.5" font-size="11.5" text-anchor="start" fill="#1F2328" >job_title</text>
+<text x="66.0" y="193.0" font-size="11.5" text-anchor="start" fill="#1F2328" >lang</text>
+<text x="356.0" y="193.0" font-size="10.5" text-anchor="end" fill="#57606A" >en | ar</text>
+<text x="66.0" y="210.5" font-size="11.5" text-anchor="start" fill="#1F2328" >posting_text</text>
+<text x="356.0" y="210.5" font-size="10.5" text-anchor="end" fill="#57606A" >full description</text>
+<text x="41.0" y="228.0" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="66.0" y="228.0" font-size="11.5" text-anchor="start" fill="#1F2328" >skill_ids</text>
+<text x="356.0" y="228.0" font-size="10.5" text-anchor="end" fill="#57606A" >→ taxonomy.id, &#x27;;&#x27; list</text>
+<text x="66.0" y="245.5" font-size="11.5" text-anchor="start" fill="#1F2328" >employer</text>
+<text x="66.0" y="263.0" font-size="11.5" text-anchor="start" fill="#1F2328" >city</text>
+<text x="66.0" y="280.5" font-size="11.5" text-anchor="start" fill="#1F2328" >source</text>
+<text x="356.0" y="280.5" font-size="10.5" text-anchor="end" fill="#57606A" >LinkedIn, BeBee, Bayt…</text>
+<text x="41.0" y="298.0" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">UQ</text>
+<text x="66.0" y="298.0" font-size="11.5" text-anchor="start" fill="#1F2328" >url</text>
+<text x="356.0" y="298.0" font-size="10.5" text-anchor="end" fill="#57606A" >no duplicates</text>
+<text x="66.0" y="315.5" font-size="11.5" text-anchor="start" fill="#1F2328" >onet_soc</text>
+<rect x="600.0" y="84.0" width="340.0" height="153.0" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="600.0" y="84.0" width="340.0" height="40.0" rx="0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="770.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">config.json</text>
+<text x="770.0" y="117.0" font-size="10.5" text-anchor="middle" fill="#57606A" >skillgap/ · one document, written by validate.py</text>
+<line x1="634.0" y1="124.0" x2="634.0" y2="237.0" stroke="#3D444D" stroke-width="0.8"/>
+<text x="642.0" y="140.5" font-size="11.5" text-anchor="start" fill="#1F2328" >model</text>
+<text x="932.0" y="140.5" font-size="10.5" text-anchor="end" fill="#57606A" >multilingual-e5-base</text>
+<text x="642.0" y="158.0" font-size="11.5" text-anchor="start" fill="#1F2328" >taxonomy_skills</text>
+<text x="932.0" y="158.0" font-size="10.5" text-anchor="end" fill="#57606A" >91: must match</text>
+<text x="642.0" y="175.5" font-size="11.5" text-anchor="start" fill="#1F2328" >gate_passed</text>
+<text x="932.0" y="175.5" font-size="10.5" text-anchor="end" fill="#57606A" >false</text>
+<text x="642.0" y="193.0" font-size="11.5" text-anchor="start" fill="#1F2328" >gate_min_f1</text>
+<text x="932.0" y="193.0" font-size="10.5" text-anchor="end" fill="#57606A" >0.60</text>
+<text x="642.0" y="210.5" font-size="11.5" text-anchor="start" fill="#1F2328" >postings.*</text>
+<text x="932.0" y="210.5" font-size="10.5" text-anchor="end" fill="#57606A" >chunk_top1, 0.814, F1 0.504</text>
+<text x="642.0" y="228.0" font-size="11.5" text-anchor="start" fill="#1F2328" >courses.*</text>
+<text x="932.0" y="228.0" font-size="10.5" text-anchor="end" fill="#57606A" >skill_centric, 0.894, F1 0.373</text>
+<rect x="1180.0" y="84.0" width="320.0" height="170.5" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1180.0" y="84.0" width="320.0" height="40.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1340.0" y="102.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">labeled_courses.csv</text>
+<text x="1340.0" y="117.0" font-size="10.5" text-anchor="middle" fill="#57606A" >skillgap/ · 33 Shaqra IS courses</text>
+<line x1="1214.0" y1="124.0" x2="1214.0" y2="254.5" stroke="#3D444D" stroke-width="0.8"/>
+<text x="1222.0" y="140.5" font-size="11.5" text-anchor="start" fill="#1F2328" >id</text>
+<text x="1197.0" y="158.0" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="1222.0" y="158.0" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">course_code</text>
+<text x="1492.0" y="158.0" font-size="10.5" text-anchor="end" fill="#57606A" >e.g. CIT 201</text>
+<text x="1222.0" y="175.5" font-size="11.5" text-anchor="start" fill="#1F2328" >course_title</text>
+<text x="1222.0" y="193.0" font-size="11.5" text-anchor="start" fill="#1F2328" >track</text>
+<text x="1492.0" y="193.0" font-size="10.5" text-anchor="end" fill="#57606A" >college | core | elective_*</text>
+<text x="1222.0" y="210.5" font-size="11.5" text-anchor="start" fill="#1F2328" >lang</text>
+<text x="1492.0" y="210.5" font-size="10.5" text-anchor="end" fill="#57606A" >en</text>
+<text x="1222.0" y="228.0" font-size="11.5" text-anchor="start" fill="#1F2328" >course_text</text>
+<text x="1492.0" y="228.0" font-size="10.5" text-anchor="end" fill="#57606A" >the title</text>
+<text x="1197.0" y="245.5" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="1222.0" y="245.5" font-size="11.5" text-anchor="start" fill="#1F2328" >skill_ids</text>
+<text x="1492.0" y="245.5" font-size="10.5" text-anchor="end" fill="#57606A" >→ taxonomy.id; NONE for 9</text>
+<rect x="640.0" y="400.0" width="260.0" height="118.0" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="640.0" y="400.0" width="260.0" height="40.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="770.0" y="418.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">taxonomy.json · skills[]</text>
+<text x="770.0" y="433.0" font-size="10.5" text-anchor="middle" fill="#57606A" >skillgap/ · 91 rows</text>
+<line x1="674.0" y1="440.0" x2="674.0" y2="518.0" stroke="#3D444D" stroke-width="0.8"/>
+<text x="657.0" y="456.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="682.0" y="456.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">id</text>
+<text x="892.0" y="456.5" font-size="10.5" text-anchor="end" fill="#57606A" >SK01 … SK91</text>
+<text x="682.0" y="474.0" font-size="11.5" text-anchor="start" fill="#1F2328" >en</text>
+<text x="892.0" y="474.0" font-size="10.5" text-anchor="end" fill="#57606A" >English name</text>
+<text x="682.0" y="491.5" font-size="11.5" text-anchor="start" fill="#1F2328" >ar</text>
+<text x="892.0" y="491.5" font-size="10.5" text-anchor="end" fill="#57606A" >Arabic name</text>
+<text x="682.0" y="509.0" font-size="11.5" text-anchor="start" fill="#1F2328" >category</text>
+<text x="892.0" y="509.0" font-size="10.5" text-anchor="end" fill="#57606A" >8 categories</text>
+<rect x="1180.0" y="330.0" width="320.0" height="135.5" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1180.0" y="330.0" width="320.0" height="40.0" rx="0" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1340.0" y="348.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">online_courses.csv</text>
+<text x="1340.0" y="363.0" font-size="10.5" text-anchor="middle" fill="#57606A" >skillgap/ · 47 rows, 28 courses</text>
+<line x1="1214.0" y1="370.0" x2="1214.0" y2="465.5" stroke="#3D444D" stroke-width="0.8"/>
+<text x="1197.0" y="386.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK FK</text>
+<text x="1222.0" y="386.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">skill_id</text>
+<text x="1492.0" y="386.5" font-size="10.5" text-anchor="end" fill="#57606A" >→ taxonomy.id</text>
+<text x="1197.0" y="404.0" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="1222.0" y="404.0" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">url</text>
+<text x="1492.0" y="404.0" font-size="10.5" text-anchor="end" fill="#57606A" >one course, many skills</text>
+<text x="1222.0" y="421.5" font-size="11.5" text-anchor="start" fill="#1F2328" >provider</text>
+<text x="1492.0" y="421.5" font-size="10.5" text-anchor="end" fill="#57606A" >12 providers</text>
+<text x="1222.0" y="439.0" font-size="11.5" text-anchor="start" fill="#1F2328" >course_title</text>
+<text x="1222.0" y="456.5" font-size="11.5" text-anchor="start" fill="#1F2328" >is_free</text>
+<text x="1492.0" y="456.5" font-size="10.5" text-anchor="end" fill="#57606A" >yes | no</text>
+<rect x="1180.0" y="540.0" width="320.0" height="118.0" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1180.0" y="540.0" width="320.0" height="40.0" rx="0" fill="#EEF0F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1340.0" y="558.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">labeled_courses_excluded.csv</text>
+<text x="1340.0" y="573.0" font-size="10.5" text-anchor="middle" fill="#57606A" >skillgap/ · 15 rows</text>
+<line x1="1214.0" y1="580.0" x2="1214.0" y2="658.0" stroke="#3D444D" stroke-width="0.8"/>
+<text x="1197.0" y="596.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="1222.0" y="596.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">course_code</text>
+<text x="1222.0" y="614.0" font-size="11.5" text-anchor="start" fill="#1F2328" >course_title, track</text>
+<text x="1222.0" y="631.5" font-size="11.5" text-anchor="start" fill="#1F2328" >basis</text>
+<text x="1222.0" y="649.0" font-size="11.5" text-anchor="start" fill="#1F2328" >reason</text>
+<text x="1492.0" y="649.0" font-size="10.5" text-anchor="end" fill="#57606A" >why it is left out</text>
+<rect x="560.0" y="620.0" width="340.0" height="153.0" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="560.0" y="620.0" width="340.0" height="40.0" rx="0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="730.0" y="638.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">engine-&lt;key&gt;.json</text>
+<text x="730.0" y="653.0" font-size="10.5" text-anchor="middle" fill="#57606A" >backend/.cache/ · rebuilt when the key changes</text>
+<line x1="594.0" y1="660.0" x2="594.0" y2="773.0" stroke="#3D444D" stroke-width="0.8"/>
+<text x="577.0" y="676.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="602.0" y="676.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">key</text>
+<text x="892.0" y="676.5" font-size="10.5" text-anchor="end" fill="#57606A" >SHA-256 of every input</text>
+<text x="602.0" y="694.0" font-size="11.5" text-anchor="start" fill="#1F2328" >profiles[career]</text>
+<text x="892.0" y="694.0" font-size="10.5" text-anchor="end" fill="#57606A" >8 careers</text>
+<text x="602.0" y="711.5" font-size="11.5" text-anchor="start" fill="#1F2328" >  .posting_count</text>
+<text x="892.0" y="711.5" font-size="10.5" text-anchor="end" fill="#57606A" >10 or 11</text>
+<text x="577.0" y="729.0" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="602.0" y="729.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  .demand[skill_id]</text>
+<text x="892.0" y="729.0" font-size="10.5" text-anchor="end" fill="#57606A" >share 0..1 → taxonomy.id</text>
+<text x="577.0" y="746.5" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="602.0" y="746.5" font-size="11.5" text-anchor="start" fill="#1F2328" >courses[course_code]</text>
+<text x="892.0" y="746.5" font-size="10.5" text-anchor="end" fill="#57606A" >→ labeled_courses</text>
+<text x="602.0" y="764.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  .name, .skills[]</text>
+<text x="892.0" y="764.0" font-size="10.5" text-anchor="end" fill="#57606A" >what extraction found</text>
+<rect x="24.0" y="780.0" width="340.0" height="118.0" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="24.0" y="780.0" width="340.0" height="40.0" rx="0" fill="#EEF0F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="194.0" y="798.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">labeled_postings_excluded.csv</text>
+<text x="194.0" y="813.0" font-size="10.5" text-anchor="middle" fill="#57606A" >test/ · 28 rows screened out</text>
+<line x1="58.0" y1="820.0" x2="58.0" y2="898.0" stroke="#3D444D" stroke-width="0.8"/>
+<text x="41.0" y="836.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="66.0" y="836.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">id</text>
+<text x="66.0" y="854.0" font-size="11.5" text-anchor="start" fill="#1F2328" >the 11 posting columns</text>
+<text x="66.0" y="871.5" font-size="11.5" text-anchor="start" fill="#1F2328" >excluded_reason</text>
+<text x="356.0" y="871.5" font-size="10.5" text-anchor="end" fill="#57606A" >country, remote, too short</text>
+<text x="66.0" y="889.0" font-size="11.5" text-anchor="start" fill="#1F2328" >excluded_on</text>
+<text x="356.0" y="889.0" font-size="10.5" text-anchor="end" fill="#57606A" >date</text>
+<rect x="1100.0" y="790.0" width="400.0" height="170.5" rx="0" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+<rect x="1100.0" y="790.0" width="400.0" height="40.0" rx="0" fill="#EAF5EA" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1300.0" y="808.0" font-size="13" text-anchor="middle" fill="#1F2328" font-weight="bold">shared_preferences</text>
+<text x="1300.0" y="823.0" font-size="10.5" text-anchor="middle" fill="#57606A" >on the iPhone (NSUserDefaults) · key-value</text>
+<line x1="1134.0" y1="830.0" x2="1134.0" y2="960.5" stroke="#3D444D" stroke-width="0.8"/>
+<text x="1117.0" y="846.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="1142.0" y="846.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">student_profile</text>
+<text x="1492.0" y="846.5" font-size="10.5" text-anchor="end" fill="#57606A" >JSON, one per device</text>
+<text x="1117.0" y="864.0" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="1142.0" y="864.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  careers[1..3]</text>
+<text x="1492.0" y="864.0" font-size="10.5" text-anchor="end" fill="#57606A" >→ a posting career</text>
+<text x="1117.0" y="881.5" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="1142.0" y="881.5" font-size="11.5" text-anchor="start" fill="#1F2328" >  completed_courses[]</text>
+<text x="1492.0" y="881.5" font-size="10.5" text-anchor="end" fill="#57606A" >→ course_code</text>
+<text x="1117.0" y="899.0" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="1142.0" y="899.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  planned_courses[]</text>
+<text x="1492.0" y="899.0" font-size="10.5" text-anchor="end" fill="#57606A" >→ course_code</text>
+<text x="1117.0" y="916.5" font-size="9.5" text-anchor="middle" fill="#57606A" font-weight="bold">FK</text>
+<text x="1142.0" y="916.5" font-size="11.5" text-anchor="start" fill="#1F2328" >  self_reported_skills[]</text>
+<text x="1492.0" y="916.5" font-size="10.5" text-anchor="end" fill="#57606A" >→ taxonomy.id</text>
+<text x="1142.0" y="934.0" font-size="11.5" text-anchor="start" fill="#1F2328" >  major</text>
+<text x="1492.0" y="934.0" font-size="10.5" text-anchor="end" fill="#57606A" >optional</text>
+<text x="1117.0" y="951.5" font-size="9.5" text-anchor="middle" fill="#8A5300" font-weight="bold">PK</text>
+<text x="1142.0" y="951.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold" text-decoration="underline">language</text>
+<text x="1492.0" y="951.5" font-size="10.5" text-anchor="end" fill="#57606A" >en | ar</text>
+<path d="M364.0 224.0 L520.0 224.0 L520.0 452.5 L640.0 452.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-zmany)" marker-start="url(#cf-zmany)"/>
+<text x="528.0" y="218.0" font-size="10.5" text-anchor="start" fill="#57606A" >skill_ids → id (hand labels)</text>
+<path d="M1180.0 241.5 L980.0 241.5 L980.0 470.0 L900.0 470.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-zmany)" marker-start="url(#cf-zmany)"/>
+<text x="988.0" y="235.5" font-size="10.5" text-anchor="start" fill="#57606A" >skill_ids → id</text>
+<path d="M1180.0 382.5 L1010.0 382.5 L1010.0 505.0 L900.0 505.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-one)" marker-start="url(#cf-many)"/>
+<text x="1018.0" y="376.5" font-size="10.5" text-anchor="start" fill="#57606A" >skill_id → id</text>
+<path d="M770.0 620.0 L770.0 518.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-one)" marker-start="url(#cf-zmany)"/>
+<text x="778.0" y="573.0" font-size="10.5" text-anchor="start" fill="#57606A" >demand[skill_id] → id</text>
+<path d="M296.0 324.5 L296.0 690.0 L560.0 690.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-one)" marker-start="url(#cf-many)"/>
+<text x="304.0" y="684.0" font-size="10.5" text-anchor="start" fill="#57606A" >a career&#x27;s postings → its profile</text>
+<path d="M900.0 742.5 L1530.0 742.5 L1530.0 154.0 L1500.0 154.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#cf-one)" marker-start="url(#cf-one)"/>
+<text x="908.0" y="736.5" font-size="10.5" text-anchor="start" fill="#57606A" >one entry per catalog course</text>
+<path d="M770.0 237.0 L770.0 400.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="778.0" y="318.5" font-size="10.5" text-anchor="start" fill="#57606A" >«measured on» 91 skills;</text>
+<text x="778.0" y="332.5" font-size="10.5" text-anchor="start" fill="#57606A" >a mismatch stops start-up</text>
+<path d="M560 820 H880 L890 830 V942.5 H560 Z" fill="#FFFBE6" stroke="#3D444D" stroke-width="1"/>
+<path d="M880 820 V830 H890" fill="none" stroke="#3D444D" stroke-width="1"/>
+<text x="570.0" y="837.5" font-size="11.5" text-anchor="start" fill="#1F2328" >The server stores nothing about students.</text>
+<text x="570.0" y="853.0" font-size="11.5" text-anchor="start" fill="#1F2328" >profiles.sqlite3 and the /profiles endpoints</text>
+<text x="570.0" y="868.5" font-size="11.5" text-anchor="start" fill="#1F2328" >were removed on 1 October 2026.</text>
+<text x="570.0" y="884.0" font-size="11.5" text-anchor="start" fill="#1F2328" ></text>
+<text x="570.0" y="899.5" font-size="11.5" text-anchor="start" fill="#1F2328" >The phone&#x27;s ids are references by value:</text>
+<text x="570.0" y="915.0" font-size="11.5" text-anchor="start" fill="#1F2328" >the API checks them on every request (422),</text>
+<text x="570.0" y="930.5" font-size="11.5" text-anchor="start" fill="#1F2328" >and the app drops ids it no longer serves.</text>
+</svg>

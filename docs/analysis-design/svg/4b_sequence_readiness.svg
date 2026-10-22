@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1465" viewBox="0 0 1560 1465" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1560" height="1465" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Sequence diagram: home asks POST /gap for the main career and shows three gaps</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >The profile travels in the request; the API reads it twice (both sources, then courses alone) and stores nothing.</text>
+<rect x="20.0" y="1047.0" width="1015.0" height="204.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="20.0" y="1267.0" width="830.0" height="144.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<circle cx="70" cy="89" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="98.0" x2="70.0" y2="124.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="54.0" y1="107.0" x2="86.0" y2="107.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="57.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="83.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="70.0" y="158.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<line x1="70.0" y1="196.0" x2="70.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="175.4" y="84.0" width="119.2" height="28.5" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="235.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">DashboardScreen</text>
+<line x1="235.0" y1="112.5" x2="235.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="351.2" y="84.0" width="137.6" height="28.5" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="420.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">servedProfileProvider</text>
+<line x1="420.0" y1="112.5" x2="420.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="520.4" y="84.0" width="179.1" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="610.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">gapReportProvider</text>
+<text x="610.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >family&lt;GapReport, GapQuery&gt;</text>
+<line x1="610.0" y1="127.0" x2="610.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="749.0" y="84.0" width="102.1" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="800.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">GapRepository</text>
+<text x="800.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >+ ApiClient</text>
+<line x1="800.0" y1="127.0" x2="800.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="946.6" y="84.0" width="76.9" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="985.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">main.py</text>
+<text x="985.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >POST /gap</text>
+<line x1="985.0" y1="127.0" x2="985.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1126.5" y="84.0" width="87.0" height="28.5" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1170.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">EngineState</text>
+<line x1="1170.0" y1="112.5" x2="1170.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1333.6" y="84.0" width="92.9" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1380.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">skillgap</text>
+<text x="1380.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >analyze_gap()</text>
+<line x1="1380.0" y1="127.0" x2="1380.0" y2="1445.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="415.0" y="238.0" width="10.0" height="111.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1375.0" y="674.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1375.0" y="755.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1165.0" y="627.0" width="10.0" height="200.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="980.0" y="520.0" width="10.0" height="401.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="795.0" y="473.0" width="10.0" height="482.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="605.0" y="439.0" width="10.0" height="550.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="230.0" y="204.0" width="10.0" height="1181.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<path d="M70.0 206.0 L230.0 206.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="150.0" y="201.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">open the app (profile saved)</text>
+<path d="M240.0 240.0 L415.0 240.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="327.5" y="235.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch()</text>
+<path d="M431.0 274.0 L457.0 274.0 L457.0 296.0 L436.0 296.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="463.0" y="278.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">restrictProfile(saved): drop ids the</text>
+<text x="463.0" y="291.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">API no longer serves (ServedIds,</text>
+<text x="463.0" y="304.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">from GET /careers, /courses, /skills)</text>
+<path d="M415.0 347.0 L240.0 347.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="327.5" y="342.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">StudentProfile</text>
+<path d="M246.0 381.0 L272.0 381.0 L272.0 403.0 L251.0 403.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="278.0" y="385.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">gapQueryFor(profile):</text>
+<text x="278.0" y="398.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">main career, sorted ids</text>
+<path d="M240.0 441.0 L605.0 441.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="422.5" y="436.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch(gapReportProvider(query))</text>
+<path d="M615.0 475.0 L795.0 475.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="705.0" y="470.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">fetch(servedQuery(query))</text>
+<path d="M805.0 522.0 L980.0 522.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="892.5" y="517.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">self_reported_skills}</text>
+<text x="892.5" y="504.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">POST /gap {career, completed_courses,</text>
+<path d="M996.0 556.0 L1022.0 556.0 L1022.0 578.0 L1001.0 578.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1028.0" y="560.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">checked(): dedupe;</text>
+<text x="1028.0" y="573.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">422 on an unknown id</text>
+<path d="M990.0 629.0 L1165.0 629.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1077.5" y="624.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">codes, reported)</text>
+<text x="1077.5" y="611.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">gap_by_source(career,</text>
+<path d="M1175.0 676.0 L1375.0 676.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1275.0" y="671.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">courses ∪ reported)</text>
+<text x="1275.0" y="658.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">analyze_gap(profile,</text>
+<path d="M1375.0 710.0 L1175.0 710.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1275.0" y="705.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">GapResult (combined)</text>
+<path d="M1175.0 757.0 L1375.0 757.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1275.0" y="752.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">course skills)</text>
+<text x="1275.0" y="739.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">analyze_gap(profile,</text>
+<path d="M1375.0 791.0 L1175.0 791.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1275.0" y="786.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">GapResult (courses only)</text>
+<path d="M1165.0 825.0 L990.0 825.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1077.5" y="820.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">SourcedGap</text>
+<path d="M996.0 859.0 L1022.0 859.0 L1022.0 881.0 L1001.0 881.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1028.0" y="863.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">gap_out(): tag sources,</text>
+<text x="1028.0" y="876.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">percent(), validation()</text>
+<path d="M980.0 919.0 L805.0 919.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="892.5" y="914.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">200 GapOut (JSON)</text>
+<path d="M795.0 953.0 L615.0 953.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="705.0" y="948.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">GapReport.fromJson(...)</text>
+<path d="M605.0 987.0 L240.0 987.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="422.5" y="982.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">AsyncData(report)</text>
+<path d="M230.0 1021.0 L70.0 1021.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="150.0" y="1016.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">quality flag, readiness, top three gaps</text>
+<path d="M240.0 1108.0 L610.0 1108.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="425.0" y="1103.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">query with planned courses))</text>
+<text x="425.0" y="1090.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">watch(gapReportProvider(</text>
+<path d="M610.0 1155.0 L985.0 1155.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="797.5" y="1150.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">+ planned courses</text>
+<text x="797.5" y="1137.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">POST /gap with completed</text>
+<path d="M985.0 1189.0 L610.0 1189.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="797.5" y="1184.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">projected GapOut</text>
+<path d="M610.0 1223.0 L240.0 1223.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="425.0" y="1218.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">now and projected, side by side</text>
+<path d="M800.0 1315.0 L610.0 1315.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="705.0" y="1310.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">ApiException</text>
+<path d="M610.0 1349.0 L240.0 1349.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="425.0" y="1344.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">AsyncError</text>
+<path d="M230.0 1383.0 L70.0 1383.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="150.0" y="1378.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error with “Try again” (retryGap)</text>
+<path d="M20 1047 H53.10395 V1059 L45.10395 1067 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="1061.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">opt</text>
+<text x="61.1" y="1061.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[courses are planned]</text>
+<path d="M20 1267 H66.774805 V1279 L58.774805 1287 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="1281.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">break</text>
+<text x="74.8" y="1281.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[the API is unreachable or answers non-2xx]</text>
+</svg>

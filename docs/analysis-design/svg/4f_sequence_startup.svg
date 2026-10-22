@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="1362" viewBox="0 0 1540 1362" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1540" height="1362" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Sequence diagram: server start-up builds EngineState once, from the cache when it can</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >The model is created only when no cache file matches the key; a warm restart never loads it.</text>
+<rect x="20.0" y="582.0" width="1470.0" height="517.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.1"/>
+<line x1="20.0" y1="673.0" x2="1490.0" y2="673.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="6 4"/>
+<circle cx="70" cy="89" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="98.0" x2="70.0" y2="124.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="54.0" y1="107.0" x2="86.0" y2="107.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="57.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="70.0" y1="124.0" x2="83.0" y2="142.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="70.0" y="158.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Researcher</text>
+<line x1="70.0" y1="196.0" x2="70.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="189.1" y="84.0" width="61.7" height="28.5" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="220.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Uvicorn</text>
+<line x1="220.0" y1="112.5" x2="220.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="336.1" y="84.0" width="87.7" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="380.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">FastAPI app</text>
+<text x="380.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >lifespan()</text>
+<line x1="380.0" y1="127.0" x2="380.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="518.4" y="84.0" width="83.3" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="560.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">engine</text>
+<text x="560.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >build_state()</text>
+<line x1="560.0" y1="127.0" x2="560.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="719.5" y="84.0" width="61.0" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="750.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">skillgap</text>
+<text x="750.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >module</text>
+<line x1="750.0" y1="127.0" x2="750.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="863.4" y="84.0" width="133.1" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="930.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">online</text>
+<text x="930.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >load_online_courses()</text>
+<line x1="930.0" y1="127.0" x2="930.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1043.0" y="84.0" width="114.0" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1100.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">cache file</text>
+<text x="1100.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >engine-&lt;key&gt;.json</text>
+<line x1="1100.0" y1="127.0" x2="1100.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1204.4" y="84.0" width="131.2" height="43.0" rx="3" fill="#E7EEF9" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1270.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Embedder</text>
+<text x="1270.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >SentenceTransformer</text>
+<line x1="1270.0" y1="127.0" x2="1270.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="1391.7" y="84.0" width="96.6" height="43.0" rx="3" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1440.0" y="101.0" font-size="11.5" text-anchor="middle" fill="#1F2328" font-weight="bold">Hugging Face</text>
+<text x="1440.0" y="115.5" font-size="10.5" text-anchor="middle" fill="#57606A" >Hub</text>
+<line x1="1440.0" y1="127.0" x2="1440.0" y2="1342.0" stroke="#3D444D" stroke-width="1" stroke-dasharray="5 5"/>
+<rect x="745.0" y="332.0" width="10.0" height="51.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="925.0" y="426.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1095.0" y="554.0" width="10.0" height="91.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1265.0" y="711.0" width="10.0" height="85.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1265.0" y="873.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="745.0" y="839.0" width="10.0" height="106.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="745.0" y="1001.0" width="10.0" height="38.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="1095.0" y="1069.0" width="10.0" height="22.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="555.0" y="285.0" width="10.0" height="900.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="375.0" y="251.0" width="10.0" height="1015.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<rect x="215.0" y="217.0" width="10.0" height="1101.0" rx="0" fill="#FFFFFF" stroke="#3D444D" stroke-width="1.1"/>
+<path d="M70.0 219.0 L215.0 219.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="142.5" y="214.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">backend.main:app</text>
+<text x="142.5" y="201.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">python -m uvicorn</text>
+<path d="M225.0 253.0 L375.0 253.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="300.0" y="248.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">start lifespan</text>
+<path d="M385.0 287.0 L555.0 287.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="470.0" y="282.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">state_factory()</text>
+<path d="M565.0 334.0 L745.0 334.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="655.0" y="329.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">&quot;postings&quot;, &quot;courses&quot;)</text>
+<text x="655.0" y="316.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">load_match_params(</text>
+<path d="M745.0 381.0 L565.0 381.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="655.0" y="376.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">when swept on another taxonomy</text>
+<text x="655.0" y="363.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">params, or StaleConfigError</text>
+<path d="M565.0 428.0 L925.0 428.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="745.0" y="423.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">path, skill ids)</text>
+<text x="745.0" y="410.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">load_online_courses(</text>
+<path d="M925.0 462.0 L565.0 462.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="745.0" y="457.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">OnlineCatalog (28 courses)</text>
+<path d="M571.0 496.0 L597.0 496.0 L597.0 518.0 L576.0 518.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="603.0" y="500.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">read postings + courses;</text>
+<text x="603.0" y="513.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">_course_labels(); _cache_key()</text>
+<path d="M565.0 556.0 L1095.0 556.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="830.0" y="551.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">_load_cache(key)</text>
+<path d="M1095.0 643.0 L565.0 643.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="830.0" y="638.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">course skills</text>
+<text x="830.0" y="625.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">career profiles, extracted</text>
+<path d="M565.0 713.0 L1265.0 713.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="915.0" y="708.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Embedder(model)</text>
+<path d="M1275.0 760.0 L1440.0 760.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1357.5" y="755.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(first time only)</text>
+<text x="1357.5" y="742.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">download multilingual-e5-base</text>
+<path d="M1265.0 794.0 L565.0 794.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="915.0" y="789.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">embedder</text>
+<path d="M565.0 841.0 L745.0 841.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="655.0" y="836.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">embed en + ar labels</text>
+<text x="655.0" y="823.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Taxonomy(path, embedder):</text>
+<path d="M755.0 875.0 L1265.0 875.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="1010.0" y="870.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">encode(labels)</text>
+<path d="M1265.0 909.0 L755.0 909.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="1010.0" y="904.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">vectors</text>
+<path d="M745.0 943.0 L565.0 943.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="655.0" y="938.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">taxonomy</text>
+<path d="M565.0 1003.0 L745.0 1003.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="655.0" y="998.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">per course</text>
+<text x="655.0" y="985.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">per career; skills_from_courses</text>
+<text x="655.0" y="972.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">_extract(): build_career_profile</text>
+<path d="M745.0 1037.0 L565.0 1037.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="655.0" y="1032.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">profiles, extracted</text>
+<path d="M565.0 1071.0 L1095.0 1071.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="830.0" y="1066.0" font-size="11" text-anchor="middle" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">_save_cache(key, ...)</text>
+<path d="M571.0 1123.0 L597.0 1123.0 L597.0 1145.0 L576.0 1145.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="603.0" y="1127.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">courses: hand labels where</text>
+<text x="603.0" y="1140.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">present, else extraction; tracks</text>
+<path d="M555.0 1183.0 L385.0 1183.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="470.0" y="1178.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">EngineState</text>
+<path d="M391.0 1217.0 L417.0 1217.0 L417.0 1239.0 L396.0 1239.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="423.0" y="1221.0" font-size="11" text-anchor="start" fill="#1F2328" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">app.state.engine = state</text>
+<path d="M375.0 1264.0 L225.0 1264.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="300.0" y="1259.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">yield: ready</text>
+<path d="M215.0 1298.0 L70.0 1298.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#open)"/>
+<text x="142.5" y="1293.0" font-size="11" text-anchor="middle" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Application startup complete</text>
+<path d="M20 582 H48.99408 V594 L40.99408 602 H20 Z" fill="#F3F4F6" stroke="#3D444D" stroke-width="1.1"/>
+<text x="27.0" y="596.5" font-size="11.5" text-anchor="start" fill="#1F2328" font-weight="bold">alt</text>
+<text x="57.0" y="596.5" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[the file exists and its key matches]</text>
+<text x="30.0" y="688.0" font-size="11.5" text-anchor="start" fill="#57606A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">[miss: absent, half-written or another key]</text>
+</svg>

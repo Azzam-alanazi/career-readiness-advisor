@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1330" viewBox="0 0 1120 1330" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1120" height="1330" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Activity diagram: engine start-up loads the model only when the cache misses</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >build_state(), run once per server process before the first request. Any bad input stops start-up rather than serving around it.</text>
+<circle cx="400" cy="100" r="9" fill="#1F2328"/>
+<rect x="288.6" y="130.5" width="222.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="151.2" font-size="12" text-anchor="middle" fill="#1F2328" >Read config.json and the matching</text>
+<text x="400.0" y="166.8" font-size="12" text-anchor="middle" fill="#1F2328" >parameters for postings and courses</text>
+<path d="M400.0 109.0 L400.0 130.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M400 210.0 L417.0 227 L400 244.0 L383.0 227 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M400.0 179.5 L400.0 210.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="759.0" y="202.5" width="162.1" height="49.0" rx="12" fill="#FCE8E6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="840.0" y="223.2" font-size="12" text-anchor="middle" fill="#1F2328" >StaleConfigError:</text>
+<text x="840.0" y="238.8" font-size="12" text-anchor="middle" fill="#1F2328" >the service does not start</text>
+<path d="M417.0 227.0 L759.0 227.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="588.0" y="219.0" font-size="11" text-anchor="middle" fill="#57606A" >[swept on another taxonomy]</text>
+<circle cx="955.0319999999999" cy="227" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="955.0319999999999" cy="227" r="6.5" fill="#1F2328"/>
+<path d="M921.0 227.0 L944.0 227.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="305.0" y="272.5" width="190.1" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="293.2" font-size="12" text-anchor="middle" fill="#1F2328" >Read taxonomy.json: 91 skills,</text>
+<text x="400.0" y="308.8" font-size="12" text-anchor="middle" fill="#1F2328" >English and Arabic names</text>
+<path d="M400.0 244.0 L400.0 272.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="408.0" y="258.0" font-size="11" text-anchor="start" fill="#57606A" >[current]</text>
+<rect x="320.0" y="345.2" width="160.1" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="366.0" font-size="12" text-anchor="middle" fill="#1F2328" >Load online_courses.csv</text>
+<path d="M400.0 321.5 L400.0 345.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M400 410.0 L417.0 427 L400 444.0 L383.0 427 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M400.0 378.8 L400.0 410.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="773.0" y="410.2" width="134.0" height="33.5" rx="12" fill="#FCE8E6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="840.0" y="431.0" font-size="12" text-anchor="middle" fill="#1F2328" >OnlineCoursesError</text>
+<path d="M417.0 427.0 L773.0 427.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="595.0" y="419.0" font-size="11" text-anchor="middle" fill="#57606A" >[a row is unreadable]</text>
+<circle cx="941.01" cy="427" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="941.01" cy="427" r="6.5" fill="#1F2328"/>
+<path d="M907.0 427.0 L930.0 427.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="278.3" y="472.5" width="243.5" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="493.2" font-size="12" text-anchor="middle" fill="#1F2328" >Read the 82 postings and the 33 catalog</text>
+<text x="400.0" y="508.8" font-size="12" text-anchor="middle" fill="#1F2328" >courses with their hand labels</text>
+<path d="M400.0 444.0 L400.0 472.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="408.0" y="458.0" font-size="11" text-anchor="start" fill="#57606A" >[valid]</text>
+<path d="M400 550.0 L417.0 567 L400 584.0 L383.0 567 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M400.0 521.5 L400.0 550.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="775.7" y="550.2" width="128.7" height="33.5" rx="12" fill="#FCE8E6" stroke="#3D444D" stroke-width="1.2"/>
+<text x="840.0" y="571.0" font-size="12" text-anchor="middle" fill="#1F2328" >CourseLabelsError</text>
+<path d="M417.0 567.0 L775.7 567.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="596.3" y="559.0" font-size="11" text-anchor="middle" fill="#57606A" >[a label names an unknown skill]</text>
+<circle cx="938.346" cy="567" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="938.346" cy="567" r="6.5" fill="#1F2328"/>
+<path d="M904.3 567.0 L927.3 567.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="259.9" y="612.5" width="280.1" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="633.2" font-size="12" text-anchor="middle" fill="#1F2328" >Hash every input into the cache key: taxonomy,</text>
+<text x="400.0" y="648.8" font-size="12" text-anchor="middle" fill="#1F2328" >config, engine source, texts and model name</text>
+<path d="M400.0 584.0 L400.0 612.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="408.0" y="598.0" font-size="11" text-anchor="start" fill="#57606A" >[valid]</text>
+<path d="M400 690.0 L417.0 707 L400 724.0 L383.0 707 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M400.0 661.5 L400.0 690.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="741.6" y="682.5" width="196.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="840.0" y="703.2" font-size="12" text-anchor="middle" fill="#1F2328" >Load career profiles and course</text>
+<text x="840.0" y="718.8" font-size="12" text-anchor="middle" fill="#1F2328" >skills from engine-&lt;key&gt;.json</text>
+<path d="M417.0 707.0 L741.6 707.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="579.3" y="699.0" font-size="11" text-anchor="middle" fill="#57606A" >[cache file for this key]</text>
+<rect x="150.0" y="744.0" width="500.0" height="440.0" rx="14" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="166.0" y="762.0" font-size="11.5" text-anchor="start" fill="#57606A" font-style="italic">model work, only on a cache miss</text>
+<rect x="269.3" y="770.5" width="261.4" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="791.2" font-size="12" text-anchor="middle" fill="#1F2328" >Load multilingual-e5-base and embed every</text>
+<text x="400.0" y="806.8" font-size="12" text-anchor="middle" fill="#1F2328" >skill&#x27;s English and Arabic labels</text>
+<path d="M400.0 724.0 L400.0 770.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="392.0" y="738.0" font-size="11" text-anchor="end" fill="#57606A" >[miss]</text>
+<rect x="180.0" y="840.0" width="440.0" height="205.0" rx="10" fill="none" stroke="#3D444D" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="194.0" y="858.0" font-size="11" text-anchor="start" fill="#57606A" >«iterative» for each career</text>
+<rect x="306.6" y="868.2" width="186.7" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="889.0" font-size="12" text-anchor="middle" fill="#1F2328" >Split each posting into chunks</text>
+<path d="M400.0 819.5 L400.0 868.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="271.3" y="925.5" width="257.5" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="946.2" font-size="12" text-anchor="middle" fill="#1F2328" >Match each chunk to at most one skill</text>
+<text x="400.0" y="961.8" font-size="12" text-anchor="middle" fill="#1F2328" >(chunk_top1, threshold 0.814, margin 0.01)</text>
+<path d="M400.0 901.8 L400.0 925.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="261.8" y="995.2" width="276.3" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="1016.0" font-size="12" text-anchor="middle" fill="#1F2328" >Demand = postings naming the skill ÷ postings</text>
+<path d="M400.0 974.5 L400.0 995.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="306.3" y="1055.5" width="187.4" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="1076.2" font-size="12" text-anchor="middle" fill="#1F2328" >Map each course title to skills</text>
+<text x="400.0" y="1091.8" font-size="12" text-anchor="middle" fill="#1F2328" >(skill_centric, threshold 0.894)</text>
+<path d="M400.0 1028.8 L400.0 1055.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="321.3" y="1128.2" width="157.4" height="33.5" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="1149.0" font-size="12" text-anchor="middle" fill="#1F2328" >Write engine-&lt;key&gt;.json</text>
+<path d="M400.0 1104.5 L400.0 1128.2" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M400 1198.0 L417.0 1215 L400 1232.0 L383.0 1215 Z" fill="#FFF1DD" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M400.0 1161.8 L400.0 1198.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<path d="M840.0 731.5 L840.0 1215.0 L417.0 1215.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<rect x="252.1" y="1250.5" width="295.7" height="49.0" rx="12" fill="#E9F4EC" stroke="#3D444D" stroke-width="1.2"/>
+<text x="400.0" y="1271.2" font-size="12" text-anchor="middle" fill="#1F2328" >Each course&#x27;s skills: its hand labels when labelled,</text>
+<text x="400.0" y="1286.8" font-size="12" text-anchor="middle" fill="#1F2328" >otherwise extraction; add its track</text>
+<path d="M400.0 1232.0 L400.0 1250.5" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<circle cx="730" cy="1275.0" r="11" fill="#fff" stroke="#1F2328" stroke-width="1.4"/>
+<circle cx="730" cy="1275.0" r="6.5" fill="#1F2328"/>
+<path d="M547.9 1275.0 L719.0 1275.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#filled)"/>
+<text x="751.0" y="1279.0" font-size="11.5" text-anchor="start" fill="#1F2328" >EngineState ready: serve requests</text>
+</svg>

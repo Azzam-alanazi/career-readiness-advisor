@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1120" viewBox="0 0 1500 1120" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L11 6 L1 11" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="filled" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M0 1 L11 6 L0 11 z" fill="#3D444D"/>
+</marker>
+<marker id="hollow" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 1 L15 8 L1 15 z" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="diamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#3D444D" stroke="#3D444D" stroke-width="1"/>
+</marker>
+<marker id="odiamond" viewBox="0 0 22 12" refX="21" refY="6" markerWidth="22" markerHeight="12"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M1 6 L11 1 L21 6 L11 11 z" fill="#fff" stroke="#3D444D" stroke-width="1.2"/>
+</marker>
+<marker id="cf-many" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M19 1 L5 8 L19 15 M5 8 L19 8 M3 2 L3 14" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zmany" viewBox="0 0 26 16" refX="25" refY="8" markerWidth="26" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="6" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M25 1 L12 8 L25 15 M10 8 L25 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-one" viewBox="0 0 20 16" refX="19" refY="8" markerWidth="20" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <path d="M8 2 L8 14 M13 2 L13 14 M0 8 L19 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+<marker id="cf-zone" viewBox="0 0 24 16" refX="23" refY="8" markerWidth="24" markerHeight="16"
+        markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+  <circle cx="7" cy="8" r="4" fill="#fff" stroke="#3D444D" stroke-width="1.3"/>
+  <path d="M16 2 L16 14 M11 8 L23 8" fill="none" stroke="#3D444D" stroke-width="1.3"/>
+</marker>
+</defs>
+<rect width="1500" height="1120" fill="#FFFFFF"/>
+<text x="24.0" y="34.0" font-size="17" text-anchor="start" fill="#1F2328" font-weight="bold">Use case diagram: what students and department staff do with the app</text>
+<text x="24.0" y="56.0" font-size="12.5" text-anchor="start" fill="#57606A" >Solid lines associate an actor with a use case. Dashed arrows are «include» (always part of it) and «extend» (optional, under a condition).</text>
+<rect x="250.0" y="84.0" width="1000.0" height="950.0" rx="0" fill="none" stroke="#3D444D" stroke-width="1.4"/>
+<text x="750.0" y="108.0" font-size="14" text-anchor="middle" fill="#1F2328" font-weight="bold">Career Readiness Advisor (iOS app + skill-gap API)</text>
+<circle cx="110" cy="429" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="438.0" x2="110.0" y2="464.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="94.0" y1="447.0" x2="126.0" y2="447.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="464.0" x2="97.0" y2="482.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="464.0" x2="123.0" y2="482.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="110.0" y="498.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">Student</text>
+<circle cx="1390" cy="749" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="1390.0" y1="758.0" x2="1390.0" y2="784.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="1374.0" y1="767.0" x2="1406.0" y2="767.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="1390.0" y1="784.0" x2="1377.0" y2="802.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="1390.0" y1="784.0" x2="1403.0" y2="802.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="1390.0" y="818.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">Department</text>
+<text x="1390.0" y="833.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">staff</text>
+<circle cx="110" cy="889" r="9" fill="#fff" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="898.0" x2="110.0" y2="924.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="94.0" y1="907.0" x2="126.0" y2="907.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="924.0" x2="97.0" y2="942.0" stroke="#3D444D" stroke-width="1.4"/>
+<line x1="110.0" y1="924.0" x2="123.0" y2="942.0" stroke="#3D444D" stroke-width="1.4"/>
+<text x="110.0" y="958.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">App user</text>
+<rect x="1296.0" y="560.0" width="150.0" height="47.0" rx="4" fill="#F3F3F3" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1371.0" y="576.0" font-size="11" text-anchor="middle" fill="#57606A" >«system»</text>
+<text x="1371.0" y="593.0" font-size="12" text-anchor="middle" fill="#1F2328" font-weight="bold">Web browser</text>
+<ellipse cx="430" cy="150" rx="59.5" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="146.5" font-size="12" text-anchor="middle" fill="#1F2328" >Create profile</text>
+<text x="430.0" y="161.5" font-size="12" text-anchor="middle" fill="#1F2328" >(first launch)</text>
+<ellipse cx="430" cy="250" rx="50.4" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="254.0" font-size="12" text-anchor="middle" fill="#1F2328" >Edit profile</text>
+<ellipse cx="430" cy="370" rx="87.4" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="374.0" font-size="12" text-anchor="middle" fill="#1F2328" >View home dashboard</text>
+<ellipse cx="430" cy="470" rx="76.0" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="474.0" font-size="12" text-anchor="middle" fill="#1F2328" >View full readiness</text>
+<ellipse cx="430" cy="590" rx="57.9" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="586.5" font-size="12" text-anchor="middle" fill="#1F2328" >Plan courses</text>
+<text x="430.0" y="601.5" font-size="12" text-anchor="middle" fill="#1F2328" >(what-if)</text>
+<ellipse cx="430" cy="700" rx="93.7" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="704.0" font-size="12" text-anchor="middle" fill="#1F2328" >View suggested courses</text>
+<ellipse cx="430" cy="810" rx="58.7" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="430.0" y="814.0" font-size="12" text-anchor="middle" fill="#1F2328" >Delete profile</text>
+<ellipse cx="760" cy="975" rx="92.5" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="971.5" font-size="12" text-anchor="middle" fill="#1F2328" >Change language</text>
+<text x="760.0" y="986.5" font-size="12" text-anchor="middle" fill="#1F2328" >(English or Arabic, RTL)</text>
+<ellipse cx="760" cy="200" rx="70.9" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="204.0" font-size="12" text-anchor="middle" fill="#1F2328" >Fill in profile form</text>
+<ellipse cx="760" cy="470" rx="71.7" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="466.5" font-size="12" text-anchor="middle" fill="#1F2328" >Compare careers</text>
+<text x="760.0" y="481.5" font-size="12" text-anchor="middle" fill="#1F2328" >side by side</text>
+<ellipse cx="760" cy="590" rx="107.1" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="586.5" font-size="12" text-anchor="middle" fill="#1F2328" >See projected readiness and</text>
+<text x="760.0" y="601.5" font-size="12" text-anchor="middle" fill="#1F2328" >the gaps each course closes</text>
+<ellipse cx="760" cy="700" rx="88.2" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="704.0" font-size="12" text-anchor="middle" fill="#1F2328" >Open an online course</text>
+<ellipse cx="760" cy="810" rx="68.5" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="814.0" font-size="12" text-anchor="middle" fill="#1F2328" >Confirm deletion</text>
+<ellipse cx="1080" cy="112" rx="106.7" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1080.0" y="116.0" font-size="12" text-anchor="middle" fill="#1F2328" >Choose 1 to 3 target careers</text>
+<ellipse cx="1080" cy="182" rx="98.1" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1080.0" y="186.0" font-size="12" text-anchor="middle" fill="#1F2328" >Select completed courses</text>
+<ellipse cx="1080" cy="252" rx="90.6" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1080.0" y="256.0" font-size="12" text-anchor="middle" fill="#1F2328" >Report self-taught skills</text>
+<ellipse cx="760" cy="300" rx="53.6" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="760.0" y="304.0" font-size="12" text-anchor="middle" fill="#1F2328" >Enter major</text>
+<path d="M980 330 H1170 L1180 340 V437.0 H980 Z" fill="#FFFBE6" stroke="#3D444D" stroke-width="1"/>
+<path d="M1170 330 V340 H1180" fill="none" stroke="#3D444D" stroke-width="1"/>
+<text x="990.0" y="347.5" font-size="11.5" text-anchor="start" fill="#1F2328" >While selecting courses:</text>
+<text x="990.0" y="363.0" font-size="11.5" text-anchor="start" fill="#1F2328" >· search by code or title,</text>
+<text x="990.0" y="378.5" font-size="11.5" text-anchor="start" fill="#1F2328" >  Arabic-Indic digits too</text>
+<text x="990.0" y="394.0" font-size="11.5" text-anchor="start" fill="#1F2328" >· select all shown</text>
+<text x="990.0" y="409.5" font-size="11.5" text-anchor="start" fill="#1F2328" >· this level and below</text>
+<text x="990.0" y="425.0" font-size="11.5" text-anchor="start" fill="#1F2328" >· review, clear and undo</text>
+<path d="M1178.1 182.0 L1232.0 182.0 L1232.0 370.0 L1180.0 370.0" fill="none" stroke="#3D444D" stroke-width="1" stroke-dasharray="3 3"/>
+<ellipse cx="1080" cy="770" rx="84.3" ry="28.0" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1080.0" y="766.5" font-size="12" text-anchor="middle" fill="#1F2328" >View curriculum gaps</text>
+<text x="1080.0" y="781.5" font-size="12" text-anchor="middle" fill="#1F2328" >and coverage</text>
+<ellipse cx="1080" cy="880" rx="78.0" ry="20.5" fill="#FFF7DD" stroke="#3D444D" stroke-width="1.2"/>
+<text x="1080.0" y="884.0" font-size="12" text-anchor="middle" fill="#1F2328" >Filter by one career</text>
+<path d="M130.0 454.0 L374.5 150.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L383.6 250.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L346.6 370.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L358.0 470.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L376.1 590.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L340.3 700.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 454.0 L375.3 810.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M1370.0 774.0 L1164.3 770.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M130.0 914.0 L669.5 975.0" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M848.2 700.0 L1296.0 583.5" fill="none" stroke="#3D444D" stroke-width="1.2"/>
+<path d="M110.0 530.0 L110.0 876.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#hollow)"/>
+<path d="M1390.0 850.0 L1390.0 1080.0 L150.0 1080.0 L150.0 940.0 L132.0 940.0" fill="none" stroke="#3D444D" stroke-width="1.2" marker-end="url(#hollow)"/>
+<path d="M489.5 150.0 L695.1 192.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="600.0" y="154.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M480.4 250.0 L695.1 208.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="600.0" y="244.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M824.9 190.0 L979.3 118.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="900.0" y="134.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M830.9 198.0 L981.9 186.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="918.0" y="176.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M989.4 248.0 L828.9 206.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="930.0" y="256.0" font-size="11" text-anchor="middle" fill="#57606A" >«extend»</text>
+<path d="M760.0 279.5 L760.0 220.5" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="768.0" y="250.0" font-size="11" text-anchor="start" fill="#57606A" >«extend»</text>
+<path d="M688.3 470.0 L506.0 470.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="588.0" y="458.0" font-size="11" text-anchor="middle" fill="#57606A" >«extend»</text>
+<text x="588.0" y="490.0" font-size="10.5" text-anchor="middle" fill="#57606A" >[2 or 3 careers]</text>
+<path d="M487.9 590.0 L652.9 590.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="586.0" y="578.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M671.8 700.0 L523.7 700.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="590.0" y="688.0" font-size="11" text-anchor="middle" fill="#57606A" >«extend»</text>
+<path d="M488.7 810.0 L691.5 810.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="590.0" y="798.0" font-size="11" text-anchor="middle" fill="#57606A" >«include»</text>
+<path d="M1080.0 859.5 L1080.0 798.0" fill="none" stroke="#3D444D" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1090.0" y="826.0" font-size="11" text-anchor="start" fill="#57606A" >«extend»</text>
+</svg>
