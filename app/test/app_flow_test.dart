@@ -1,6 +1,7 @@
 import 'package:career_readiness/app.dart';
 import 'package:career_readiness/core/api/api_client.dart';
 import 'package:career_readiness/core/links.dart';
+import 'package:career_readiness/core/widgets/grouped.dart';
 import 'package:career_readiness/core/widgets/quality_banner.dart';
 import 'package:career_readiness/features/curriculum/data/curriculum_repository.dart';
 import 'package:career_readiness/features/curriculum/presentation/curriculum_screen.dart';
@@ -17,7 +18,8 @@ import 'package:career_readiness/features/profile/data/profile_store.dart';
 import 'package:career_readiness/features/profile/domain/student_profile.dart';
 import 'package:career_readiness/features/recommendations/data/recommendations_repository.dart';
 import 'package:career_readiness/features/recommendations/presentation/recommendations_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show SelectableText;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -59,20 +61,35 @@ Future<void> _pumpApp(WidgetTester tester, _World w) async {
   await tester.pumpAndSettle();
 }
 
-Finder button(String label) => find.widgetWithText(FilledButton, label);
+Finder button(String label) => find.widgetWithText(CupertinoButton, label);
 
-/// Any Material button by its label -- TextButton.icon is a subclass, which
-/// find.widgetWithText's exact type match would miss.
-ButtonStyleButton anyButton(WidgetTester tester, String label) =>
-    tester.widget<ButtonStyleButton>(find
-        .ancestor(of: find.text(label), matching: find.byWidgetPredicate((w) => w is ButtonStyleButton))
-        .first);
+CupertinoButton buttonWidget(WidgetTester tester, String label) =>
+    tester.widget<CupertinoButton>(button(label));
 
-Finder skillBoxes() => find.descendant(
-    of: find.byType(SkillsScreen), matching: find.byType(CheckboxListTile));
+Finder skillBoxes() =>
+    find.descendant(of: find.byType(SkillsScreen), matching: find.byType(CheckRow));
 
-CheckboxListTile skillBox(WidgetTester tester, String name) =>
-    tester.widget<CheckboxListTile>(find.widgetWithText(CheckboxListTile, name));
+CheckRow skillBox(WidgetTester tester, String name) =>
+    tester.widget<CheckRow>(find.widgetWithText(CheckRow, name));
+
+/// The back chevron of the navigation bar.
+final backButton = find.byType(CupertinoNavigationBarBackButton);
+
+/// Home's settings button, in the navigation bar.
+final settingsButton = find.byKey(const Key('open-settings'));
+
+/// Scrolls [scrollable] down until [target] can be tapped: built, on screen,
+/// and not under a bar.
+Future<void> scrollToTap(WidgetTester tester, Finder target, Finder scrollable) async {
+  for (var i = 0; i < 50 && target.hitTestable().evaluate().isEmpty; i++) {
+    await tester.drag(scrollable, const Offset(0, -200));
+    await tester.pumpAndSettle();
+  }
+}
+
+/// A large title is drawn twice: large under the bar, and small in the bar
+/// for when the page scrolls, invisible until then.
+final isLargeTitle = findsNWidgets(2);
 
 const unverified =
     'These are self-reported and unverified. Your readiness shows them apart from your courses.';
@@ -82,11 +99,11 @@ void main() {
     final w = _World();
     await _pumpApp(tester, w);
 
-    expect(find.text('Your profile'), findsOneWidget);
-    expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull,
+    expect(find.text('Your profile'), isLargeTitle);
+    expect(buttonWidget(tester, 'Next: other skills').onPressed, isNull,
         reason: 'no career chosen yet');
 
-    await tester.enterText(find.byType(TextFormField), '  Information Systems ');
+    await tester.enterText(find.byType(CupertinoTextFormFieldRow), '  Information Systems ');
     await tester.tap(find.text('Business Analyst'));
     await tester.tap(find.text('Systems Analysis and Design'));
     await tester.tap(find.text('Database Management Systems'));
@@ -98,19 +115,19 @@ void main() {
 
     // The skills step: optional, grouped by category, nothing ticked, and the
     // unverified note said once.
-    expect(find.text('Other skills'), findsOneWidget);
+    expect(find.text('Other skills'), isLargeTitle);
     expect(find.text(unverified), findsOneWidget);
     expect(find.text('Business analysis and delivery'), findsOneWidget);
     expect(find.text('Professional skills'), findsOneWidget);
     expect(tester.getTopLeft(find.text('Business analysis and delivery')).dy,
         lessThan(tester.getTopLeft(find.text('Professional skills')).dy));
     expect(find.text('Selected: 0'), findsOneWidget);
-    expect(tester.widgetList<CheckboxListTile>(skillBoxes()).map((b) => b.value),
+    expect(tester.widgetList<CheckRow>(skillBoxes()).map((b) => b.value),
         everyElement(isFalse));
 
     // What the two courses teach is marked, not offered again.
     expect(find.text('From your courses'), findsNWidgets(3));
-    expect(find.widgetWithText(CheckboxListTile, 'SQL'), findsNothing);
+    expect(find.widgetWithText(CheckRow, 'SQL'), findsNothing);
     expect(skillBoxes(), findsNWidgets(4));
     await tester.tap(find.text('SQL'));
     await tester.pump();
@@ -152,7 +169,7 @@ void main() {
     ]);
     // Home is now the student tab's first screen, not a step to go back from.
     expect(find.byType(DashboardScreen), findsOneWidget);
-    expect(find.byType(BackButton), findsNothing);
+    expect(backButton, findsNothing);
     await tester.tap(find.text('Full readiness'));
     await tester.pumpAndSettle();
 
@@ -180,7 +197,7 @@ void main() {
     expect(find.text(flag), findsOneWidget);
     expect(find.textContaining('scored F1 0.503, below the 0.6'), findsOneWidget);
     expect(find.textContaining('English-language job postings'), findsOneWidget);
-    expect(tester.getCenter(find.byIcon(Icons.warning_amber_rounded)).dx,
+    expect(tester.getCenter(find.byIcon(CupertinoIcons.exclamationmark_triangle_fill)).dx,
         lessThan(tester.getCenter(find.text(flag)).dx));
 
     await tester.tap(find.text('Suggested courses'));
@@ -230,7 +247,7 @@ void main() {
     await tester.tap(find.text('Business Process Management'));
     await tester.tap(button('Next: other skills'));
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(CheckboxListTile, 'Business process modelling'), findsNothing);
+    expect(find.widgetWithText(CheckRow, 'Business process modelling'), findsNothing);
     expect(find.text('From your courses'), findsOneWidget);
     expect(find.text('Selected: 0'), findsOneWidget);
 
@@ -252,7 +269,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(Directionality.of(tester.element(find.byType(OnboardingScreen))), TextDirection.rtl);
-    expect(find.text('ملفك الشخصي'), findsOneWidget);
+    expect(find.text('ملفك الشخصي'), isLargeTitle);
     expect(find.text('محلل أعمال'), findsOneWidget);
     // Course names stay as the catalog lists them, and the screen says so.
     expect(find.text('Systems Analysis and Design'), findsOneWidget);
@@ -265,7 +282,7 @@ void main() {
 
     // The skills step, in Arabic: category headers and skill names alike.
     expect(Directionality.of(tester.element(find.byType(SkillsScreen))), TextDirection.rtl);
-    expect(find.text('مهارات أخرى'), findsOneWidget);
+    expect(find.text('مهارات أخرى'), isLargeTitle);
     expect(find.text('تحليل الأعمال والتنفيذ'), findsOneWidget);
     expect(find.text('مهارات التواصل'), findsOneWidget);
     expect(find.text('Communication'), findsNothing);
@@ -288,7 +305,7 @@ void main() {
     // to the right of the heading it introduces.
     const flag = 'تقديرات، وليست نتائج موثّقة';
     expect(find.text(flag), findsOneWidget);
-    expect(tester.getCenter(find.byIcon(Icons.warning_amber_rounded)).dx,
+    expect(tester.getCenter(find.byIcon(CupertinoIcons.exclamationmark_triangle_fill)).dx,
         greaterThan(tester.getCenter(find.text(flag)).dx));
 
     await tester.tap(find.text('المقررات المقترحة'));
@@ -349,7 +366,7 @@ void main() {
     expect(w.gap.queries.single,
         const GapQuery(career: 'Business Analyst', completedCourses: ['IS 230']));
 
-    await tester.tap(find.byTooltip('Settings'));
+    await tester.tap(settingsButton);
     await tester.pumpAndSettle();
     expect(find.text('Business Analyst'), findsOneWidget);
     expect(find.text('Information Systems'), findsOneWidget);
@@ -369,12 +386,11 @@ void main() {
     // Edit: the form opens holding the saved profile.
     await tester.tap(find.text('Edit profile'));
     await tester.pumpAndSettle();
-    expect(find.text('Edit your profile'), findsOneWidget);
+    expect(find.text('Edit your profile'), isLargeTitle);
     expect(find.text('Information Systems'), findsOneWidget);
     expect(
         tester
-            .widget<CheckboxListTile>(
-                find.widgetWithText(CheckboxListTile, 'Database Management Systems'))
+            .widget<CheckRow>(find.widgetWithText(CheckRow, 'Database Management Systems'))
             .value,
         isTrue);
     await tester.tap(find.text('Systems Analysis and Design'));
@@ -386,11 +402,11 @@ void main() {
     expect(w.store.profile!.completedCourses, ['IS 230', 'IS 240']);
     expect(w.store.profile!.major, 'Information Systems');
     expect(find.text('Readiness for Business Analyst'), findsOneWidget);
-    expect(find.byType(BackButton), findsNothing, reason: 'back home, not deeper in');
+    expect(backButton, findsNothing, reason: 'back home, not deeper in');
     expect(w.gap.queries.last.completedCourses, ['IS 230', 'IS 240']);
 
     // Delete: asked first; cancelling keeps everything.
-    await tester.tap(find.byTooltip('Settings'));
+    await tester.tap(settingsButton);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete profile'));
     await tester.pumpAndSettle();
@@ -401,12 +417,12 @@ void main() {
 
     await tester.tap(find.text('Delete profile'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.tap(find.widgetWithText(CupertinoActionSheetAction, 'Delete'));
     await tester.pumpAndSettle();
     expect(w.store.profile, isNull);
     expect(find.byType(OnboardingScreen), findsOneWidget);
     expect(find.text('Information Systems'), findsNothing, reason: 'the form starts blank');
-    expect(tester.widget<FilledButton>(button('Next: other skills')).onPressed, isNull);
+    expect(buttonWidget(tester, 'Next: other skills').onPressed, isNull);
   });
 
   testWidgets('Planning: tick a course, see the gaps it closes and the projection beside today',
@@ -424,7 +440,7 @@ void main() {
     expect(find.text('Tick courses below to see what they would add.'), findsOneWidget);
 
     // Completed courses are not offered; each other course says what it closes.
-    expect(find.widgetWithText(CheckboxListTile, 'Database Management Systems'), findsNothing);
+    expect(find.widgetWithText(CheckRow, 'Database Management Systems'), findsNothing);
     expect(find.text('Closes: Business process modelling (in 50% of postings)'), findsOneWidget);
     expect(find.text('Closes none of your current gaps for this career.'), findsNWidgets(3));
 
@@ -491,7 +507,7 @@ void main() {
     await _pumpApp(tester, w);
 
     expect(find.byType(DashboardScreen), findsOneWidget);
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Home'), isLargeTitle);
     // The main career only: the comparison lives on the full view.
     expect(find.text('Readiness for Data Analyst'), findsOneWidget);
     expect(find.text('20%'), findsOneWidget);
@@ -528,7 +544,7 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(ListTile, 'Settings'));
+    await tester.tap(find.widgetWithText(ListRow, 'Settings'));
     await tester.pumpAndSettle();
     expect(find.byType(SettingsScreen), findsOneWidget);
   });
@@ -543,15 +559,18 @@ void main() {
     await _pumpApp(tester, w);
 
     expect(Directionality.of(tester.element(find.byType(DashboardScreen))), TextDirection.rtl);
-    expect(find.text('الرئيسية'), findsOneWidget);
+    expect(find.text('الرئيسية'), isLargeTitle);
     expect(find.text('أبرز فجواتك'), findsOneWidget);
     expect(find.text('المواصفات الوظيفية'), findsOneWidget);
     expect(find.text('Functional specifications'), findsNothing);
     // Right to left by layout: each way on has its icon on the right.
     const full = 'الجاهزية الكاملة';
-    final entry = find.widgetWithText(ListTile, full);
+    final entry = find.widgetWithText(ListRow, full);
     expect(
-        tester.getCenter(find.descendant(of: entry, matching: find.byIcon(Icons.insights_outlined))).dx,
+        tester
+            .getCenter(
+                find.descendant(of: entry, matching: find.byIcon(CupertinoIcons.chart_bar_alt_fill)))
+            .dx,
         greaterThan(tester.getCenter(find.text(full)).dx));
   });
 
@@ -565,7 +584,7 @@ void main() {
     // Close the app, then open it again on the same device.
     await tester.pumpWidget(const SizedBox());
     await _pumpApp(tester, w);
-    expect(find.text('ملفك الشخصي'), findsOneWidget);
+    expect(find.text('ملفك الشخصي'), isLargeTitle);
     expect(Directionality.of(tester.element(find.byType(OnboardingScreen))), TextDirection.rtl);
   });
 
@@ -579,7 +598,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(CurriculumScreen), findsOneWidget);
-    expect(find.text('Curriculum gaps'), findsOneWidget);
+    expect(find.text('Curriculum gaps'), isLargeTitle);
     expect(w.curriculum.requested, [null]);
 
     // The sample-size caveat, with the real counts, above every figure.
@@ -639,7 +658,7 @@ void main() {
         lessThan(tester.getTopLeft(find.text('Coverage by career')).dy));
 
     // One career.
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Business Analyst'));
+    await tester.tap(find.widgetWithText(ChoicePill, 'Business Analyst'));
     await tester.pumpAndSettle();
     expect(w.curriculum.requested, [null, 'Business Analyst']);
     expect(find.text('Coverage: Business Analyst'), findsOneWidget);
@@ -669,7 +688,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(CurriculumScreen), findsOneWidget);
     expect(find.byType(SkillsScreen), findsNothing);
-    expect(find.byType(BackButton), findsNothing, reason: 'not a step in the student flow');
+    expect(backButton, findsNothing, reason: 'not a step in the student flow');
 
     await tester.tap(find.text('Student'));
     await tester.pumpAndSettle();
@@ -688,7 +707,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(Directionality.of(tester.element(find.byType(CurriculumScreen))), TextDirection.rtl);
-    expect(find.text('فجوات المنهج'), findsOneWidget);
+    expect(find.text('فجوات المنهج'), isLargeTitle);
     expect(find.text('القسم'), findsOneWidget);
     expect(find.text('الطالب'), findsOneWidget);
 
@@ -696,7 +715,7 @@ void main() {
     expect(find.text(caveat), findsOneWidget);
     expect(find.textContaining('لا كسبب كافٍ وحده لتغيير المنهج'), findsOneWidget);
     // Right to left by layout: the caveat's icon sits to the right of its title.
-    expect(tester.getCenter(find.byIcon(Icons.poll_outlined)).dx,
+    expect(tester.getCenter(find.byIcon(CupertinoIcons.chart_bar_square_fill)).dx,
         greaterThan(tester.getCenter(find.text(caveat)).dx));
 
     expect(find.text('جميع المهن'), findsOneWidget);
@@ -749,13 +768,15 @@ void main() {
     await tester.pump();
     expect(find.text('Completed courses (2 selected)'), findsOneWidget);
     expect(find.text('2 courses selected'), findsOneWidget);
-    expect(anyButton(tester, 'Select all shown (2)').onPressed, isNull,
+    expect(
+        tester.widget<ActionPill>(find.widgetWithText(ActionPill, 'Select all shown (2)')).onPressed,
+        isNull,
         reason: 'everything shown is already chosen');
 
     await tester.enterText(search, 'zzz');
     await tester.pump();
     expect(find.text('No course matches your search.'), findsOneWidget);
-    await tester.tap(find.byTooltip('Clear search'));
+    await tester.tap(find.byIcon(CupertinoIcons.xmark_circle_fill));
     await tester.pump();
     expect(find.text(college), findsOneWidget);
 
@@ -778,14 +799,14 @@ void main() {
     expect(find.text('Systems Analysis and Design'), findsOneWidget);
 
     // Review before going on: the chosen courses by track, each removable.
-    await tester.tap(find.widgetWithText(TextButton, 'Review'));
+    await tester.tap(button('Review'));
     await tester.pumpAndSettle();
-    final sheet = find.byType(BottomSheet);
+    final sheet = find.byKey(const Key('review-sheet'));
     expect(find.descendant(of: sheet, matching: find.text('Selected courses')), findsOneWidget);
     expect(find.descendant(of: sheet, matching: find.text(core)), findsOneWidget);
     await tester.tap(find.descendant(
-        of: find.descendant(of: sheet, matching: find.widgetWithText(ListTile, 'Data Mining')),
-        matching: find.byType(IconButton)));
+        of: find.descendant(of: sheet, matching: find.widgetWithText(ListRow, 'Data Mining')),
+        matching: find.byIcon(CupertinoIcons.minus_circle_fill)));
     await tester.pump();
     expect(find.descendant(of: sheet, matching: find.text('Data Mining')), findsNothing);
     await tester.tap(find.text('Done'));
@@ -793,8 +814,8 @@ void main() {
     expect(find.text('3 courses selected'), findsOneWidget);
 
     // Clearing is one tap, and so is taking it back.
-    await tester.tap(find.widgetWithText(TextButton, 'Clear'));
-    await tester.pumpAndSettle(); // let the snackbar finish sliding in
+    await tester.tap(button('Clear'));
+    await tester.pumpAndSettle(); // let the toast finish sliding in
     expect(find.text('No courses selected'), findsOneWidget);
     expect(find.text('Selection cleared.'), findsOneWidget);
     await tester.tap(find.text('Undo'));
@@ -817,7 +838,7 @@ void main() {
     expect(find.text('كل المستوى 200 وما دونه'), findsOneWidget);
     expect(find.text('لم تختر أي مقرر'), findsOneWidget);
     // Right to left: the search icon sits at the field's right-hand end.
-    expect(tester.getCenter(find.descendant(of: search, matching: find.byIcon(Icons.search))).dx,
+    expect(tester.getCenter(find.descendant(of: search, matching: find.byIcon(CupertinoIcons.search))).dx,
         greaterThan(tester.getCenter(search).dx));
 
     // A code typed on an Arabic keyboard, in Arabic-Indic digits.
@@ -863,22 +884,21 @@ void main() {
     final developer = find.text('Software Developer');
     expect(tester.getTopLeft(analyst).dy, tester.getTopLeft(developer).dy);
     expect(tester.getCenter(analyst).dx, lessThan(tester.getCenter(developer).dx));
-    Finder column(Finder title) =>
-        find.ancestor(of: title, matching: find.byType(Card)).first;
-    Finder inColumn(Finder title, String text) =>
-        find.descendant(of: column(title), matching: find.text(text));
-    expect(inColumn(analyst, '10%'), findsOneWidget);
-    expect(inColumn(analyst, 'Covered: 2'), findsOneWidget);
-    expect(inColumn(analyst, 'Missing: 3'), findsOneWidget);
-    expect(inColumn(analyst, '6 job postings'), findsOneWidget);
-    expect(inColumn(analyst, 'Courses alone: 5%'), findsOneWidget,
+    Finder column(String career) => find.byKey(ValueKey('compare:$career'));
+    Finder inColumn(String career, String text) =>
+        find.descendant(of: column(career), matching: find.text(text));
+    expect(inColumn('Business Analyst', '10%'), findsOneWidget);
+    expect(inColumn('Business Analyst', 'Covered: 2'), findsOneWidget);
+    expect(inColumn('Business Analyst', 'Missing: 3'), findsOneWidget);
+    expect(inColumn('Business Analyst', '6 job postings'), findsOneWidget);
+    expect(inColumn('Business Analyst', 'Courses alone: 5%'), findsOneWidget,
         reason: 'self-reported skills lift this score, so the record alone is shown too');
-    expect(inColumn(developer, '35%'), findsOneWidget);
-    expect(inColumn(developer, 'Covered: 3'), findsOneWidget);
-    expect(inColumn(developer, 'Missing: 2'), findsOneWidget);
-    expect(inColumn(developer, '5 job postings'), findsOneWidget);
+    expect(inColumn('Software Developer', '35%'), findsOneWidget);
+    expect(inColumn('Software Developer', 'Covered: 3'), findsOneWidget);
+    expect(inColumn('Software Developer', 'Missing: 2'), findsOneWidget);
+    expect(inColumn('Software Developer', '5 job postings'), findsOneWidget);
     expect(find.textContaining('Closest'), findsOneWidget);
-    expect(find.descendant(of: column(developer), matching: find.textContaining('Closest')),
+    expect(find.descendant(of: column('Software Developer'), matching: find.textContaining('Closest')),
         findsOneWidget);
     expect(find.textContaining('a few points apart is not a real difference'), findsOneWidget);
 
@@ -920,18 +940,15 @@ void main() {
 
     expect(w.store.profile!.careers, ['Business Analyst', 'Data Analyst', 'Software Developer']);
     final fullView = find.text('الجاهزية الكاملة');
-    await tester.scrollUntilVisible(fullView, 200,
-        scrollable: find
-            .descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable))
-            .first);
+    await scrollToTap(tester, fullView,
+        find.descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable)).first);
     await tester.tap(fullView);
     await tester.pumpAndSettle();
     expect(Directionality.of(tester.element(find.byType(ReadinessScreen))), TextDirection.rtl);
-    // On a phone in Arabic the quality flag fills the first screen, so the
-    // comparison is reached by scrolling -- after the flag, never before it.
+    // The comparison comes after the quality flag, never before it.
     final heading = find.text('مهنك جنبًا إلى جنب');
-    expect(find.byType(QualityBanner), findsOneWidget);
-    expect(heading, findsNothing, reason: 'below the flag, not yet built');
+    expect(tester.getTopLeft(heading).dy,
+        greaterThan(tester.getBottomLeft(find.byType(QualityBanner)).dy));
     await tester.scrollUntilVisible(heading, 200,
         scrollable: find
             .descendant(of: find.byType(ReadinessScreen), matching: find.byType(Scrollable))
@@ -982,12 +999,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ReadinessScreen), findsOneWidget);
     expect(find.text('Your careers side by side'), findsNothing);
-    await tester.tap(find.byType(BackButton));
+    await tester.tap(backButton);
     await tester.pumpAndSettle();
 
     // Editing starts from what is still served, so nothing sits ticked unseen,
     // and saving writes the profile back without it.
-    await tester.tap(find.byTooltip('Settings'));
+    await tester.tap(settingsButton);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Edit profile'));
     await tester.pumpAndSettle();
@@ -1088,15 +1105,12 @@ void main() {
       (ReadinessScreen, 'الجاهزية الكاملة'),
     ]) {
       final entry = find.text(open);
-      await tester.scrollUntilVisible(entry, 200,
-          scrollable: find
-              .descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable))
-              .first);
+      await scrollToTap(tester, entry,
+          find.descendant(of: find.byType(DashboardScreen), matching: find.byType(Scrollable)).first);
       await tester.tap(entry);
       await tester.pumpAndSettle();
       expect(find.byType(screen), findsOneWidget);
-      // pageBack() looks for an English "Back" tooltip; this one is in Arabic.
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(backButton);
       await tester.pumpAndSettle();
     }
 
@@ -1107,10 +1121,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(RecommendationsScreen), findsOneWidget);
 
-    // Settings, from the readiness view's top bar.
-    await tester.tap(find.byType(BackButton));
+    // Settings, from home's navigation bar.
+    await tester.tap(backButton);
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('الإعدادات'));
+    await tester.tap(backButton);
+    await tester.pumpAndSettle();
+    await tester.tap(settingsButton);
     await tester.pumpAndSettle();
     expect(find.byType(SettingsScreen), findsOneWidget);
 

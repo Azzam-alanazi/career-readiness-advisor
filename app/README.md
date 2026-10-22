@@ -1,7 +1,7 @@
 # Career Readiness — Flutter app (Phase 4)
 
-Android app over the FastAPI backend in `../backend/`, in English and Arabic.
-Two tabs serve two audiences. The student tab has two-step onboarding
+iPhone and Android app over the FastAPI backend in `../backend/`, in English
+and Arabic, built in the iOS design language. Two tabs serve two audiences. The student tab has two-step onboarding
 (completed courses, then any skills from outside them), a readiness report and
 suggested courses. A student can target up to three careers; the readiness
 screen then shows them side by side, each with its score and its covered and
@@ -40,6 +40,34 @@ ticks courses they plan to take. Each course not yet taken lists the gaps it
 would close. The projection — the same readiness reading, with the planned
 courses counted as taken — stands beside today's figure there and on the
 readiness screen. The plan is saved with the profile.
+
+## Design
+
+The app is drawn with Flutter's Cupertino widgets, so it looks and behaves like
+an iPhone app — on Android too, as one design to maintain:
+
+- **iOS structure.** A tab bar for the two audiences, each tab with its own
+  navigation stack; large collapsing titles on each tab's first screen; the back
+  chevron and swipe-back on the screens pushed over it; grouped lists as in
+  Settings; the course review as a sheet; deleting the profile confirmed by an
+  action sheet; short messages ("Selection cleared. Undo") as a toast from the
+  top of the screen.
+- **Dark mode and Increase Contrast** follow the phone. Every colour is a light
+  and dark pair (`lib/core/theme/app_theme.dart`).
+- **Colour carries one meaning each.** Teal is the student: readiness, what they
+  hold, the actions. Indigo is the job market: how often postings ask for a
+  skill. Orange is a caveat about the figures. Green is degree credit and a gain.
+- **The readiness ring** is the one signature element: readiness held now in
+  solid teal, and what the planned courses would add in a paler teal running on
+  from it. It fills once when it appears, and is simply drawn when Reduce Motion
+  is on.
+- **Type** is Apple's iOS ramp in the system face (SF Pro, and SF Arabic for
+  Arabic, on an iPhone). Arabic is set without letter-spacing, which would pull
+  joined letters apart.
+
+The shared pieces — page, grouped section, rows, check circles, pills, tags,
+notice cards, buttons, toast, ring, bars — live in `lib/core/widgets/`; screens
+compose them rather than styling widgets one by one.
 
 ## What the numbers are — read this first
 
@@ -81,9 +109,11 @@ Then, from `app/`:
 flutter run
 ```
 
-The app looks for the backend at `http://10.0.2.2:8000`, which is the host
-machine as seen from the Android emulator. For a physical device, point it at
-your machine's address:
+Without being told, the app looks for the backend on port 8000 of the machine
+running it: `http://10.0.2.2:8000` from the Android emulator, which is how the
+emulator sees its host, and `http://127.0.0.1:8000` from the iOS simulator, a
+desktop build or a browser. For a physical phone, point it at your machine's
+address on the local network:
 
 ```bash
 flutter run --dart-define=API_BASE_URL=http://192.168.1.20:8000
@@ -93,8 +123,25 @@ The backend must then listen beyond the host itself: start it with
 `--host 0.0.0.0`. That opens it to the whole local network, so do it only on a
 network you trust.
 
-Debug builds allow plain HTTP so they can reach the local backend. Release
-builds keep Android's default and require HTTPS.
+On Android, debug builds allow plain HTTP so they can reach the local
+backend; release builds keep Android's default and require HTTPS. On an iPhone,
+App Transport Security does not cover connections to an IP address, so the
+address above works as it is; `Info.plist` also allows `.local` host names, and
+says why the app asks for local network access the first time it connects.
+
+### On an iPhone
+
+Building for iOS needs a Mac with Xcode; it cannot be done from Windows.
+
+- **Simulator:** start the backend on the Mac, then `flutter run` and pick the
+  simulator. It reaches the backend at `127.0.0.1`.
+- **Your own iPhone:** connect it to the Mac, sign the app in Xcode with your
+  Apple ID (`open ios/Runner.xcworkspace`, then Signing & Capabilities), and run
+  with the Mac's address as shown above. The phone asks once for permission to
+  use the local network; allow it.
+- **Without a Mac:** a cloud build service with macOS machines can produce the
+  iOS build; installing it on a phone then goes through TestFlight, which needs
+  an Apple Developer account.
 
 Generated files — freezed, json_serializable, and the localizations — sit next
 to the sources they come from. After changing a model or an ARB file:
@@ -111,9 +158,11 @@ flutter gen-l10n
 
 ```
 lib/
-  main.dart, app.dart
-  home_shell.dart       the two tabs, student and department, each with its own navigation stack
-  core/                 api client, locale, formatting, opening links, shared widgets
+  main.dart, app.dart   the Cupertino app: theme, locale, the two tabs
+  home_shell.dart       the tab bar, student and department, each with its own navigation stack
+  core/                 api client, locale, formatting, opening links
+    theme/              colours (light and dark), type ramp, radii
+    widgets/            the shared iOS pieces every screen is built from
   features/
     onboarding/         careers, course catalog and skill taxonomy; the two onboarding steps
     home/               the dashboard a saved profile opens on
@@ -135,7 +184,8 @@ searching and course coverage of skills in `skill_groups.dart`, not in widgets.
 
 ## Arabic and right-to-left
 
-Switch language from the top bar; the whole app flips to right-to-left through
+Switch language in Settings, or from the navigation bar during onboarding and
+in the department view; the whole app flips to right-to-left through
 `flutter_localizations`. Translated: every piece of UI text, the quality flag,
 the career names, the skill category names, and the skill names. Not translated: course names, because
 the catalog is English — the onboarding screen says so.
@@ -155,7 +205,7 @@ postings.
 flutter test
 ```
 
-68 tests, no device needed:
+67 tests, no device needed:
 
 - **models** — parsing backend-shaped JSON (snake_case keys, the failed gate,
   a readiness of exactly 0), the gap's two sources kept apart, skill names by
@@ -243,6 +293,10 @@ dart run tool/contract_check.dart
 
 The Android toolchain is now installed and a debug APK builds
 (`flutter build apk --debug`). These checks have not seen the app on a phone.
+
+The iOS design has been checked by rendering every screen at iPhone size, in
+English and Arabic, light and dark, but not on an iPhone or the iOS simulator:
+that needs a Mac.
 
 **A black screen on the emulator is the emulator image, not the app.** On
 the Android 17 preview image with 16 KB pages (`sdk_gphone16k_x86_64`), the

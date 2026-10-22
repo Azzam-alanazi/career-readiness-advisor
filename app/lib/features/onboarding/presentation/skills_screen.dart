@@ -1,5 +1,9 @@
 import 'package:career_readiness/core/l10n/category_names.dart';
+import 'package:career_readiness/core/theme/app_theme.dart';
+import 'package:career_readiness/core/widgets/app_page.dart';
 import 'package:career_readiness/core/widgets/async_view.dart';
+import 'package:career_readiness/core/widgets/buttons.dart';
+import 'package:career_readiness/core/widgets/grouped.dart';
 import 'package:career_readiness/core/widgets/language_toggle.dart';
 import 'package:career_readiness/core/widgets/section_header.dart';
 import 'package:career_readiness/features/onboarding/domain/course.dart';
@@ -8,7 +12,7 @@ import 'package:career_readiness/features/onboarding/domain/skill_groups.dart';
 import 'package:career_readiness/features/onboarding/presentation/catalog_providers.dart';
 import 'package:career_readiness/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:career_readiness/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Onboarding, second step: skills held from outside coursework. Optional --
@@ -26,21 +30,22 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.skillsTitle),
-        actions: const [LanguageToggle()],
-      ),
-      body: AsyncView(
-        asyncValue: ref.watch(skillsProvider),
-        onRetry: () => ref.invalidate(skillsProvider),
-        data: (skills) => _SkillList(
-          skills: skills,
-          query: _query,
-          onQueryChanged: (value) => setState(() => _query = value),
+    return AppPage(
+      large: true,
+      title: l.skillsTitle,
+      trailing: const LanguageToggle(),
+      bottomBar: const _SubmitBar(),
+      slivers: [
+        AsyncSliver(
+          asyncValue: ref.watch(skillsProvider),
+          onRetry: () => ref.invalidate(skillsProvider),
+          data: (skills) => _SkillList(
+            skills: skills,
+            query: _query,
+            onQueryChanged: (value) => setState(() => _query = value),
+          ),
         ),
-      ),
-      bottomNavigationBar: const _SubmitBar(),
+      ],
     );
   }
 }
@@ -60,7 +65,7 @@ class _SkillList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
-    final text = Theme.of(context).textTheme;
+    final type = AppType.of(context);
     final state = ref.watch(onboardingControllerProvider);
     final controller = ref.read(onboardingControllerProvider.notifier);
     final catalog = ref.watch(coursesProvider).value ?? const <Course>[];
@@ -70,56 +75,62 @@ class _SkillList extends ConsumerWidget {
     final groups = groupSkills(skills, query);
     final ticked = state.selfReported.difference(fromCourses).length;
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
+    return PageContent(
       children: [
-        Text(l.skillsIntro, style: text.bodyLarge),
-        const SizedBox(height: 8),
+        Text(l.skillsIntro, style: type.secondary),
+        const SizedBox(height: 12),
         // The one place the app says these are unverified.
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.info_outline, size: 18),
-            const SizedBox(width: 8),
-            Expanded(child: Text(l.skillsUnverified, style: text.bodySmall)),
+            Icon(CupertinoIcons.info_circle,
+                size: 17, color: AppColors.secondaryLabel.resolveFrom(context)),
+            const SizedBox(width: 6),
+            Expanded(child: Text(l.skillsUnverified, style: type.footnote)),
           ],
         ),
         const SizedBox(height: 16),
-        TextField(
+        CupertinoSearchTextField(
           key: const Key('skill-search'),
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.search),
-            hintText: l.skillsSearchHint,
-            border: const OutlineInputBorder(),
-          ),
+          placeholder: l.skillsSearchHint,
           onChanged: onQueryChanged,
         ),
-        const SizedBox(height: 8),
-        Text(l.skillsSelected(ticked), style: text.labelLarge),
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: 4, top: 10),
+          child: Text(l.skillsSelected(ticked), style: type.footnoteEmphasis),
+        ),
         if (groups.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text(l.skillsNoMatch),
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Text(l.skillsNoMatch, textAlign: TextAlign.center, style: type.secondary),
           ),
         for (final group in groups) ...[
           SectionHeader(categoryName(l, group.category)),
-          for (final skill in group.skills)
-            if (fromCourses.contains(skill.id))
-              ListTile(
-                enabled: false,
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.school_outlined),
-                title: Text(skill.nameFor(lang)),
-                subtitle: Text(l.skillFromCourses),
-              )
-            else
-              CheckboxListTile(
-                value: state.selfReported.contains(skill.id),
-                onChanged: (_) => controller.toggleSkill(skill.id),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-                title: Text(skill.nameFor(lang)),
-              ),
+          Section(
+            dividerIndent: 52,
+            children: [
+              for (final skill in group.skills)
+                if (fromCourses.contains(skill.id))
+                  ListRow(
+                    title: skill.nameFor(lang),
+                    subtitle: l.skillFromCourses,
+                    titleStyle: type.body.copyWith(
+                      color: AppColors.secondaryLabel.resolveFrom(context),
+                    ),
+                    leading: Icon(
+                      CupertinoIcons.book_fill,
+                      size: 22,
+                      color: CupertinoTheme.of(context).primaryColor,
+                    ),
+                  )
+                else
+                  CheckRow(
+                    value: state.selfReported.contains(skill.id),
+                    onChanged: () => controller.toggleSkill(skill.id),
+                    title: skill.nameFor(lang),
+                  ),
+            ],
+          ),
         ],
       ],
     );
@@ -133,34 +144,30 @@ class _SubmitBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final state = ref.watch(onboardingControllerProvider);
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (state.error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  l.submitFailed,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: state.canSubmit ? () => _submit(context, ref) : null,
-                child: state.submitting
-                    ? const SizedBox.square(
-                        dimension: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(state.editing ? l.saveChanges : l.submit),
+    return BottomBar(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (state.error != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Icon(CupertinoIcons.exclamationmark_circle_fill,
+                      size: 18, color: AppColors.danger.resolveFrom(context)),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(l.submitFailed, style: AppType.of(context).footnote),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          PrimaryButton(
+            label: state.editing ? l.saveChanges : l.submit,
+            busy: state.submitting,
+            onPressed: state.canSubmit ? () => _submit(context, ref) : null,
+          ),
+        ],
       ),
     );
   }
