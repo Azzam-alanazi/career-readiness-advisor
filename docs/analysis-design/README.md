@@ -3,7 +3,7 @@
 The UML, database and ER diagrams for the Career Readiness Advisor, drawn from
 the code and data as they stood on 17 October 2026.
 
-- `Project_Analysis_and_Design.pdf` and `.docx`: the submission document, 28
+- `APPLICATION_PROGRAMMING_UML.pdf` and `Project_Analysis_and_Design.docx`: the submission document, 28
   pages, every diagram with a short explanation, the use case descriptions and
   the data-store and relationship tables.
 - `png/`: each diagram at twice its drawn size, for pasting into another report.

@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 /// Where the backend lives, when the build does not say.
 ///
 /// The FastAPI backend runs on port 8000 of the development machine. The
-/// Android emulator sees that machine as 10.0.2.2; the iOS simulator, a
-/// desktop build and a browser see it as 127.0.0.1. A physical phone needs the
+/// Android emulator sees that machine as 10.0.2.2; the iOS simulator
+/// sees it as 127.0.0.1. A physical phone needs the
 /// machine's address on the local network, given at build time:
 ///
 ///     flutter run --dart-define=API_BASE_URL=http://192.168.1.20:8000

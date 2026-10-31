@@ -46,3 +46,10 @@ backend/data/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+
+# Personal AI-assistant and tool setup: each machine keeps its own.
+/.claude/
+/.agents/
+/.codex/
+/.mcp.json
+/.ignore

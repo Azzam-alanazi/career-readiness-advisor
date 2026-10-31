@@ -111,8 +111,7 @@ flutter run
 
 Without being told, the app looks for the backend on port 8000 of the machine
 running it: `http://10.0.2.2:8000` from the Android emulator, which is how the
-emulator sees its host, and `http://127.0.0.1:8000` from the iOS simulator, a
-desktop build or a browser. For a physical phone, point it at your machine's
+emulator sees its host, and `http://127.0.0.1:8000` from the iOS simulator. For a physical phone, point it at your machine's
 address on the local network:
 
 ```bash
