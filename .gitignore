@@ -53,3 +53,6 @@ backend/data/
 /.codex/
 /.mcp.json
 /.ignore
+
+# Python virtual environment, from the README
+/.venv/
