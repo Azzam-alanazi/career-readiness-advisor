@@ -37,7 +37,6 @@ git clone https://github.com/Azzam-alanazi/career-readiness-advisor.git
 cd career-readiness-advisor
 ```
 
-The repository is private, so your GitHub account needs access to it.
 
 ## 2. Start the backend
 
