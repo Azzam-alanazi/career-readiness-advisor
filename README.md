@@ -151,6 +151,48 @@ The **Department** tab shows the curriculum against the job postings.
 | Installing or starting the backend fails | Check `python --version` shows 3.13 and that the virtual environment is active |
 | `flutter run` finds no device | Run `flutter devices`, and start an emulator or reconnect the phone |
 
+## Application deployment method
+
+The code is hosted on GitHub. The app is deployed locally, not on a public
+server: the backend runs on your own computer, and the app is installed on a
+phone or emulator that can reach it.
+
+| Part | How it is deployed |
+|---|---|
+| Source code | This GitHub repository |
+| Backend API | Python process on a local computer, served by Uvicorn on port 8000 (step 2) |
+| Student data | Saved only on the phone; the server stores nothing about students |
+| Android app | Installed from the computer with `flutter run`, or from an APK file (below) |
+| iPhone app | Built on a Mac with Xcode: see [On an iPhone](app/README.md#on-an-iphone) |
+
+To build an Android APK file, run this from the `app` folder, with your
+computer's address in place of the example:
+
+```bash
+flutter build apk --debug --dart-define=API_BASE_URL=http://192.168.1.20:8000
+```
+
+The file is written to `app/build/app/outputs/flutter-apk/app-debug.apk`. Copy it
+to an Android phone and open it to install. It must be a debug build, because
+Android release builds refuse the plain HTTP connection the local backend uses.
+The address is built into the file, so a different network needs a new build.
+
+## Resource folders
+
+| Folder | What it holds |
+|---|---|
+| `app/` | The Flutter mobile app |
+| `app/lib/` | App source code: `core/` for shared code, `features/` for each screen area, `l10n/` for English and Arabic text |
+| `app/test/` | App tests |
+| `app/android/`, `app/ios/` | Android and iOS project files |
+| `backend/` | The FastAPI service the app talks to, and `tests/` for it |
+| `skillgap/` | The skill-matching engine, the 91-skill taxonomy (`taxonomy.json`), the matching settings (`config.json`), and the course data (`labeled_courses.csv`, `online_courses.csv`) |
+| `skillgap/archive/` | Earlier data, kept so past results can be reproduced |
+| `test/` | The job postings (`labeled_postings.csv`) and the scripts that collected and labelled them |
+| `test/raw_responses/` | Saved job-search API responses, kept as evidence for the sampling findings |
+| `test/holdout/`, `test/archive/` | Labels and samples from the validation work |
+| `docs/analysis-design/` | The analysis and design document, with the UML, database and ER diagrams (`png/`, `svg/`) and the scripts that draw them (`src/`) |
+
 ## Run the tests
 
 Backend, from the `career-readiness-advisor` folder:
